@@ -1,0 +1,112 @@
+基本流程：
+
+首先安装tmux的插件管理器：tmux plugin manager，然后安装以下两个插件：
+
+tmux-resurrect：备份与恢复；Restore tmux environment after system restart。
+tmux-continuum：用于定时调用tmux-resurrect进行自动备份，并在开机时调用tmux-resurrect进行自动恢复。
+
+
+安装
+tmux-plugins
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+
+添加插件
+修改配置文件~/.tmux.conf
+
+ vim ~/.tmux.conf
+# 输入：
+​
+# List of plugins
+set -g @plugin 'tmux-plugins/tpm'
+ 
+# Other examples:
+# set -g @plugin 'github_username/plugin_name'
+# set -g @plugin 'git@github.com/user/plugin'
+# set -g @plugin 'git@bitbucket.com/user/plugin'
+# set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+ 
+# for vim
+set -g @resurrect-strategy-vim 'session'
+# for neovim
+set -g @resurrect-strategy-nvim 'session'
+#
+set -g @resurrect-capture-pane-contents 'on'
+ 
+# auto restore
+set -g @continuum-restore 'on'
+# 设置自动保存的时间间隔，默认是15分钟
+# 下面意为改为60分钟，如果改成0则停止自动保存
+# set -g @continuum-save-interval '60'
+
+
+# mouse enabled
+setw -g mouse on
+
+ 
+# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+run -b '~/.tmux/plugins/tpm/tpm'
+重载配置文件
+
+tmux source ~/.tmux.conf
+如果提示no server running on，则先新建一个tmux窗口。
+
+
+
+安装插件
+随便进入一个tmux窗口，没有则新建一个。
+
+tmux attach -t test  # 进入已有窗口
+# tmux new -s test  # 新建窗口
+Ctrl+b然后按I（注意是大写的）安装插件，出现下面信息：
+
+                                                                           [0/0]
+TMUX environment reloaded.
+Done, press ESCAPE to continue.
+安装成功，按ESC返回。
+
+
+
+离线安装
+对于断网的机器，是无法使用上面的方法直接连线下载安装的，下面给出替代方法。
+
+首先从github上下载对应的压缩包然后解压到指定路径下：
+
+# 下载 tpm
+# 安装包在 ~/Downloads/tpm-master.zip
+unzip ~/Downloads/tpm-master.zip -d ~/.tmux/plugins/
+# 重命名
+mv ~/.tmux/plugins/tpm-master ~/.tmux/plugins/tpm
+​
+# 下载所需插件
+# tmux-continuum
+unzip ~/Downloads/tmux-continuum-master.zip -d ~/.tmux/plugins/
+mv ~/.tmux/plugins/tmux-continuum-master ~/.tmux/plugins/tmux-continuum
+# tmux-resurrect
+unzip ~/Downloads/tmux-resurrect-master.zip -d ~/.tmux/plugins/
+mv ~/.tmux/plugins/tmux-resurrect-master ~/.tmux/plugins/tmux-resurrect
+然后就是修改配置文件，后续步骤与上一节相同。
+
+
+
+为了方便大家，我也将安装所需的压缩包和配置文件，打包放到这个项目install_tmux_resurrect下了。
+
+各位可以下载该项目，然后直接执行命令：
+
+cd ./install_tmux_resurrect
+bash install.sh
+运行其中的脚本，即可完成安装的大部分步骤。
+
+
+
+使用
+由于使用了 tmux-continuum，tmux-resurrect 的备份和恢复都是自动的（在指定时间间隔备份、在重启后进行恢复）。当然，你也可以直接调用 tmux-resurrect 来进行手动的备份与恢复，从而实现更灵活的操作：
+
+手动备份tmux：Ctrl+b然后按Ctrl+s
+手动恢复tmux：Ctrl+b然后按Ctrl+r
+
+
+测试
+新建几个tmux窗口，然后Ctrl+b然后按Ctrl+s手动备份一下，再kill掉tmux相关进程（模拟宕机）。新建一个tmux窗口，在里面按Ctrl+b然后按Ctrl+r手动恢复之前的备份。
