@@ -9,18 +9,14 @@ return {
 			require("nvim-treesitter.configs").setup({
 				ensure_installed = {
 					"html",
-					"javascript",
-					"typescript",
-					"query",
-					"dart",
 					"java",
 					"c",
-					"prisma",
 					"bash",
 					"go",
 					"lua",
 					"vim",
 					"proto",
+					"python",
 				},
 				highlight = {
 					enable = true,
