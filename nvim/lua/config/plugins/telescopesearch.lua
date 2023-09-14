@@ -67,7 +67,7 @@ M.config = {
 							["<C-h>"] = "preview_scrolling_up",
 							["<C-l>"] = "preview_scrolling_down",
 							["<esc>"] = "close",
-							["<enter>"] = "select_tab",
+							["<enter>"] = "select_tab"
 						}
 					},
 					color_devicons = true,

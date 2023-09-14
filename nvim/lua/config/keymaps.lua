@@ -1,4 +1,5 @@
 vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
 local mode_nv = { "n", "v" }
 local mode_v = { "v" }

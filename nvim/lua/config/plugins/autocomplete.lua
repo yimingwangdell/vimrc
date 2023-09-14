@@ -14,11 +14,12 @@ M.config = {
 	"hrsh7th/nvim-cmp",
 	after = "SirVer/ultisnips",
 	dependencies = {
-		"hrsh7th/cmp-buffer",
 		"hrsh7th/cmp-path",
 		"hrsh7th/cmp-nvim-lsp",
+		"hrsh7th/cmp-omni",
 		"hrsh7th/cmp-nvim-lua",
 		"hrsh7th/cmp-calc",
+		"hrsh7th/cmp-buffer",
 		-- "andersevenrud/cmp-tmux",
 		{
 			"onsails/lspkind.nvim",
@@ -123,13 +124,13 @@ M.configfunc = function()
 
 
 		sources = cmp.config.sources({
-			{ name = "ultisnips" },
 			{ name = "nvim_lsp" },
-			{ name = "buffer" },
-		}, {
 			{ name = "path" },
+		}, {
+			{ name = "buffer" },
 			{ name = "nvim_lua" },
 			{ name = "calc" },
+			{ name = "omni",    option = { disable_omnifuncs = {} } },
 			-- { name = 'tmux',    option = { all_panes = true, } },  -- this is kinda slow
 		}),
 		mapping = cmp.mapping.preset.insert({

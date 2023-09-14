@@ -51,9 +51,12 @@ M.config = {
 
 			lsp.ensure_installed({
 				'gopls',
-				'jdtls',
+				-- 'jdtls',
+				-- 'java_language_server',
 				'gradle_ls',
 				'jsonls',
+				'lua_ls',
+				'lemminx',
 			})
 
 			-- F.configureInlayHints()
@@ -113,10 +116,10 @@ M.config = {
 			require("config.lsp.lua").setup(lspconfig, lsp)
 			require("config.lsp.json").setup(lspconfig, lsp)
 			require("config.lsp.html").setup(lspconfig, lsp)
-			require("config.lsp.java").setup(lspconfig, lsp)
 			require("config.lsp.gradle").setup(lspconfig, lsp)
 			require("config.lsp.go").setup(lspconfig, lsp)
 			require("config.lsp.py").setup(lspconfig, lsp)
+			-- require("config.lsp.java").setup(lspconfig, lsp)
 
 			lsp.setup()
 			require("fidget").setup({})
@@ -246,7 +249,8 @@ F.configureKeybinds = function()
 			vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
 			vim.keymap.set('n', '<leader>fm', vim.lsp.buf.format, opts)
 			-- vim.keymap.set({ 'n', 'x' }, '<leader>f', function() vim.lsp.buf.format({ async = true }) end, opts)
-			vim.keymap.set('n', '<leader>ac', vim.lsp.buf.code_action, opts)
+			vim.keymap.set('n', '<leader>ac', '<Cmd>CodeActionMenu<CR>', opts)
+			vim.keymap.set('x', '<leader>ac', '<Cmd>CodeActionMenu<CR>', opts)
 			-- vim.keymap.set('x', '<leader>aw', vim.lsp.buf.range_code_action, opts)
 			-- vim.keymap.set('x', "<leader>,", vim.lsp.buf.range_code_action, opts)
 			vim.keymap.set('n', '<leader>t', ':Trouble<cr>', opts)
