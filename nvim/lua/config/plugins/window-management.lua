@@ -6,6 +6,9 @@ return {
 	},
 	{
 		"nyngwang/NeoZoom.lua",
+		dependencies = {
+			"francoiscabrol/ranger.vim",
+		},
 		config = function()
 			vim.keymap.set('n', '<leader>f', ':NeoZoomToggle<CR>', { silent = true, nowait = true })
 			require('neo-zoom').setup {
