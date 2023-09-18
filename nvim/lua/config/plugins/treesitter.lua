@@ -9,6 +9,7 @@ return {
 			require("nvim-treesitter.configs").setup({
 				ensure_installed = {
 					"html",
+					"python",
 					"java",
 					"c",
 					"bash",
@@ -16,7 +17,7 @@ return {
 					"lua",
 					"vim",
 					"proto",
-					"python",
+					"markdown",
 				},
 				highlight = {
 					enable = true,
@@ -26,13 +27,12 @@ return {
 					enable = false
 				},
 				incremental_selection = {
-					enable = false,
-					--[[ keymaps = {
+					enable = true,
+					keymaps = {
 						init_selection    = "<leader>i",
 						-- node_incremental  = "<leader>i",
-						node_decremental  = "<leader>o",
 						scope_incremental = "<leader>i",
-					}, ]]
+					},
 				}
 			})
 		end

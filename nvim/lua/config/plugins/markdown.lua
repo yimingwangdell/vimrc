@@ -4,7 +4,7 @@ return {
 		ft = { "markdown", "vimwiki", },
 		build = "yarn install",
 		config = function()
-			vim.g.instant_markdown_autostart = 1
+			vim.g.instant_markdown_autostart = 0
 			vim.cmd([[
 				nnoremap <c-p> :silent! InstantMarkdownStop<CR> :InstantMarkdownPreview<CR>
 				]])

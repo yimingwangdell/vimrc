@@ -1,5 +1,5 @@
-au BufNewFile,BufRead *.wiki setl ft=markdown
 setlocal shiftwidth=2 softtabstop=2 expandtab smarttab
+au BufNewFile,BufRead *.wiki set ft=markdown
 "autocmd Filetype markdown map <leader>w yiWi[<esc>Ea](<esc>pa)
 inoremap <buffer> ,f <Esc>/<++><CR>:nohlsearch<CR>"_c4l
 inoremap <buffer> <c-e> <Esc>/<++><CR>:nohlsearch<CR>"_c4l

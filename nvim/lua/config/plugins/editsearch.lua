@@ -29,7 +29,7 @@ return {
 			-- vim.keymap.set('n', '<Leader>gi', [[':AnyJumpArg %sImpl' . expand('<cword>')]], kopts)
 			vim.keymap.set("n", "<Leader>gi", [[':<C-u>AnyJumpArg ' . expand('<cword>') . 'Impl<CR>']],
 				{ noremap = true, silent = false, expr = true })
-			vim.g.any_jump_disable_default_keybindings = true
+			vim.g.any_jump_disable_default_keybindings = 1
 			vim.g.any_jump_window_width_ratio = 0.9
 			vim.g.any_jump_window_height_ratio = 0.9
 			vim.cmd([[
