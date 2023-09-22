@@ -6,7 +6,7 @@ local mode_v = { "v" }
 local mode_i = { "i" }
 local nmappings = {
 	{ from = "S", to = ":w<CR>" },
-	{ from = "Q", to = ":q<CR>" },
+	{ from = "Q", to = ":q!<CR>" },
 	{
 		from = ";",
 		to = ":",
