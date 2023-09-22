@@ -29,21 +29,22 @@
 | space + space                       | comment code                                       |
 | sl/sj                               | split windows right/below                          |
 | space + h/j/k/l                     | jump between split windows                         |
-| space + o                           | windows fullscreen                                 |
+| space + f                           | windows fullscreen                                 |
 | tt                                  | file explorer                                      |
 |-------------------------------------|----------------------------------------------------|
-| ctrl+f                              | search file in project                             |
+| ctrl+f                              | search file in project(need fzf installed)         |
 | ctrl+h                              | search opened once history file                    |
-| ctrl+j                              | search string in project                           |
+| ctrl+j                              | search string in project(need rg installed)        |
 | ctrl+j, ctrl+k                      | next/previous item in search result window         |
 |-------------------------------------|----------------------------------------------------|
-| tab in insert mode                  | autocomplete(using LSP)                            |
+| tab(insert mode)                    | autocomplete(using LSP)                            |
 | gk                                  | show under cursor method doc(using LSP)            |
 | gd                                  | goto under cursor symbol definition(using LSP)     |
 | gi                                  | goto implementation(using LSP)                     |
 | go                                  | goto type(using LSP)                               |
 | gb                                  | jump back(using LSP)                               |
-| tg                                  | show current file outline                          |
+| gf                                  | open under cursor file path                        |
+| tg                                  | show current file symbol outline                   |
 | space + gd                          | go to definition/implementatio(using anyjump)      |
 | alt+o/alt+i                         | jump back/forward between file                     |
 |-------------------------------------|----------------------------------------------------|
@@ -52,21 +53,23 @@
 | enter...enter enter                 | select block                                       |
 | backspace                           | nohighlight for search/select                      |
 | space + ww                          | open vimwiki notebook                              |
+| space + oa/oc                       | nvim orgmode menu/action                           |
 | ctrl+g                              | open lazygit(awesome git tool)                     |
 | ty                                  | translate under cursor/selected content to chinese |
 | sv                                  | open vim plugin configuration                      |
+| ctrl + p                            | markdown preview using chrome                      |
 
 **For more features, please check configuration file with 'sv' keymap
 
 ### markdown support
-| command        | description                     |
-|----------------|---------------------------------|
-| ,+f            | close insert                    |
-| ,+<number> 1~3 | level 1~3 title                 |
-| ,+c            | code with language(close twice) |
-| ,+d            | single line command             |
-| ,+b            | bold                            |
-| ,+a            | link                            |
+| command(insert mode) | description                     |
+|----------------------|---------------------------------|
+| ,+f                  | close insert                    |
+| ,+<number> 1~3       | level 1~3 title                 |
+| ,+c                  | code with language(close twice) |
+| ,+d                  | single line command             |
+| ,+b                  | bold                            |
+| ,+a                  | link                            |
 **for more, see nvim/ftplugin/markdown.vim** 
 
 **example**  
