@@ -21,34 +21,34 @@ local nmappings = {
 	},
 
 	-- Movement
-	{ from = "K",         to = "5k",                                                 mode = mode_nv },
-	{ from = "J",         to = "5j",                                                 mode = mode_nv },
-	{ from = "H",         to = "0",                                                  mode = mode_nv },
-	{ from = "L",         to = "$",                                                  mode = mode_nv },
-	{ from = "c,.",       to = "c%", },
+	{ from = "K",          to = "5k",                                                 mode = mode_nv },
+	{ from = "J",          to = "5j",                                                 mode = mode_nv },
+	{ from = "H",          to = "0",                                                  mode = mode_nv },
+	{ from = "L",          to = "$",                                                  mode = mode_nv },
+	{ from = "c,.",        to = "c%", },
 
 
 	-- Useful actions
-	{ from = ",.",        to = "%",                                                  mode = mode_nv },
-	{ from = "<c-o>",     to = "<ESC>A {}<ESC>i<CR><ESC>ko",                         mode = mode_i },
-	{ from = "<c-a>",     to = "<ESC>A",                                             mode = mode_i },
-	{ from = "\\v",       to = "v$h", },
+	{ from = ",.",         to = "%",                                                  mode = mode_nv },
+	{ from = "<c-o>",      to = "<ESC>A {}<ESC>i<CR><ESC>ko",                         mode = mode_i },
+	{ from = "<c-a>",      to = "<ESC>A",                                             mode = mode_i },
+	{ from = "\\v",        to = "v$h", },
 
 	-- Actions
 
 	-- Useful actions
 
 	-- Window & splits
-	{ from = "<leader>k", to = "<C-w>k", },
-	{ from = "<leader>j", to = "<C-w>j", },
-	{ from = "<leader>h", to = "<C-w>h", },
-	{ from = "<leader>l", to = "<C-w>l", },
-	{ from = "qf",        to = "<C-w>o", },
-	{ from = "s",         to = "<nop>", },
-	{ from = "yw",        to = "yiw", },
-	{ from = "sl",        to = ":set nosplitright<CR>:set splitright<CR>:vnew <CR>", },
-	{ from = "sj",        to = ":set nosplitbelow<CR>:set splitbelow<CR>:new <CR>", },
-	{ from = 'R',         to = ":luafile ~/.config/nvim/init.lua<CR>" },
+	{ from = "<leader>k",  to = "<C-w>k", },
+	{ from = "<leader>j",  to = "<C-w>j", },
+	{ from = "<leader>h",  to = "<C-w>h", },
+	{ from = "<leader>l",  to = "<C-w>l", },
+	{ from = "qf",         to = "<C-w>o", },
+	{ from = "s",          to = "<nop>", },
+	{ from = "yw",         to = "yiw", },
+	{ from = "<LEADER>sl", to = ":set nosplitright<CR>:set splitright<CR>:vnew <CR>", },
+	{ from = "<LEADER>sj", to = ":set nosplitbelow<CR>:set splitbelow<CR>:new <CR>", },
+	{ from = 'R',          to = ":luafile ~/.config/nvim/init.lua<CR>" },
 	{
 		from = "Y",
 		to = "y$",

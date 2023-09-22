@@ -27,7 +27,7 @@
 | /                                   | enhanced current file search                       |
 | backspace                           | clear search result/selection                      |
 | space + space                       | comment code                                       |
-| sl/sj                               | split windows right/below                          |
+| space + sl/sj                       | split windows right/below                          |
 | space + h/j/k/l                     | jump between split windows                         |
 | space + f                           | windows fullscreen                                 |
 | tt                                  | file explorer                                      |
