@@ -88,3 +88,19 @@ see [../ranger/README.md](../ranger/README.md)
 
 ### vimwiki note
 Enter to create link for under cursor word/selected content, Backspace jump back.
+
+### additional text-object
+s: substitute with clipboard, you can use it as motion like c, d
+example: siw
+
+s:surround, you can use it as operator like i, a
+example: cs" or ds"
+
+f:function, you can use it as operator like w, "
+example: cif or dif
+
+c:class, you can use it as operator like w, "
+example: cic or dic
+
+s:scope, you can use it as operator like w, "
+example cis or dis
