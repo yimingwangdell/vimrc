@@ -131,7 +131,6 @@ M.config = {
 			ts.load_extension('telescope-tabs')
 			ts.load_extension('fzf')
 			ts.load_extension('simulators')
-			ts.load_extension("command_center")
 			ts.load_extension("yank_history")
 
 			require("simulators").setup({
@@ -185,24 +184,19 @@ M.config = {
 			})
 		end
 	},
-	{
-		"FeiyouG/command_center.nvim",
-		dependencies = "nvim-telescope/telescope.nvim",
-		config = function()
-			local command_center = require("commander")
-			vim.keymap.set('n', '<c-q>', ":Telescope command_center<CR>", m)
-			command_center.add({
-				{
-					desc = "Run Simulator",
-					cmd = "<CMD>Telescope simulators run<CR>",
-				},
-				{
-					desc = "Git diff",
-					cmd = "<CMD>Telescope git_status<CR>",
-				},
-			})
-		end
-	}
+	--[[ {
+		"folke/which-key.nvim",
+		event = "VeryLazy",
+		init = function()
+			vim.o.timeout = true
+			vim.o.timeoutlen = 300
+		end,
+		opts = {
+			-- your configuration comes here
+			-- or leave it empty to use the default settings
+			-- refer to the configuration section below
+		}
+	} ]]
 }
 
 

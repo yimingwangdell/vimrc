@@ -50,7 +50,7 @@
 |-------------------------------------|----------------------------------------------------|
 | ctrl+n....nnnnn                     | mutiple cursor  enter/increase                     |
 | shift + Q                           | mutiple cursor decrease                            |
-| enter...enter enter                 | select block                                       |
+| <space>+enter...enter enter         | select block                                       |
 | backspace                           | nohighlight for search/select                      |
 | space + ww                          | open vimwiki notebook                              |
 | space + oa/oc                       | nvim orgmode menu/action                           |

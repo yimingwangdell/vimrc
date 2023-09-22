@@ -63,7 +63,17 @@ return {
 			buftypes = {},
 		}
 	},
-	{ 'gcmt/wildfire.vim', keys = { "<enter>" } },
+	{
+		'gcmt/wildfire.vim',
+		keys = { "<leader><enter>" },
+		config = function()
+			local opts = { noremap = true, silent = true }
+
+			vim.keymap.del('n', '<enter>')
+			vim.keymap.set('n', '<LEADER><enter>', '<Plug>(wildfire-fuel)', opts)
+			vim.keymap.set('x', '<LEADER><enter>', '<Plug>(wildfire-fuel)', opts)
+		end
+	},
 	{
 		"fedepujol/move.nvim",
 		config = function()
