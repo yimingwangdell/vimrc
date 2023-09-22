@@ -4,6 +4,7 @@ return {
 	keys = { "<c-j>" },
 	config = function()
 		local fzf = require('fzf-lua')
+		local actions = require "fzf-lua.actions"
 		vim.keymap.set('n', '<c-j>', function()
 			-- fzf.live_grep_resume({ multiprocess = true, debug = true })
 			fzf.grep({ search = "", fzf_opts = { ['--layout'] = 'default' } })
@@ -38,6 +39,11 @@ return {
 					["ctrl-j"] = "down",
 					["ctrl-k"] = "up",
 				},
+			},
+			actions = {
+				files = {
+					["default"] = actions.file_tabedit,
+				}
 			},
 			previewers = {
 				head = {

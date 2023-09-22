@@ -67,7 +67,7 @@ M.config = {
 							["<C-h>"] = "preview_scrolling_up",
 							["<C-l>"] = "preview_scrolling_down",
 							["<esc>"] = "close",
-							["<enter>"] = "select_tab"
+							["<enter>"] = "select_default",
 						}
 					},
 					color_devicons = true,
@@ -80,6 +80,11 @@ M.config = {
 				pickers = {
 					find_files = {
 						hidden = true,
+						mappings = {
+							i = {
+								["<enter>"] = "select_tab",
+							},
+						}
 					},
 					buffers = {
 						show_all_buffers = true,
@@ -90,6 +95,14 @@ M.config = {
 							},
 						}
 					},
+					live_grep = {
+						mappings = {
+							i = {
+								["<enter>"] = "select_tab",
+							},
+						}
+
+					}
 				},
 				extensions = {
 					fzf = {

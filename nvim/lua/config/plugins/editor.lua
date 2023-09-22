@@ -69,8 +69,8 @@ return {
 		config = function()
 			local opts = { noremap = true, silent = true }
 			-- Visual-mode commands
-			vim.keymap.set('v', 'J', ':MoveBlock(1)<CR>', opts)
-			vim.keymap.set('v', 'K', ':MoveBlock(-1)<CR>', opts)
+			vim.keymap.set('x', '<LEADER>j', ':MoveBlock(1)<CR>', opts)
+			vim.keymap.set('x', '<LEADER>k', ':MoveBlock(-1)<CR>', opts)
 		end
 	},
 	{
