@@ -1,71 +1,43 @@
+priority -50
+
 extends html
 
-snippet % <% %>
-	<% ${0} %>
-snippet = <%= %>
-	<%= ${0} %>
-snippet # <%# %>
-	<%# ${0} %>
-snippet end
-	<% end %>
+snippet % "<% %>" w
+<% $0 %>
+endsnippet
+
+snippet = "<%= %>" w
+<%= $0 %>
+endsnippet
+
+snippet end "<% end %>" w
+<% end %>
+endsnippet
+
 snippet for
-	<%= for ${1:item} <- ${2:items} ${3:@conn} do %>
-		${0}
-	<% end %>
-snippet if
-	<%= if ${1} do %>
-		${0:${VISUAL}}
-	<% end %>
-snippet ife
-	<%= if ${1} do %>
-		${2:${VISUAL}}
-	<% else %>
-		${0}
-	<% end %>
-snippet cond
-	<%= cond do %>
-		<% ${1} -> %>
-			${2:${VISUAL}}
+<%= for ${1:item} <- ${2:$1s} ${3:@conn} do %>
+	$0
+<% end %>
+endsnippet
 
-		<% true -> %>
-			${0}
-	<% end %>
-snippet unless
-	<%= unless ${1} do %>
-		${0:${VISUAL}}
-	<% end %>
-snippet ft form_tag
-	<%= form_tag(${1:"/users"}, method: ${2::post}) %>
-		${0}
-	</form>
+snippet ft "form_tag" w
+<%= form_tag(${1:"${2:/users}"}, method: ${3::post}) %>
+	$0
+</form>
+endsnippet
 
-snippet sl select
-	<%= select ${1:f}, :${2:field}, ${3:[{"key", "value"}]}, prompt: ${4:"Prompt"} %>
+snippet lin "link" w
+<%= link ${1:"${2:Submit}"}, to: ${3:"${4:/users}"}, method: ${5::delete} %>
+endsnippet
 
-snippet sb submit
-	<%= submit ${1:"Submit"} %>
+snippet ff "form_for" w
+<%= form_for @changeset, ${1:"${2:/users}"}, fn f -> %>
+		$0
 
-snippet rb radio_button
-	<%= radio_button ${1:f}, :${2:field},  ${3:"value"} %>
+	<%= submit "Submit" %>
+<% end %>
+endsnippet
 
-
-snippet et error_tag
-	<%= error_tag ${1:f}, :${2:field} %>
-snippet ti text_input
-	<%= text_input ${1:f}, :${2:field} %>
-snippet la label
-	<%= label ${1:f}, :${2:field}, "${3:Label}" %>
-snippet pi password_input
-	<%= password_input ${1:f}, :${2:password} %>
-snippet render
-	<%= render "${1:index}.html", ${2:var: @var} %>
-snippet lin link
-	<%= link "${1:Submit}", to: ${2:"/users"}, method: ${3::delete} %>
-snippet ff form_for
-	<%= form_for @changeset, ${1:"/users"}, fn f -> %>
-			${0}
-
-		<%= submit "Submit" %>
-	<% end %>
-snippet pry
-	<% require IEx; IEx.pry %>
+snippet gt "gettext" w
+<%= gettext("${0:${VISUAL}}") %>
+endsnippet

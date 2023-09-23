@@ -1,444 +1,225 @@
-snippet st "console.log"
-console.log(${0});
+priority -50
+
+############
+#  COMMON  #
+############
+
+# The smart snippets use a global options called
+# "g:ultisnips_javascript.{option}" which can control the format
+# of trailing semicolon, space before function paren, etc.
+#
+# e.g.
+# let g:ultisnips_javascript = {
+#      \ 'keyword-spacing': 'always',
+#      \ 'semi': 'never',
+#      \ 'space-before-function-paren': 'always',
+#      \ }
+
+
+global !p
+from javascript_snippets import (
+	semi, space_before_function_paren, keyword_spacing
+)
+endglobal
+
+###########################################################################
+#                            TextMate Snippets                            #
+###########################################################################
+snippet get "Get Elements"
+getElement${1/(T)|(C)|.*/(?1:s)(?2:s)/}By${1:T}${1/(T)|(I)|(C).*/(?1:agName)(?2:d)(?3:lassName)/}('$2')
 endsnippet
 
-snippet fl "Firebase Function Log"
-/*LOG*/ functions.logger.log(${0});
+snippet '':f "object method string"
+'${1:${2:#thing}:${3:click}}': function`!p snip.rv = space_before_function_paren(snip)`(element) {
+	${VISUAL}$0
+}${10:,}
 endsnippet
 
-snippet f "Arrow Function"
-(${1:arg}) => {
-	${0}
+snippet :f "Object Method"
+${1:method_name}: function`!p snip.rv = space_before_function_paren(snip)`(${3:attribute}) {
+	${VISUAL}$0
+}${10:,}
+endsnippet
+
+snippet :, "Object Value JS"
+${1:value_name}: ${0:value},
+endsnippet
+
+snippet : "Object key key: 'value'"
+${1:key}: ${2:"${3:value}"}${4:, }
+endsnippet
+
+snippet proto "Prototype (proto)"
+${1:class_name}.prototype.${2:method_name} = function`!p snip.rv = space_before_function_paren(snip)`(${3:first_argument}) {
+	${VISUAL}$0
+}`!p snip.rv = semi(snip)`
+
+endsnippet
+
+snippet fun "function (named)" b
+function ${1:function_name}`!p snip.rv = space_before_function_paren(snip)`(${2:argument}) {
+	${VISUAL}$0
 }
 endsnippet
 
-snippet fn "Empty Function"
-function ${1:functionName}() {
-	${0}
+snippet vf "function (assigned to var)"
+${1:var }${2:function_name} = function $2`!p snip.rv = space_before_function_paren(snip)`($3) {
+	${VISUAL}$0
+}`!p snip.rv = semi(snip)`
+endsnippet
+
+# Drop priority so this only triggers when not beginning of line.
+priority -51
+snippet fun "function (anonymous)" w
+function`!p snip.rv = space_before_function_paren(snip)`($1) {
+	${VISUAL}$0
+}$2
+endsnippet
+priority -50
+
+snippet anf "function (anonymous)" i
+function`!p snip.rv = space_before_function_paren(snip)`($1) {
+	${VISUAL}$0
 }
 endsnippet
 
-snippet cf "Constant Function"
-const ${1:funcName} = () => {
-	${0}
+snippet iife "Immediately-Invoked Function Expression (iife)"
+(function`!p snip.rv = space_before_function_paren(snip)`(${1:window}) {
+	${VISUAL}$0
+}(${2:$1}))`!p snip.rv = semi(snip)`
+endsnippet
+
+snippet ;fe "Minify safe iife"
+;(function`!p snip.rv = space_before_function_paren(snip)`(${1}) {
+	${VISUAL}$0
+}(${2}))
+endsnippet
+
+snippet timeout "setTimeout function"
+setTimeout(function`!p snip.rv = space_before_function_paren(snip)`() {
+	${VISUAL}$0
+}${2:.bind(${3:this})}, ${1:10})`!p snip.rv = semi(snip)`
+endsnippet
+
+snippet fi "for prop in obj using hasOwnProperty" b
+for`!p snip.rv = keyword_spacing(snip)`(${1:prop} in ${2:obj}){
+	if`!p snip.rv = keyword_spacing(snip)`($2.hasOwnProperty($1)) {
+		${VISUAL}$0
+	}
 }
 endsnippet
 
-snippet ef "Export Function"
-export function ${1:functionName}() {
-	${0}
+snippet if "if (condition) { ... }"
+if`!p snip.rv = keyword_spacing(snip)`(${1:true}) {
+	${VISUAL}$0
 }
 endsnippet
 
-snippet eaf "Export Async Function"
-export async function ${1:functionName}() {
-	${0}
-}
-endsnippet
-
-snippet eafa "Export Async Function With Args"
-const ${1}DefaultArgs = {
+snippet ife "if (condition) { ... } else { ... }"
+if`!p snip.rv = keyword_spacing(snip)`(${1:true}) {
+	${VISUAL}$0
+}`!p snip.rv = keyword_spacing(snip)`else`!p snip.rv = keyword_spacing(snip)`{
 	${2}
-};
-export async function ${1:functionName}(options = ${1}DefaultArgs) {
-	options = { ...${1}DefaultArgs, ...options };
-	${0:// todo}
 }
 endsnippet
 
-snippet ssr "NextJS ServerSide Rendering"
-export async function getServerSideProps() {
-	return {
-		props: {
-			//
-		},
-	};
-}
-endsnippet
-
-snippet ssg "NextJS ServerSide Generation"
-export async function getStaticProps() {
-	return {
-		props: {
-			//
-		},
-	};
-}
-endsnippet
-
-snippet rs "res.status"
-res.status(${1:200}).send("${2:text}")${0}
-endsnippet
-
-snippet af "Async Arrow Function"
-async (${1}) => {
+snippet switch
+switch`!p snip.rv = keyword_spacing(snip)`(${VISUAL}${1:expression}) {
+	case '${VISUAL}${3:case}':
+		${4}
+		break`!p snip.rv = semi(snip)`
 	${0}
+	default:
+		${2}
 }
 endsnippet
 
-snippet afn "Async Function"
-async function ${1:FunctionName}() {
-	${0}
-}
+snippet case "case 'xyz': ... break"
+case`!p snip.rv = keyword_spacing(snip)`'${VISUAL}${1:case}':
+	${VISUAL}$0
+	break`!p snip.rv = semi(snip)`
 endsnippet
 
-snippet try "Try Catch"
-try {
-	//
-} catch (e) {
-	console.error(e);
-}
+snippet do "do { ... } while (condition)"
+do`!p snip.rv = keyword_spacing(snip)`{
+	${VISUAL}$0
+}`!p snip.rv = keyword_spacing(snip)`while`!p snip.rv = keyword_spacing(snip)`(${1:/* condition */})`!p snip.rv = semi(snip)`
 endsnippet
 
-snippet eh "Error Handler"
-return await errorHandler(async () => {
-	${0:// Todo}
-});
+snippet ret "Return statement"
+return ${VISUAL}$0`!p snip.rv = semi(snip)`
 endsnippet
 
-snippet c "Comment Block"
-/*
- * ${0}
-*/
+snippet us
+'use strict'`!p snip.rv = semi(snip)`
 endsnippet
 
-snippet pm "@param"
-@param ${1:parameter}: ${0:description}
+snippet imp "import"
+import ${2} from ${1}
 endsnippet
 
-# React & JSX
-
-snippet t "Tag"
-<${1:div}>
-	${2}
-</${1}>
-${0}
+# Debugging
+snippet de
+debugger`!p snip.rv = semi(snip)`
+endsnippet
+snippet cl "console.log"
+console.log(${0})`!p snip.rv = semi(snip)`
+endsnippet
+snippet cd "console.debug"
+console.debug(${0})`!p snip.rv = semi(snip)`
+endsnippet
+snippet ce "console.error"
+console.error(${0})`!p snip.rv = semi(snip)`
+endsnippet
+snippet cw "console.warn"
+console.warn(${0})`!p snip.rv = semi(snip)`
+endsnippet
+snippet ci "console.info"
+console.info(${0})`!p snip.rv = semi(snip)`
+endsnippet
+snippet ct "console.trace"
+console.trace(${0:label})`!p snip.rv = semi(snip)`
+endsnippet
+snippet ctime "console.time ... console.timeEnd"
+console.time("${1:label}")`!p snip.rv = semi(snip)`
+${0:${VISUAL}}
+console.timeEnd("$1")`!p snip.rv = semi(snip)`
+endsnippet
+snippet ctimestamp "console.timeStamp"
+console.timeStamp("${1:label}")`!p snip.rv = semi(snip)`
+endsnippet
+snippet ca "console.assert"
+console.assert(${1:expression}, ${0:obj})`!p snip.rv = semi(snip)`
+endsnippet
+snippet cclear "console.clear"
+console.clear()`!p snip.rv = semi(snip)`
+endsnippet
+snippet cdir "console.dir"
+console.dir(${0:obj})`!p snip.rv = semi(snip)`
+endsnippet
+snippet cdirx "console.dirxml"
+console.dirxml(${1:object})`!p snip.rv = semi(snip)`
+endsnippet
+snippet cgroup "console.group"
+console.group("${1:label}")`!p snip.rv = semi(snip)`
+${0:${VISUAL}}
+console.groupEnd()`!p snip.rv = semi(snip)`
+endsnippet
+snippet cgroupc "console.groupCollapsed"
+console.groupCollapsed("${1:label}")`!p snip.rv = semi(snip)`
+${0:${VISUAL}}
+console.groupEnd()`!p snip.rv = semi(snip)`
+endsnippet
+snippet cprof "console.profile"
+console.profile("${1:label}")`!p snip.rv = semi(snip)`
+${0:${VISUAL}}
+console.profileEnd()`!p snip.rv = semi(snip)`
+endsnippet
+snippet ctable "console.table"
+console.table(${1:"${2:value}"})`!p snip.rv = semi(snip)`
+endsnippet
+snippet clstr "console.log stringified"
+console.log(JSON.stringify(${0}, null, 2))`!p snip.rv = semi(snip)`
 endsnippet
 
-snippet ta "Tag with Attributes"
-<${1:div} ${2:className=""}>
-	${3}
-</${1}>
-${0}
-endsnippet
-
-snippet ti "Tag Inline"
-<${1} />
-${0}
-endsnippet
-
-snippet br "<br />"
-<br />
-endsnippet
-
-
-snippet rrcc "React Redux Class Component" b
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import styles from './${2:$1}.css';
-
-class ${1:`!v expand('%:t:r')`} extends Component {
-	static propTypes = {
-		children: PropTypes.node,
-		className: PropTypes.string,
-		dispatch: PropTypes.func.isRequired,
-	};
-
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
-		return (
-			<div className={styles.base}>
-				$3
-			</div>
-		);
-	}
-}
-
-function mapStateToProps(state) {
-	return {};
-}
-
-export default connect(mapStateToProps)($1);
-endsnippet
-
-snippet rcc "React Class Component" b
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import styles from './${2:$1}.css';
-
-class ${1:`!v expand('%:t:r')`} extends Component {
-	static propTypes = {
-		${2:children: PropTypes.node,
-		className: PropTypes.string,}
-	};
-
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
-		return (
-			<${3:div} className={styles.base}>
-				$0
-			</$3>
-		);
-	}
-}
-
-export default $1;
-endsnippet
-
-snippet rfc "React Functional Component" b
-import React from 'react';
-import PropTypes from 'prop-types';
-import styles from './${2:$1}.css';
-
-function ${1:`!v expand('%:t:r')`}({ $3 }) {
-	return (
-		<${5:div} className={styles.base}>
-			$0
-		</$5>
-	);
-}
-
-$1.defaultProps = {$4};
-
-$1.propTypes = {`!p
-props = t[3]
-if props:
-  snip >> 1
-  for prop in props.split(', '):
-    snip += prop + ': PropTypes.any,'
-`
-};
-
-export default $1;
-endsnippet
-
-snippet rsc "React Styled Component" b
-import styled from 'styled-components';
-
-const ${1:`!v expand('%:t:r')`} = styled.${2:div}\`
-	$3
-\`;
-
-export default $1;
-endsnippet
-
-snippet rsci "React Styled Component Interpolation" b
-import styled, { css } from 'styled-components';
-
-const ${1:`!v expand('%:t:r')`} = styled.${2:div}\`${props => css\`
-	${3:${props.$4 && \`
-		$5
-	\`}}
-\`}\`;
-
-export default $1;
-endsnippet
-
-snippet pp "Get Props"
-${props => props.${1}};
-endsnippet
-
-snippet cn "className"
-className="$1"
-endsnippet
-
-snippet dp "Default Props" b
-${1:`!v expand('%:t:r')`.}defaultProps = {
-	$2
-};
-endsnippet
-
-snippet set "Set State"
-this.setState({
-	${1}: ${2}
-});
-endsnippet
-
-snippet props "Get Property" i
-this.props.${1}
-endsnippet
-
-snippet state "Get State" i
-this.state.${1}
-endsnippet
-
-snippet ref "Ref" i
-ref={${1:ref} => { this.${2:name} = $1; }}
-endsnippet
-
-
-# Component Lifecycle
-snippet cwm "Component Will Mount" b
-componentWillMount() {
-	$1
-}
-endsnippet
-
-snippet cdm "Component Did Mount" b
-componentDidMount() {
-	$1
-}
-endsnippet
-
-snippet cwrp "Component Will Receive Props" b
-componentWillReceiveProps(nextProps) {
-	$1
-}
-endsnippet
-
-snippet scup "Should Component Update" b
-shouldComponentUpdate(nextProps, nextState) {
-	$1
-}
-endsnippet
-
-snippet cwup "Component Will Update" b
-componentWillUpdate(nextProps, nextState) {
-	$1
-}
-endsnippet
-
-snippet cdup "Component Did Update" b
-componentDidUpdate(prevProps, prevState) {
-	$1
-}
-endsnippet
-
-snippet cwu "Component Will Unmount" b
-componentWillUnmount() {
-	$1
-}
-endsnippet
-
-snippet ren "Render"
-render() {
-	return ${1:(
-		${2:<div>${3}</div>}
-	);}
-}
-endsnippet
-
-
-# PropTypes
-snippet pt "PropTypes Definition" b
-${1:`!v expand('%:t:r')`.}propTypes = {
-	${2:className}: ${3:PropTypes.string},
-};
-endsnippet
-
-snippet  pt.a "PropTypes Array" w
-PropTypes.array${1:,}
-endsnippet
-
-snippet   pt.b "PropTypes Boolean" w
-PropTypes.bool${1:,}
-endsnippet
-
-snippet pt.f "PropTypes Function" w
-PropTypes.func${1:,}
-endsnippet
-
-snippet pt.n "PropTypes Number" w
-PropTypes.number${1:,}
-endsnippet
-
-snippet pt.o "PropTypes Object" w
-PropTypes.object${1:,}
-endsnippet
-
-snippet pt.s "PropType String" w
-PropTypes.string${1:,}
-endsnippet
-
-snippet pt.no "PropTypes Node" w
-PropTypes.node${1:,}
-endsnippet
-
-snippet pt.e "PropTypes Element" w
-PropTypes.element${1:,}
-endsnippet
-
-snippet pt.io "PropTypes instanceOf" w
-PropTypes.instanceOf(${2:PropTypes.string})${1:,}
-endsnippet
-
-snippet pt.one "PropTypes oneOf" w
-PropTypes.oneOf(['$2'$3])${1:,}
-endsnippet
-
-snippet pt.onet "PropTypes oneOfType" w
-PropTypes.oneOfType([
-	$2
-])${1:,}
-endsnippet
-
-snippet pt.ao "PropTypes arrayOf" w
-PropTypes.arrayOf(${2:PropTypes.string})${1:,}
-endsnippet
-
-snippet pt.oo "PropTypes objectOf" w
-PropTypes.objectOf(${2:PropTypes.string})${1:,}
-endsnippet
-
-snippet pt.sh "PropTyes Shape" w
-PropTypes.shape({
-	$2
-})${1:,}
-endsnippet
-
-snippet ir "isRequired" w
-isRequired,
-endsnippet
-
-snippet rs "React useState"
-const [$1, set${1}] = useState(${0:''})
-endsnippet
-
-snippet test "Test"
-test("${1:test}", ${2:async}() => {
-	${3:// ...}
-});
-endsnippet
-
-snippet ex "Expect"
-expect(${1:1+1}).toBe(${2:2});
-endsnippet
-
-
-snippet route "New Route"
-import express from "express";
-
-const ${1:some}Routes = express.Router();
-
-${0:// TODO}
-
-export default ${1:some}Routes;
-endsnippet
-
-snippet l "log"
-log(${0});
-endsnippet
-
-snippet ehs "errorHandlers.silent"
-await errorHandlers.silent(async () => {
-	${0:// todo}
-});
-endsnippet
-
-snippet eha "errorHandlers.safe"
-await errorHandlers.safe({
-	action: async () => {
-		${0:// todo}
-	},
-	teardown: async () => {
-		// todo
-	},
-});
-endsnippet
+# vim:ft=snippets:

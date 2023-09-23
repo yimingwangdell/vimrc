@@ -1,139 +1,191 @@
-snippet #!
-	#!/usr/bin/env Rscript
+priority -20
 
-# includes
-snippet lib
-	library(${0:package})
-snippet req
-	require(${0:package})
-snippet source
-	source('${0:file}')
+global !p
+import os
+from vimsnippets import complete
 
-# conditionals
-snippet if
-	if ($1) {
-		${0}
-	}
-snippet el
-	else {
-		${0}
-	}
-snippet ei
-	else if ($1) {
-		${0}
-	}
+FIELD_TYPES = [
+'character',
+'data.frame',
+'integer',
+'list',
+'logical',
+'matrix',
+'numeric',
+'vector']
+endglobal
 
-# loops
-snippet wh
-	while(${1:true}) {
-		${0}
-	}
-snippet wht
-	while(true) {
-		${0}
-	}
-snippet for
-	for (${1:item} in ${2:list}) {
-		${3}
-	}
-snippet foreach
-	foreach (${1:item} = ${2:list}) {
-		${3}
-	}
+snippet #! "#!/usr/bin/env Rscript" b
+#!/usr/bin/env Rscript
+$0
+endsnippet
 
-# functions
-snippet fun
-	${1:name} <- function (${2:variables}) {
-		${0}
-	}
-snippet ret
-	return(${0})
+snippet setwd "Set workingdir" b
+setwd("${1:`!p snip.rv = os.getcwd()`}")
+endsnippet
 
-# dataframes, lists, etc
-snippet df
-	${1:name}[${2:rows}, ${0:cols}]
-snippet c
-	c(${0:items})
-snippet li
-	list(${0:items})
-snippet mat
-	matrix(${1:data}, nrow = ${2:rows}, ncol = ${0:cols})
+snippet as "Apply type on variable" w
+as.$1`!p snip.rv = complete(t[1], FIELD_TYPES)`($2${VISUAL})
+endsnippet
 
-# apply functions
-snippet apply
-	apply(${1:array}, ${2:margin}, ${0:function})
-snippet lapply
-	lapply(${1:list}, ${0:function})
-snippet sapply
-	lapply(${1:list}, ${0:function})
-snippet vapply
-	vapply(${1:list}, ${2:function}, ${0:type})
-snippet mapply
-	mapply(${1:function}, ${0:...})
-snippet tapply
-	tapply(${1:vector}, ${2:index}, ${0:function})
-snippet rapply
-	rapply(${1:list}, ${0:function})
+snippet is "Test type on variable" w
+is.$1`!p snip.rv = complete(t[1], FIELD_TYPES)`($2${VISUAL})
+endsnippet
 
-# plyr functions
-snippet dd
-	ddply(${1:frame}, ${2:variables}, ${0:function})
-snippet dl
-	dlply(${1:frame}, ${2:variables}, ${0:function})
-snippet da
-	daply(${1:frame}, ${2:variables}, ${0:function})
-snippet d_
-	d_ply(${1:frame}, ${2:variables}, ${0:function})
+snippet dl "Download and install a package" b
+download.file("${1:${VISUAL:url to package}}", destfile = "${2:${1/.*\/(\S*)$/(?1:$1)/ga}}")
+install.packages("$2", type = "source", repos = NULL)
+library("${3:${2/^(\w+)_.*$/(?1:$1)/ga}}")
+endsnippet
 
-snippet ad
-	adply(${1:array}, ${2:margin}, ${0:function})
-snippet al
-	alply(${1:array}, ${2:margin}, ${0:function})
-snippet aa
-	aaply(${1:array}, ${2:margin}, ${0:function})
-snippet a_
-	a_ply(${1:array}, ${2:margin}, ${0:function})
+snippet lib "Import a library"
+library('${0:${VISUAL:package}}')
+endsnippet
 
-snippet ld
-	ldply(${1:list}, ${0:function})
-snippet ll
-	llply(${1:list}, ${0:function})
-snippet la
-	laply(${1:list}, ${0:function})
-snippet l_
-	l_ply(${1:list}, ${0:function})
+snippet req "Require a file"
+require('${0:${VISUAL:package}}')
+endsnippet
 
-snippet	md
-	mdply(${1:matrix}, ${0:function})
-snippet	ml
-	mlply(${1:matrix}, ${0:function})
-snippet	ma
-	maply(${1:matrix}, ${0:function})
-snippet	m_
-	m_ply(${1:matrix}, ${0:function})
+snippet source "Source a file"
+source('${0:${VISUAL:file}}')
+endsnippet
 
-# plot functions
-snippet pl
-	plot(${1:x}, ${0:y})
-snippet ggp
-	ggplot(${1:data}, aes(${0:aesthetics}))
-snippet img
-	${1:(jpeg,bmp,png,tiff)}(filename = '${2:filename}', width = ${3}, height = ${4}, unit = '${5}')
-	${0:plot}
-	dev.off()
+snippet if "If statement"
+if ($1) {
+	${0:${VISUAL}}
+}
+endsnippet
 
-# statistical test functions
-snippet fis
-	fisher.test(${1:x}, ${0:y})
-snippet chi
-	chisq.test(${1:x}, ${0:y})
-snippet tt
-	t.test(${1:x}, ${0:y})
-snippet wil
-	wilcox.test(${1:x}, ${0:y})
-snippet cor
-	cor.test(${1:x}, ${0:y})
-snippet fte
-	var.test(${1:x}, ${0:y})
-snippet kvt
-	kv.test(${1:x}, ${0:y})
+snippet eif "Else-If statement"
+else if ($1) {
+	${0:${VISUAL}}
+}
+endsnippet
+
+snippet el "Else statement"
+else {
+	${0:${VISUAL}}
+}
+endsnippet
+
+snippet ife "if .. else"
+if ($1) {
+	${2:${VISUAL}}
+} else {
+	$0
+}
+endsnippet
+
+snippet wh "while loop"
+while($1) {
+	${0:${VISUAL}}
+}
+endsnippet
+
+snippet for "for loop"
+for (${1:item} in ${2:list}) {
+	${0:${VISUAL}}
+}
+endsnippet
+
+snippet fun "Function definition"
+${1:name} <- function ($2) {
+	${0:${VISUAL}}
+}
+endsnippet
+
+snippet ret "Return call"
+return(${0:${VISUAL}})
+endsnippet
+
+snippet df "Data frame"
+${1:name}[${2:rows}, ${0:cols}]
+endsnippet
+
+snippet c "c function"
+c(${0:${VISUAL:items}})
+endsnippet
+
+snippet li "list function"
+list(${0:${VISUAL:items}})
+endsnippet
+
+snippet mat "matrix function"
+matrix(${1:${VISUAL:data}}, nrow = ${2:rows}, ncol = ${0:cols})
+endsnippet
+
+snippet apply "apply function"
+apply(${1:${VISUAL:array}}, ${2:margin}, ${0:function})
+endsnippet
+
+snippet lapply "lapply function"
+lapply(${1:${VISUAL:list}}, ${0:function})
+endsnippet
+
+snippet sapply "sapply function"
+sapply(${1:${VISUAL:list}}, ${0:function})
+endsnippet
+
+snippet vapply "vapply function"
+vapply(${1:${VISUAL:list}}, ${2:function}, ${0:type})
+endsnippet
+
+snippet mapply "mapply function"
+mapply(${1:${VISUAL:function}}, ${0:...})
+endsnippet
+
+snippet tapply "tapply function"
+tapply(${1:${VISUAL:vector}}, ${2:index}, ${0:function})
+endsnippet
+
+snippet rapply "rapply function"
+rapply(${1:${VISUAL:list}}, ${0:function})
+endsnippet
+
+snippet pl "Plot function"
+plot(${1:${VISUAL:x}}, ${0:y})
+endsnippet
+
+snippet ggp "ggplot2 plot"
+ggplot(${1:${VISUAL:data}}, aes(${0:aesthetics}))
+endsnippet
+
+snippet fis "Fisher test"
+fisher.test(${1:x}, ${0:y})
+endsnippet
+
+snippet chi "Chi Squared test"
+chisq.test(${1:x}, ${0:y})
+endsnippet
+
+snippet tt "t-test"
+t.test(${1:x}, ${0:y})
+endsnippet
+
+snippet wil "Wilcox test"
+wilcox.test(${1:x}, ${0:y})
+endsnippet
+
+snippet cor "Correlation test"
+cor.test(${1:x}, ${0:y})
+endsnippet
+
+snippet fte "FTE test"
+var.test(${1:x}, ${0:y})
+endsnippet
+
+snippet kvt "KV test"
+kv.test(${1:x}, ${0:y})
+endsnippet
+
+#################################
+#  easily create string vector  #
+#################################
+# Given individual words separated by spaces
+# Select words (e.g. shift-v for whole line (such as the line above)
+# then press <Tab> then type "vec", press <Tab> again to get this:
+# var <- c("#","Given","individual","words","separated","by","spaces")
+# var <- c("#","type","out","individual","words","separated","by","spaces")
+snippet vec
+${1:var} <- c("${0:${VISUAL:/ /","/g}}")
+endsnippet
