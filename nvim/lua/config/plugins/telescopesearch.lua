@@ -220,7 +220,9 @@ M.config = {
 							-- nvim_buf_set_keymap) which plugins like which-key display
 							["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
 							-- You can also use captures from other query groups like `locals.scm`
-							["as"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },
+							-- ["as"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },
+							["ap"] = "@parameter.outer",
+							["ip"] = "@parameter.inner",
 						},
 						-- You can choose the select mode (default is charwise 'v')
 						--
