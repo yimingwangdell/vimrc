@@ -297,6 +297,7 @@ Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeToggle', 'for': ['text', 'm
 " Editor Enhancement
 Plug 'petertriho/nvim-scrollbar'
 Plug 'kwkarlwang/bufjump.nvim'
+Plug 'gbprod/substitute.nvim'
 
 Plug 'kevinhwang91/nvim-hlslens'
 "Plug 'Raimondi/delimitMate'
@@ -1302,6 +1303,17 @@ noremap g# g#<cmd>lua require('hlslens').start()<CR>
 noremap <M-o> :lua require('bufjump').backward()<cr>
 noremap <M-i> :lua require('bufjump').forward()<cr>
 
+" ==================== substitute ====================
+lua <<EOF
+  require("substitute").setup({
+    highlight_substituted_text = {
+      enabled = true,
+      timer = 200,
+    },
+  })
+EOF
+noremap s <Cmd>lua require("substitute").operator()<CR>
+vnoremap s <Cmd>lua require("substitute").visual()<CR>
 
 " ===================== minimap =====================t
 
