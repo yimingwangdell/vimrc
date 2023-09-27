@@ -158,7 +158,7 @@ map <LEADER>h <C-w><left>
 map <LEADER>j <C-w><down>
 map <LEADER>l <C-w><right>
 map <LEADER>fs :call MaximizeToggle()<CR>
-map <LEADER>/ :!
+map <LEADER>bl :BlamerToggle<CR>
 
 function! MaximizeToggle()
   if exists("s:maximize_session")
@@ -298,6 +298,7 @@ Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeToggle', 'for': ['text', 'm
 Plug 'petertriho/nvim-scrollbar'
 Plug 'kwkarlwang/bufjump.nvim'
 Plug 'gbprod/substitute.nvim'
+Plug 'liuchengxu/vim-which-key'
 
 Plug 'kevinhwang91/nvim-hlslens'
 "Plug 'Raimondi/delimitMate'
@@ -649,9 +650,10 @@ require('orgmode').setup_ts_grammar()
 require('nvim-treesitter.configs').setup({
 highlight = {
   enable = true,
+  auto_install = true,
   additional_vim_regex_highlighting = { 'org' },
 },
-ensure_installed = { 'org' },
+ensure_installed = { 'org', 'python', 'bash', 'java', 'go', 'vim', 'lua'},
 })
 
 -- Setup orgmode
@@ -708,6 +710,7 @@ let g:fzf_layout = { 'window': { 'width': 1, 'height': 1 } }
 " === Leaderf
 " ===
 " let g:Lf_WindowPosition = 'popup'
+let g:Lf_ShortcutB=''
 nnoremap <c-f> :Leaderf file <CR>
 nnoremap <c-h> :Leaderf mru <CR>
 let g:Lf_QuickSelectAction = 'h'
@@ -725,6 +728,7 @@ let g:Lf_WildIgnore = {
         \}
 let g:Lf_UseMemoryCache = 0
 let g:Lf_UseCache = 0
+let g:Lf_CommandMap = {'<C-t>': ['<CR>']}
 
 " === gitsigns
 lua <<EOF
@@ -739,6 +743,10 @@ require('gitsigns').setup({
   },
 })
 EOF
+
+" === gitsigns
+
+nnoremap <leader>lg :LazyGit<CR>
 
 " ===
 " === CTRLP (Dependency for omnisharp)
@@ -771,6 +779,11 @@ let g:bookmark_center = 1
 let g:bookmark_auto_close = 1
 let g:bookmark_location_list = 1
 
+
+" ===
+" === zeavim
+" ===
+let g:zv_zeal_executable = '/home/yimingwang/Downloads/zeal-0.7.0-x86_64.AppImage'
 
 " ===
 " === Undotree
@@ -1055,8 +1068,6 @@ noremap \p :echo expand('%:p')<CR>
 "let g:session_directory = $HOME."/.config/nvim/tmp/sessions"
 "let g:session_autosave = 'no'
 "let g:session_autoload = 'no'
-"let g:session_command_aliases = 1
-"set sessionoptions-=buffers
 "set sessionoptions-=options
 "noremap sl :OpenSession<CR>
 "noremap sS :SaveSession<CR>
@@ -1146,6 +1157,7 @@ let g:rnvimr_presets = [{'width': 1.0, 'height': 1.0}]
 
 " nnoremap tt :Fern . -reveal=%<CR>
 nnoremap tt :RangerCurrentFileExistingOrNewTab<CR>
+nnoremap <leader>f <nop>
 
 
 
@@ -1315,6 +1327,9 @@ EOF
 noremap s <Cmd>lua require("substitute").operator()<CR>
 vnoremap s <Cmd>lua require("substitute").visual()<CR>
 
+" ==================== WhichKey ====================
+nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+
 " ===================== minimap =====================t
 
 let g:minimap_width = 10
@@ -1326,7 +1341,6 @@ let g:Gtags_No_Auto_Jump = 1
 let g:Gtags_Close_When_Single = 0
 " ====================== java complete2 =====================
 " 
-
 " ====================== flash =====================
 lua <<EOF
 require("flash").setup{}

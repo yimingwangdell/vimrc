@@ -26,6 +26,7 @@ class fzf_select(Command):
                 self.fm.cd(fzf_file)
             else:
                 self.fm.select_file(fzf_file)
+                self.fm.move(right=1)
 # fzf_locate
 class fzf_locate(Command):
     """
