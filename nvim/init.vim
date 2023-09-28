@@ -180,6 +180,7 @@ call plug#begin('~/.vim/plugged')
 " let g:plug_url_format = 'git@github.com:%s.git'
 let g:plug_url_format = 'https://git::@github.com/%s.git'
 " Plug 'github/copilot.vim'
+Plug 'codota/tabnine-nvim', {'do': './dl_binaries.sh'}
 "
 source ~/.config/nvim/autoload/gtags.vim
 
