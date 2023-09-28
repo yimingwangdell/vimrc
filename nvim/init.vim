@@ -383,6 +383,10 @@ let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
 colorscheme  gruvbox
 
+" === tabnine ===
+lua <<EOF
+	require('tabnine').setup()
+EOF
 
 " ===
 " === airline.vim
