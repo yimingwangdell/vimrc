@@ -122,10 +122,10 @@ map <leader>sl :set nosplitright<CR>:set splitright<CR>:vnew <CR>
 " map sl :tabedit 
 map <leader>sv :set nosplitright<CR>:set splitright<CR>:vsplit $MYVIMRC<CR>
 map <leader>sj :set nosplitbelow<CR>:set splitbelow<CR>:new <CR> 
-"  map <up> :res -5<CR>
-"  map <down> :res +5<CR>
-"  map <left> :vertical resize-5<CR>
-"  map <right> :vertical resize+5<CR>
+map <up> :res -5<CR>
+map <down> :res +5<CR>
+map <left> :vertical resize+5<CR>
+map <right> :vertical resize-5<CR>
 map ti :tabnew<CR>
 map th :tabp<CR>
 map tl :tabn<CR>
@@ -305,6 +305,8 @@ Plug 'kevinhwang91/nvim-hlslens'
 " Plug 'rstacruz/vim-closer'
 " Plug 'tpope/vim-endwise'
 Plug 'jiangmiao/auto-pairs'
+Plug 'andymass/vim-matchup'
+
 " Plug 'tmsvg/pear-tree'
 Plug 'mg979/vim-visual-multi'
 Plug 'tomtom/tcomment_vim' " in <space>cn to comment a line
@@ -391,6 +393,7 @@ let g:airline#extensions#vista#enabled = 1
 let g:airline_theme='gruvbox'
 let g:airline_section_y = ''
 let g:airline_section_a = ''
+let g:airline_section_c = '%F'
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#tagbar#max_filesize = 1000
 " let g:airline_extensions = []
@@ -574,14 +577,19 @@ let g:snips_email = 'yiming.1.wang@nokia-sbell.com'
 
 
 "tag bar
-let g:vista_close_on_jump=1
-let g:vista_close_on_fzf_select=1
+let g:vista_close_on_jump=0
+let g:vista_close_on_fzf_select=0
 nnoremap  tg :Vista!!<CR>:set relativenumber<CR>
+nnoremap  tgf :Vista finder<CR>
 augroup TagBar
     autocmd!
     autocmd FileType tagbar nnoremap <buffer> H <Nop>
     autocmd FileType tagbar nnoremap <buffer> L <Nop>
     autocmd FileType tagbar nnoremap <buffer> t <Nop>
+augroup END
+augroup Vista
+    autocmd!
+    autocmd FileType vista nmap <buffer> <c-f> <c-w>h :Vista finder<CR>
 augroup END
 "let g:ranger_map_keys = 0
 let g:tagbar_width = 60
@@ -605,7 +613,7 @@ let g:fzf_action = {
   \ 'ctrl-v': 'vsplit' }
 
 nnoremap <C-j> :RG<CR>
-" nnoremap <C-f> :Files<CR>
+nnoremap <C-f> :Files<CR>
 nnoremap <leader>, `[V`]<
 nnoremap <leader>. `[V`]>
 
@@ -643,20 +651,30 @@ nnoremap <c-p> :silent! InstantMarkdownStop<CR> :InstantMarkdownPreview<CR>
 " === orgmode
 " ===
 lua <<EOF 
--- Load treesitter grammar for org
+-- init.lua
+
+-- Load custom treesitter grammar for org filetype
 require('orgmode').setup_ts_grammar()
+local disable_function = function(lang)
+  if lang ~= "org" then
+    return true
+  end
+end
 
--- Setup treesitter
-require('nvim-treesitter.configs').setup({
-highlight = {
-  enable = true,
-  auto_install = true,
-  additional_vim_regex_highlighting = { 'org' },
-},
-ensure_installed = { 'org', 'python', 'bash', 'java', 'go', 'vim', 'lua'},
-})
+-- Treesitter configuration
+require('nvim-treesitter.configs').setup {
+  -- If TS highlights are not enabled at all, or disabled via `disable` prop,
+  -- highlighting will fallback to default Vim syntax highlighting
+  highlight = {
+    enable = true,
+    disable = disable_function,
+    -- Required for spellcheck, some LaTex highlights and
+    -- code block highlights that do not have ts grammar
+    additional_vim_regex_highlighting = {'org'},
+  },
+  ensure_installed = {'org'}, -- Or run :TSUpdate org
+}
 
--- Setup orgmode
 require('orgmode').setup({
 org_agenda_files = '~/orgfiles/**/*',
 org_default_notes_file = '~/orgfiles/refile.org',
@@ -711,8 +729,9 @@ let g:fzf_layout = { 'window': { 'width': 1, 'height': 1 } }
 " ===
 " let g:Lf_WindowPosition = 'popup'
 let g:Lf_ShortcutB=''
-nnoremap <c-f> :Leaderf file <CR>
+" nnoremap <c-f> :Leaderf file <CR>
 nnoremap <c-h> :Leaderf mru <CR>
+" nnoremap  tg :LeaderfFunction!<CR>
 let g:Lf_QuickSelectAction = 'h'
 let g:Lf_StlColorscheme = 'gruvbox'
 let g:Lf_PreviewInPopup = 1
@@ -722,6 +741,8 @@ let g:Lf_ShowHidden = 1
 let g:Lf_ShowDevIcons = 1
 let g:Lf_UseVersionControlTool = 0
 let g:Lf_IgnoreCurrentBufferName = 1
+let g:Lf_PopupColorscheme = 'gruvbox'
+let g:Lf_PopupWidth = 0.25
 let g:Lf_WildIgnore = {
         \ 'dir': ['.git', 'vendor', 'node_modules'],
         \ 'file': ['__vim_project_root']
@@ -1309,6 +1330,10 @@ noremap * *<Cmd>lua require('hlslens').start()<CR>
 noremap # #<Cmd>lua require('hlslens').start()<CR>
 noremap g* g*<Cmd>lua require('hlslens').start()<CR>
 noremap g# g#<cmd>lua require('hlslens').start()<CR>
+
+" ==================== vim-matchup ====================
+map { %
+map } ]%
 
 " ==================== bufjump ====================
 
