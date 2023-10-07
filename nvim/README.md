@@ -8,7 +8,7 @@
 ### install steps
 
 0. copy **nvim** folder to **~/.config/**  
-1. if use windows, copy **nvim** to C:/Users/<NAME>/AppData/Local/, then copy **nvim/windows/init.vim** to C:/Users/<NAME>/AppData/Local/nvim. if you want autocomplete using LSP, markdownpreview, install latest nodejs, https://nodejs.org/en/download , if you want file fuzzy search, install fzf and rg https://github.com/junegunn/fzf#installation,  https://github.com/BurntSushi/ripgrepif , if you want git commandline, install lazygit https://github.com/jesseduffield/lazygit
+1. if use windows, copy **nvim** to C:/Users/<NAME>/AppData/Local/, then copy **nvim/windows/init.vim** to C:/Users/<NAME>/AppData/Local/nvim. if you want autocomplete using LSP, markdownpreview, install latest nodejs, https://nodejs.org/en/download , if you want file content search, install rg https://github.com/BurntSushi/ripgrepif , if you want git commandline, install lazygit https://github.com/jesseduffield/lazygit
 2. open neovim and wait installation complete
 3. run `:checkhealth` to see whether any other dependencies are not installed.
 

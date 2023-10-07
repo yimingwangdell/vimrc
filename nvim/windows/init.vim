@@ -616,7 +616,7 @@ let g:fzf_action = {
   \ 'ctrl-v': 'vsplit' }
 
 nnoremap <C-j> :RG<CR>
-nnoremap <C-f> :Files<CR>
+nnoremap <C-f> :CtrlP<CR>
 nnoremap <leader>, `[V`]<
 nnoremap <leader>. `[V`]>
 
