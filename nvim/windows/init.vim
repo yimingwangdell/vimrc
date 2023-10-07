@@ -1179,6 +1179,7 @@ let g:rnvimr_presets = [{'width': 1.0, 'height': 1.0}]
 
 
 nnoremap tt :NERDTreeToggle<CR>
+nnoremap tf :NERDTreeFind<CR>
 " nnoremap tt :RangerCurrentFileExistingOrNewTab<CR>
 nnoremap <leader>f <nop>
 
