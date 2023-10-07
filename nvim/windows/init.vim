@@ -733,7 +733,7 @@ let g:fzf_layout = { 'window': { 'width': 1, 'height': 1 } }
 " let g:Lf_WindowPosition = 'popup'
 let g:Lf_ShortcutB=''
 " nnoremap <c-f> :Leaderf file <CR>
-nnoremap <c-h> :Leaderf mru <CR>
+nnoremap <c-h> :CtrlPMRUFiles<CR>
 " nnoremap  tg :LeaderfFunction!<CR>
 let g:Lf_QuickSelectAction = 'h'
 let g:Lf_StlColorscheme = 'gruvbox'
