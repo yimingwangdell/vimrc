@@ -1,16 +1,16 @@
 ## install 
 ### requirements
 
-0. you should know vim basic editing like three vim modes, copy, paste, undo...
+0. you should know vim basic editing like three vim modes, copy, paste, undo...  
 1. network for github
 2. neovim > 0.8.0
-3. lua
 
 ### install steps
 
-1. copy **nvim** folder to **~/.config/**
+0. copy **nvim** folder to **~/.config/**  
+1. if use windows, copy **nvim** to C:/Users/<NAME>/AppData/Local/, then copy **nvim/windows/init.vim** to C:/Users/<NAME>/AppData/Local/nvim. if you want autocomplete using LSP, markdownpreview, install latest nodejs, https://nodejs.org/en/download , if you want file fuzzy search, install fzf https://github.com/junegunn/fzf#installation, if you want git commandline, install lazygit https://github.com/jesseduffield/lazygit
 2. open neovim and wait installation complete
-3. run `:checkhealth` to see whether everything is done.
+3. run `:checkhealth` to see whether any other dependencies are not installed.
 
 ### basic key mappings
 
@@ -25,11 +25,10 @@
 | shift s+ ' or " or ( in visual mode | surround you select with ""/ ''/ ()                |
 | shift + u                           | open file modify history                           |
 | /                                   | enhanced current file search                       |
-| backspace                           | clear search result/selection                      |
 | space + space                       | comment code                                       |
 | space + sl/sj                       | split windows right/below                          |
 | space + h/j/k/l                     | jump between split windows                         |
-| space + f                           | windows fullscreen                                 |
+| space fs                            | windows fullscreen                                 |
 | tt                                  | file explorer                                      |
 |-------------------------------------|----------------------------------------------------|
 | ctrl+f                              | search file in project(need fzf installed)         |
@@ -51,12 +50,11 @@
 | ctrl+n....nnnnn                     | mutiple cursor  enter/increase                     |
 | shift + Q                           | mutiple cursor decrease                            |
 | <space>+enter...enter enter         | select block                                       |
-| backspace                           | nohighlight for search/select                      |
 | space + ww                          | open vimwiki notebook                              |
 | space + oa/oc                       | nvim orgmode menu/action                           |
 | ctrl+g                              | open lazygit(awesome git tool)                     |
 | ty                                  | translate under cursor/selected content to chinese |
-| sv                                  | open vim plugin configuration                      |
+| <space>sv                           | open vim plugin configuration                      |
 | ctrl + p                            | markdown preview using chrome                      |
 
 **For more features, please check configuration file with 'sv' keymap
@@ -87,7 +85,7 @@ After enabled, when you can use '|' to create markdown table, table will automat
 see [../ranger/README.md](../ranger/README.md) 
 
 ### vimwiki note
-Enter to create link for under cursor word/selected content, Backspace jump back.
+<CR> to create sub link for under cursor/selected keyword, <backspace> jump back.
 
 ### additional text-object
 s: substitute with clipboard, you can use it as motion like c, d
@@ -96,11 +94,5 @@ example: siw
 s:surround, you can use it as operator like i, a
 example: cs" or ds"
 
-f:function, you can use it as operator like w, "
+f:function(partially support), you can use it as operator like w, "
 example: cif or dif
-
-c:class, you can use it as operator like w, "
-example: cic or dic
-
-s:scope, you can use it as operator like w, "
-example cis or dis
