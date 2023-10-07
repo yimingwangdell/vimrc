@@ -53,7 +53,7 @@
 | <space>+enter...enter enter         | select block                                       |
 | space ww                            | open vimwiki notebook                              |
 | space oa/oc                         | nvim orgmode menu/action                           |
-| ctrl+g                              | open lazygit(awesome git tool)                     |
+| <space>lg                           | open lazygit(awesome git tool)                     |
 | ty                                  | translate under cursor/selected content to chinese |
 | ctrl + p                            | markdown preview using chrome                      |
 
