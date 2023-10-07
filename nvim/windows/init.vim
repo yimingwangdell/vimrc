@@ -182,7 +182,6 @@ let g:plug_url_format = 'https://git::@github.com/%s.git'
 " Plug 'github/copilot.vim'
 Plug 'codota/tabnine-nvim', {'do': './dl_binaries.sh'}
 "
-source ~/.config/nvim/autoload/gtags.vim
 
 Plug 'kevinhwang91/nvim-bqf'
 Plug 'uiiaoo/java-syntax.vim'
