@@ -1,4 +1,4 @@
-
+"
 " ===
 " === Auto load for first time uses
 " ===
@@ -119,6 +119,8 @@ map th :tabp<CR>
 map tl :tabn<CR>
 inoremap <c-a> <ESC>A
 
+" ================== copilot ===================
+
 
 " Display translation in a window
 nmap <silent> ty :Translate<CR>
@@ -147,7 +149,7 @@ map <LEADER>h <C-w><left>
 map <LEADER>j <C-w><down>
 map <LEADER>l <C-w><right>
 map <LEADER>fs :call MaximizeToggle()<CR>
-map <LEADER>bl :BlamerToggle<CR>
+map <LEADER>bl :Gitsigns blame_line<CR>
 
 function! MaximizeToggle()
   if exists("s:maximize_session")
@@ -168,10 +170,12 @@ endfunction
 call plug#begin('~/.vim/plugged')
 " let g:plug_url_format = 'git@github.com:%s.git'
 let g:plug_url_format = 'https://git::@github.com/%s.git'
-" Plug 'github/copilot.vim'
+Plug 'github/copilot.vim'
+Plug 'MunifTanjim/nui.nvim'
+Plug 'Bryley/neoai.nvim'
+
 " Plug 'codota/tabnine-nvim', {'do': './dl_binaries.sh'}
 "
-source ~/.config/nvim/autoload/gtags.vim
 
 Plug 'kevinhwang91/nvim-bqf'
 Plug 'uiiaoo/java-syntax.vim'
@@ -205,7 +209,7 @@ Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
 " Plug 'kevinhwang91/rnvimr'
 Plug 'francoiscabrol/ranger.vim'
 Plug 'rbgrouleff/bclose.vim',
-" Plug 'airblade/vim-rooter'
+Plug 'airblade/vim-rooter'
 " Plug 'notjedi/nvim-rooter.lua'
 Plug 'pechorin/any-jump.vim'
 
@@ -217,7 +221,7 @@ Plug 'liuchengxu/vista.vim'
 " Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python --enable-go'}
 
 " Auto Complete
-Plug 'neoclide/coc.nvim', {'branch': 'master', 'do':'yarn install --forzen-lockfile'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plug 'wellle/tmux-complete.vim'
 
 " Lint tool
@@ -234,7 +238,8 @@ Plug 'mbbill/undotree'
 " Git
 " Plug 'theniceboy/vim-gitignore', { 'for': ['gitignore', 'vim-plug'] }
 " Plug 'fszymanski/fzf-gitignore', { 'do': ':UpdateRemotePlugins' }
-" Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-fugitive'
+Plug 'rbong/vim-flog'
 Plug 'APZelos/blamer.nvim'
 " Plug 'mhinz/vim-signify'
 Plug 'lewis6991/gitsigns.nvim'
@@ -296,7 +301,6 @@ Plug 'kevinhwang91/nvim-hlslens'
 " Plug 'rstacruz/vim-closer'
 " Plug 'tpope/vim-endwise'
 Plug 'jiangmiao/auto-pairs'
-Plug 'andymass/vim-matchup'
 
 " Plug 'tmsvg/pear-tree'
 Plug 'mg979/vim-visual-multi'
@@ -328,7 +332,7 @@ Plug 'theniceboy/pair-maker.vim'
 "Plug 'ron89/thesaurus_query.vim'
 
 " Bookmarks
-" Plug 'MattesGroeger/vim-bookmarks'
+Plug 'MattesGroeger/vim-bookmarks'
 
 
 " Documentation
@@ -347,7 +351,8 @@ Plug 'skywind3000/asyncrun.vim'
 "Plug 'luochen1990/rainbow'
 " Plug 'mg979/vim-xtabline'
 Plug 'ryanoasis/vim-devicons'
-" Plug 'wincent/terminus'
+Plug 'arecarn/vim-crunch'
+Plug 'arecarn/vim-selection'
 "
 "
 
@@ -421,7 +426,6 @@ let g:coc_global_extensions = ['coc-diagnostic',
 	\ 'coc-vimlsp',
 	\ 'coc-yaml',
 	\ 'coc-go',
-	\ 'coc-java',
 	\ 'coc-snippets',
 	\ 'coc-yank']
 
@@ -595,8 +599,9 @@ let g:snips_email = 'yiming.1.wang@nokia-sbell.com'
 "tag bar
 let g:vista_close_on_jump=0
 let g:vista_close_on_fzf_select=0
-nnoremap  tg :Vista!!<CR>:set relativenumber<CR>
-nnoremap  <c-t> :Vista finder<CR>
+let g:vista_default_executive="coc"
+nnoremap  tg :Vista!!<CR>
+nnoremap  <c-t> :Vista finder <CR>
 augroup TagBar
     autocmd!
     autocmd FileType tagbar nnoremap <buffer> H <Nop>
@@ -626,7 +631,7 @@ command! -bang -nargs=? -complete=dir Files call fzf#vim#files(s:find_git_root()
 let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-x': 'split',
-  \ 'enter': 'tab split',
+   "\ 'enter': 'tab split',
   \ 'ctrl-v': 'vsplit' }
 
 nnoremap <C-j> :RG<CR>
@@ -735,10 +740,10 @@ let g:table_mode_cell_text_object_i_map = 'k<Bar>'
 lua << EOF
 require("harpoon").setup({})
 EOF
-nnoremap <leader>aa :lua require("harpoon.mark").add_file()<CR>
-nnoremap <leader>mm :lua require("harpoon.ui").toggle_quick_menu()<CR>
-nnoremap <leader>nn :lua require("harpoon.ui").nav_next()<CR>
-nnoremap <leader>pp :lua require("harpoon.ui").nav_prev()<CR>
+nnoremap <leader>ha :lua require("harpoon.mark").add_file()<CR>
+nnoremap <leader>hm :lua require("harpoon.ui").toggle_quick_menu()<CR>
+nnoremap <leader>hn :lua require("harpoon.ui").nav_next()<CR>
+nnoremap <leader>hp :lua require("harpoon.ui").nav_prev()<CR>
 "
 " ===
 " === FZF
@@ -796,7 +801,7 @@ EOF
 " === gitsigns
 
 nnoremap <leader>lg :LazyGit<CR>
-nnoremap <leader>log :LazyGitFilterCurrentFile<CR>
+nnoremap <leader>log :Flog <CR>
 
 " ===
 " === CTRLP (Dependency for omnisharp)
@@ -811,11 +816,11 @@ let g:ctrlp_show_hidden = 1
 " ===
 " let g:bookmark_no_default_key_mappings = 1
 " nmap mt <Plug>BookmarkToggle
-" nmap ma <Plug>BookmarkAnnotate
-" nmap ml <Plug>BookmarkShowAll
+nmap <leader>ma <Plug>BookmarkAnnotate
+nmap <leader>ml <Plug>BookmarkShowAll
 " nmap mi <Plug>BookmarkNext
 " nmap mn <Plug>BookmarkPrev
-" nmap mC <Plug>BookmarkClear
+nmap <leader>mC <Plug>BookmarkClear
 " nmap mX <Plug>BookmarkClearAll
 " nmap mu <Plug>BookmarkMoveUp
 " nmap me <Plug>BookmarkMoveDown
@@ -1265,7 +1270,6 @@ let g:rooter_silent_chdir = 1
 " ===
 " === AsyncRun
 " ===
-noremap gp :AsyncRun git push<CR>
 
 
 " ===
@@ -1302,6 +1306,7 @@ vmap <LEADER><LEADER> gcc<ESC>
 " nnoremap gr :AnyJump<CR>
 let g:any_jump_window_width_ratio  = 0.9
 let g:any_jump_window_height_ratio = 0.9
+let g:any_jump_grouping_enabled = 1
 nnoremap <leader>gd :AnyJump<CR>
 nnoremap <leader>gb :AnyJumpLastResults<CR>
 nnoremap <leader>gi :execute "AnyJumpArg " .. expand("<cword>") .. "Impl"<CR>
@@ -1356,12 +1361,12 @@ EOF
 
 
 " ==================== nvim-hlslens ====================
-noremap <silent> = <Cmd>execute('normal! ' . v:count1 . 'n')<CR>
-            \<Cmd>lua require('hlslens').start()<CR>
-noremap <silent> - <Cmd>execute('normal! ' . v:count1 . 'N')<CR>
-            \<Cmd>lua require('hlslens').start()<CR>
-noremap * *<Cmd>lua require('hlslens').start()<CR>
-noremap # #<Cmd>lua require('hlslens').start()<CR>
+" noremap <silent> = <Cmd>execute('normal! ' . v:count1 . 'n')<CR>
+"             \<Cmd>lua require('hlslens').start()<CR>
+" noremap <silent> - <Cmd>execute('normal! ' . v:count1 . 'N')<CR>
+"             \<Cmd>lua require('hlslens').start()<CR>
+noremap * *<Cmd>lua require('hlslens').start()<CR>N
+noremap # #<Cmd>lua require('hlslens').start()<CR>N
 noremap g* g*<Cmd>lua require('hlslens').start()<CR>
 noremap g# g#<cmd>lua require('hlslens').start()<CR>
 
