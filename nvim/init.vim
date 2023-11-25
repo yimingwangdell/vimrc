@@ -165,6 +165,7 @@ function! MaximizeToggle()
   endif
 endfunction
 
+nnoremap <c-o> <c-o>zz
 call plug#begin('~/.vim/plugged')
 " let g:plug_url_format = 'git@github.com:%s.git'
 let g:plug_url_format = 'https://git::@github.com/%s.git'
