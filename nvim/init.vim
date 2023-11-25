@@ -119,8 +119,6 @@ map th :tabp<CR>
 map tl :tabn<CR>
 inoremap <c-a> <ESC>A
 
-" ================== copilot ===================
-
 
 " Display translation in a window
 nmap <silent> ty :Translate<CR>
@@ -173,7 +171,6 @@ let g:plug_url_format = 'https://git::@github.com/%s.git'
 Plug 'github/copilot.vim'
 Plug 'MunifTanjim/nui.nvim'
 Plug 'Bryley/neoai.nvim'
-
 " Plug 'codota/tabnine-nvim', {'do': './dl_binaries.sh'}
 "
 
@@ -204,14 +201,15 @@ Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'nvim-lua/plenary.nvim' " don't forget to add this one if you don't have it yet!
 Plug 'ThePrimeagen/harpoon'
 Plug 'junegunn/fzf.vim'
-Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
-" Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'Yggdroot/LeaderF', {'do': ':LeaderfInstallCExtension' }
+Plug 'ctrlpvim/ctrlp.vim'
 " Plug 'kevinhwang91/rnvimr'
 Plug 'francoiscabrol/ranger.vim'
 Plug 'rbgrouleff/bclose.vim',
 Plug 'airblade/vim-rooter'
 " Plug 'notjedi/nvim-rooter.lua'
 Plug 'pechorin/any-jump.vim'
+
 
 " Taglist
 " Plug 'majutsushi/tagbar'
@@ -379,6 +377,11 @@ let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
 colorscheme  gruvbox
 
+" ================== copilot ===================
+imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
+let g:copilot_no_tab_map = v:true
+
+
 " === tabnine ===
 "lua <<EOF
 "	require('tabnine').setup({
@@ -426,6 +429,7 @@ let g:coc_global_extensions = ['coc-diagnostic',
 	\ 'coc-vimlsp',
 	\ 'coc-yaml',
 	\ 'coc-go',
+	\ 'coc-java',
 	\ 'coc-snippets',
 	\ 'coc-yank']
 
@@ -443,6 +447,7 @@ set updatetime=300
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved
 set signcolumn=yes
+
 
 " Use tab for trigger completion with characters ahead and navigate
 " NOTE: There's always complete item selected by default, you may want to enable
@@ -631,7 +636,6 @@ command! -bang -nargs=? -complete=dir Files call fzf#vim#files(s:find_git_root()
 let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-x': 'split',
-   "\ 'enter': 'tab split',
   \ 'ctrl-v': 'vsplit' }
 
 nnoremap <C-j> :RG<CR>
@@ -672,7 +676,7 @@ nnoremap <c-p> :silent! InstantMarkdownStop<CR> :InstantMarkdownPreview<CR>
 " ===
 " === orgmode
 " ===
-lua <<EOF 
+lua <<EOF
 -- init.lua
 
 -- Load custom treesitter grammar for org filetype
@@ -763,8 +767,8 @@ let g:fzf_layout = { 'window': { 'width': 1, 'height': 1 } }
 " let g:Lf_WindowPosition = 'popup'
 let g:Lf_ShortcutB=''
 " nnoremap <c-f> :Leaderf file <CR>
-nnoremap <c-h> :Leaderf mru <CR>
-nnoremap <c-b> :LeaderfBuffer<CR>
+nnoremap <c-h> :CtrlPMRUFiles <CR>
+nnoremap <c-b> :CtrlPBuffer<CR>
 " nnoremap  tg :LeaderfFunction!<CR>
 let g:Lf_QuickSelectAction = 'h'
 let g:Lf_StlColorscheme = 'gruvbox'
