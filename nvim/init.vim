@@ -165,7 +165,6 @@ function! MaximizeToggle()
   endif
 endfunction
 
-nnoremap <c-o> <c-o>zz
 call plug#begin('~/.vim/plugged')
 " let g:plug_url_format = 'git@github.com:%s.git'
 let g:plug_url_format = 'https://git::@github.com/%s.git'
@@ -175,7 +174,7 @@ Plug 'Bryley/neoai.nvim'
 " Plug 'codota/tabnine-nvim', {'do': './dl_binaries.sh'}
 "
 
-Plug 'kevinhwang91/nvim-bqf'
+" Plug 'kevinhwang91/nvim-bqf'
 Plug 'uiiaoo/java-syntax.vim'
 " Plug 'andrewstuart/vim-kubernetes'
 Plug 'voldikss/vim-translator'
@@ -238,7 +237,7 @@ Plug 'mbbill/undotree'
 " Plug 'theniceboy/vim-gitignore', { 'for': ['gitignore', 'vim-plug'] }
 " Plug 'fszymanski/fzf-gitignore', { 'do': ':UpdateRemotePlugins' }
 Plug 'tpope/vim-fugitive'
-Plug 'rbong/vim-flog'
+" Plug 'rbong/vim-flog'
 Plug 'APZelos/blamer.nvim'
 " Plug 'mhinz/vim-signify'
 Plug 'lewis6991/gitsigns.nvim'
@@ -637,6 +636,7 @@ command! -bang -nargs=? -complete=dir Files call fzf#vim#files(s:find_git_root()
 let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-x': 'split',
+   "\ 'enter': 'tab split',
   \ 'ctrl-v': 'vsplit' }
 
 nnoremap <C-j> :RG<CR>
@@ -806,7 +806,10 @@ EOF
 " === gitsigns
 
 nnoremap <leader>lg :LazyGit<CR>
-nnoremap <leader>log :Flog <CR>
+nnoremap <leader>log :Gclog! -5000 -- %
+nnoremap <leader>cga /+++.*\.java<CR>
+nnoremap <leader>cgj /+++.*[^Test]\.java<CR>
+nnoremap <leader>cgt /+++.*Test\.java<CR>
 
 " ===
 " === CTRLP (Dependency for omnisharp)
