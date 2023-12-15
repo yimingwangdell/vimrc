@@ -430,6 +430,7 @@ let g:coc_global_extensions = ['coc-diagnostic',
 	\ 'coc-yaml',
 	\ 'coc-go',
 	\ 'coc-java',
+	\ 'coc-json',
 	\ 'coc-snippets',
 	\ 'coc-yank']
 
