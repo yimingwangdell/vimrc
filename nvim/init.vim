@@ -195,6 +195,8 @@ Plug 'vim-airline/vim-airline'
 " File navigation
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.5' }
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 " Plug 'lambdalisue/fern.vim'
 "Plug 'Xuyuanp/nerdtree-git-plugin'
