@@ -71,9 +71,10 @@ require("lazy").setup({
 	require("config.plugins.outline"),
 	require("config.plugins.clipboard"),
 	require("config.plugins.format"),
-	require("config.plugins.javacomplete2"),
-	require("config.plugins.orgmode")
-	-- require("config.plugins.jdtls"),
+	require("config.plugins.jdtls"),
+	-- require("config.plugins.javacomplete2"),
+	require("config.plugins.orgmode"),
+	require("config.plugins.bookmarks"),
 	-- require("config.plugins.ycm"),
 	-- { "dstein64/vim-startuptime" },
 }, {

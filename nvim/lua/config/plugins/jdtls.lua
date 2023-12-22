@@ -1,5 +1,5 @@
 return {
-	"mfussenegger/nvim-jdtls",
+	"https://gitcode.net/lxyoucan/nvim-jdtls.git",
 	config = function()
 
 	end

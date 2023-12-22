@@ -1,5 +1,6 @@
 {
     
+    "coc.preferences.currentFunctionSymbolAutoUpdate": true,
     "explorer.keyMappings.global": {
     "i": false, 
     "<c-o>": "noop",
@@ -81,7 +82,13 @@
     "<<": "gitStage",
     ">>": "gitUnstage"
   },
+  "java.jdt.ls.directory": "/root/workspace/jdtls",
+  "java.jdt.ls.java.home": "/usr/lib/jvm/jdk-17-oracle-x64",
   "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx16G -Xms10G -Xlog:disable",
+  "java.project.referencedLibraries": [
+      "lib/**/*.jar",
+      "/root/workspace/projects/storage/build/lib/*.jar"
+  ],
     "java.enabled": true,
     "java.autobuild.enabled": false,
     "java.maxConcurrentBuilds": 80,
@@ -89,12 +96,8 @@
     "java.configuration.runtimes": [
         {
             "name": "JavaSE-11",
-            "path": "/usr/lib/jvm/java-11-openjdk",
-            "default": true
-        },
-        {
-            "name": "JavaSE-17",
-            "path": "/usr/lib/jvm/java-17-openjdk"
+            "path": "/usr/lib64/jvm/jdk-11.0.19",
+            "default":true
         }
     ],
 "memoryMode": "DegradeClosed",
@@ -230,11 +233,5 @@
     }
   },
   "snippets.ultisnips.pythonPrompt": false,
-  "java.imports.gradle.wrapper.checksums": [
-    {
-      "sha256": "a8451eeda314d0568b5340498b36edf147a8f0d692c5ff58082d477abe9146e4",
-      "allowed": true
-    }
-  ],
   "inlayHint.enableParameter": false
 }

@@ -50,9 +50,7 @@ M.config = {
 			M.lsp = lsp
 
 			lsp.ensure_installed({
-				'gopls',
-				-- 'jdtls',
-				-- 'java_language_server',
+				-- 'gopls',
 				'gradle_ls',
 				'jsonls',
 				'lua_ls',

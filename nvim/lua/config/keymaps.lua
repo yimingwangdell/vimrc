@@ -72,7 +72,7 @@ local nmappings = {
 
 	-- Other
 	{ from = "<leader>pr", to = ":profile start profile.log<CR>:profile func *<CR>:profile file *<CR>" },
-	{ from = "sv",         to = ":set nosplitright<CR>:set splitright<CR>:vnew ~/.config/nvim/lua/config/plugins.lua<CR>" },
+	{ from = "<leader>sv", to = ":set nosplitright<CR>:set splitright<CR>:vnew ~/.config/nvim/lua/config/plugins.lua<CR>" },
 }
 
 for _, mapping in ipairs(nmappings) do

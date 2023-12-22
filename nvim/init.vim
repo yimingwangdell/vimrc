@@ -14,6 +14,7 @@ endif
 let g:neoterm_autoscroll = 1
 tnoremap <C-N> <C-\><C-N>
 tnoremap <C-O> <C-\><C-N><C-O>
+let g:syntax_maxlines=999999
 let g:terminal_color_0  = '#000000'
 let g:terminal_color_1  = '#FF5555'
 let g:terminal_color_2  = '#50FA7B'
@@ -29,7 +30,11 @@ let g:terminal_color_11 = '#F4F99D'
 let g:terminal_color_12 = '#CAA9FA'
 let g:terminal_color_13 = '#FF92D0'
 let g:terminal_color_14 = '#9AEDFE'
+syntax sync
+syntax sync minlines=999999
+autocmd BufEnter * :syntax sync fromstart
 set laststatus=3
+set synmaxcol=0
 set iskeyword+=-
 set termguicolors
 set noswapfile
@@ -100,6 +105,7 @@ nnoremap Y y$
 let mapleader=" "
 
 
+vnoremap / y/<c-r>0<cr>
 map s <nop>
 map S :w<CR>
 nmap Q :q<CR>
@@ -175,6 +181,7 @@ Plug 'Bryley/neoai.nvim'
 "
 
 " Plug 'kevinhwang91/nvim-bqf'
+Plug 'romainl/vim-qf'
 Plug 'uiiaoo/java-syntax.vim'
 " Plug 'andrewstuart/vim-kubernetes'
 Plug 'voldikss/vim-translator'
@@ -186,7 +193,10 @@ Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'morhetz/gruvbox'
 
 " Status line
-Plug 'vim-airline/vim-airline'
+" Plug 'vim-airline/vim-airline'
+Plug 'nvim-lualine/lualine.nvim'
+" If you want to have icons in your statusline choose one of these
+Plug 'nvim-tree/nvim-web-devicons'
 
 " General Highlighter
 " Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
@@ -195,12 +205,11 @@ Plug 'vim-airline/vim-airline'
 " File navigation
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.5' }
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 " Plug 'lambdalisue/fern.vim'
 "Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'nvim-lua/plenary.nvim' " don't forget to add this one if you don't have it yet!
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.5' }
 Plug 'ThePrimeagen/harpoon'
 Plug 'junegunn/fzf.vim'
 " Plug 'Yggdroot/LeaderF', {'do': ':LeaderfInstallCExtension' }
@@ -342,6 +351,7 @@ Plug 'KabbAmine/zeavim.vim' " <LEADER>z to find doc
 Plug 'nvim-orgmode/orgmode'
 Plug 'nvim-treesitter/nvim-treesitter'
 "Plug 'mhinz/vim-startify'
+Plug 'eckon/treesitter-current-functions'
 Plug 'skywind3000/asynctasks.vim'
 Plug 'skywind3000/asyncrun.vim'
 
@@ -390,14 +400,58 @@ let g:copilot_no_tab_map = v:true
 "    accept_keymap = "<right>"
 "  })
 "EOF
-
+" === lualine === 
+lua << END
+require('lualine').setup(
+ {
+  options = {
+    icons_enabled = true,
+    theme = 'auto',
+    component_separators = { left = '', right = ''},
+    section_separators = { left = '', right = ''},
+    disabled_filetypes = {
+      statusline = {},
+      winbar = {},
+    },
+    ignore_focus = {},
+    always_divide_middle = true,
+    globalstatus = false,
+    refresh = {
+      statusline = 1000,
+      tabline = 1000,
+      winbar = 1000,
+    }
+  },
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch', 'diff', 'diagnostics'},
+    lualine_c = { { 'filename', path = 3, shorting_target = 80, } , {'b:coc_current_function', align='left', shorting_target = 10}},
+    lualine_x = {'encoding', 'fileformat', 'filetype'},
+    lualine_y = { 'coc#status'},
+    lualine_z = {'location'}
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {'filename'},
+    lualine_x = {'location'},
+    lualine_y = {},
+    lualine_z = {}
+  },
+  tabline = {},
+  winbar = {},
+  inactive_winbar = {},
+  extensions = {}
+}
+)
+END
 " ===
 " === airline.vim
 " ===
 let g:airline_powerline_fonts = 0
-let g:airline#extensions#tagbar#flags = 'f'
+" let g:airline#extensions#tagbar#flags = 'f'
 " let g:airline#extensions#tagbar#enabled = 1
-let g:airline#extensions#vista#enabled = 1
+" let g:airline#extensions#vista#enabled = 1
 let g:airline_section_y = ''
 let g:airline_section_a = ''
 let g:airline_section_c = '%F'
@@ -578,7 +632,7 @@ command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.org
 " Add (Neo)Vim's native statusline support
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+" set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " Mappings for CoCList
 " Show all diagnostics
@@ -607,9 +661,9 @@ let g:snips_email = 'yiming.1.wang@nokia-sbell.com'
 "tag bar
 let g:vista_close_on_jump=0
 let g:vista_close_on_fzf_select=0
-let g:vista_default_executive="coc"
-nnoremap  tg :Vista!!<CR>
-nnoremap  <c-t> :Vista finder <CR>
+ let g:vista_default_executive="ctags"
+nnoremap  tg :CocOutline<CR>
+"nnoremap  <c-t> :Vista finder <CR>
 augroup TagBar
     autocmd!
     autocmd FileType tagbar nnoremap <buffer> H <Nop>
@@ -642,8 +696,9 @@ let g:fzf_action = {
    "\ 'enter': 'tab split',
   \ 'ctrl-v': 'vsplit' }
 
-nnoremap <C-j> :RG<CR>
-nnoremap <C-f> :Files<CR>
+" nnoremap <C-j> :RG<CR>
+nnoremap <C-j> :Telescope live_grep<CR>
+nnoremap <C-f> :Telescope find_files<CR>
 nnoremap <leader>, `[V`]<
 nnoremap <leader>. `[V`]>
 
@@ -771,8 +826,8 @@ let g:fzf_layout = { 'window': { 'width': 1, 'height': 1 } }
 " let g:Lf_WindowPosition = 'popup'
 let g:Lf_ShortcutB=''
 " nnoremap <c-f> :Leaderf file <CR>
-nnoremap <c-h> :CtrlPMRUFiles <CR>
-nnoremap <c-b> :CtrlPBuffer<CR>
+nnoremap <c-h> :Telescope oldfiles <CR>
+nnoremap <c-b> :Telescope buffers<CR>
 " nnoremap  tg :LeaderfFunction!<CR>
 let g:Lf_QuickSelectAction = 'h'
 let g:Lf_StlColorscheme = 'gruvbox'
@@ -810,6 +865,7 @@ EOF
 
 nnoremap <leader>lg :LazyGit<CR>
 nnoremap <leader>log :Gclog! -5000 -- %
+vnoremap <leader>log :Gclog! -5000<CR>
 nnoremap <leader>cga /+++.*\.java<CR>
 nnoremap <leader>cgj /+++.*[^Test]\.java<CR>
 nnoremap <leader>cgt /+++.*Test\.java<CR>
@@ -825,9 +881,10 @@ let g:ctrlp_show_hidden = 1
 " ===
 " === vim-bookmarks
 " ===
+let g:bookmark_disable_ctrlp = 1
 " let g:bookmark_no_default_key_mappings = 1
-" nmap mt <Plug>BookmarkToggle
-nmap <leader>ma <Plug>BookmarkAnnotate
+nmap <leader>ma <Plug>BookmarkToggle
+nmap <leader>mt <Plug>BookmarkAnnotate
 nmap <leader>ml <Plug>BookmarkShowAll
 " nmap mi <Plug>BookmarkNext
 " nmap mn <Plug>BookmarkPrev
@@ -1435,7 +1492,15 @@ map , <Plug>(clever-f-repeat-back)
 " ====================== flash =====================
 let g:indentLine_setColors = 0
 
-
-
+" ================telescope==================
+lua <<EOF
+  require('telescope').setup{
+    defaults = {
+      layout_strategy = 'vertical',
+      layout_config = { height = 0.99, width = 0.99 },
+    },
+  }
+EOF
 " ===================== others ===========================
 let g:python3_host_prog = 'python3'
+noremap acm O==========================<CR>==========================<ESC>ko

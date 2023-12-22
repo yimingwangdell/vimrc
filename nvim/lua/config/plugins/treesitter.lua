@@ -18,6 +18,7 @@ return {
 					"vim",
 					"proto",
 					"markdown",
+					"vimdoc"
 				},
 				highlight = {
 					enable = true,
@@ -55,7 +56,7 @@ return {
 				zindex = 20, -- The Z-index of the context window
 				on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
 			}
-			vim.keymap.set("n", "{", function()
+			vim.keymap.set("n", "[c", function()
 				tscontext.go_to_context()
 			end, { silent = true })
 		end
