@@ -1,5 +1,7 @@
 {
+    "java.import.maven.enabled": false,
     
+    "list.interactiveDebounceTime":10,
     "coc.preferences.currentFunctionSymbolAutoUpdate": true,
     "explorer.keyMappings.global": {
     "i": false, 
@@ -82,8 +84,9 @@
     "<<": "gitStage",
     ">>": "gitUnstage"
   },
-  "java.jdt.ls.directory": "/root/workspace/jdtls",
-  "java.jdt.ls.java.home": "/usr/lib/jvm/jdk-17-oracle-x64",
+  "java.autobuild.enable": "false",
+  "java.jdt.ls.directory": "/home/yimwang/jdtls",
+  "java.jdt.ls.java.home": "/usr/lib/jvm/jdk-11-oracle-x64",
   "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx16G -Xms10G -Xlog:disable",
   "java.project.referencedLibraries": [
       "lib/**/*.jar",
@@ -92,11 +95,11 @@
     "java.enabled": true,
     "java.autobuild.enabled": false,
     "java.maxConcurrentBuilds": 80,
-    "java.completion.maxResults": 30,
+    "java.completion.maxResults": 10,
     "java.configuration.runtimes": [
         {
             "name": "JavaSE-11",
-            "path": "/usr/lib64/jvm/jdk-11.0.19",
+            "path": "/usr/lib/jvm/jdk-11-oracle-x64/",
             "default":true
         }
     ],
@@ -233,5 +236,7 @@
     }
   },
   "snippets.ultisnips.pythonPrompt": false,
-  "inlayHint.enableParameter": false
+  "inlayHint.enableParameter": true,
+  "inlayHint.display": true,
+  "java.inlayHints.parameterNames.enabled": "all"
 }
