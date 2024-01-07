@@ -100,6 +100,9 @@ set ww+=h,l
 noremap L $
 noremap H 0
 nnoremap Y y$
+nnoremap <c-d> 3<c-e>
+nnoremap <c-u> 3<c-y>
+inoremap jk <ESC>
 
 let mapleader=" "
 
@@ -177,7 +180,7 @@ endfunction
 call plug#begin('~/.vim/plugged')
 " let g:plug_url_format = 'git@github.com:%s.git'
 let g:plug_url_format = 'https://git::@github.com/%s.git'
-Plug 'yamatsum/nvim-cursorline'
+Plug 'itchyny/vim-cursorword'
 Plug 'akinsho/toggleterm.nvim', {'tag' : '*'}
 
 " copilot
@@ -201,7 +204,7 @@ Plug 'nvim-tree/nvim-web-devicons'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'nvim-lua/plenary.nvim' " don't forget to add this one if you don't have it yet!
 Plug 'nvim-telescope/telescope.nvim',  { 'tag': '0.1.5' }
-Plug 'ThePrimeagen/harpoon'
+Plug 'ThePrimeagen/harpoon', {'branch': 'harpoon2'}
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'francoiscabrol/ranger.vim'
 Plug 'rbgrouleff/bclose.vim',
@@ -302,6 +305,8 @@ Plug 'nvim-orgmode/orgmode'
 Plug 'eckon/treesitter-current-functions' "daf to delete a function
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/nvim-treesitter-context'
+Plug 'wellle/context.vim'
+Plug 'talbergs/context.nvim'
 Plug 'skywind3000/asynctasks.vim'
 Plug 'skywind3000/asyncrun.vim'
 
@@ -654,17 +659,19 @@ let g:table_mode_cell_text_object_i_map = 'k<Bar>'
 " ===
 "
 lua <<EOF
-require("harpoon").setup({
-menu = {
-width = vim.api.nvim_win_get_width(0) - 4,
-}
-})
+local harpoon = require("harpoon")
+-- REQUIRED
+harpoon:setup()
+-- REQUIRED
+
+vim.keymap.set("n", "<leader>aa", function() harpoon:list():append() end)
+vim.keymap.set("n", "<leader>af", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
+
+-- Toggle previous & next buffers stored within Harpoon list
+vim.keymap.set("n", "<c-k>", function() harpoon:list():prev() end)
+vim.keymap.set("n", "<c-j>", function() harpoon:list():next() end)
 EOF
-nnoremap <leader>aa :lua require("harpoon.mark").add_file()<CR>
-nnoremap <leader>af :lua require("harpoon.ui").toggle_quick_menu()<CR>
-nnoremap <c-j> :lua require("harpoon.ui").nav_next()<CR>
-nnoremap <c-k> :lua require("harpoon.ui").nav_prev()<CR>
-"
 
 
 
@@ -1110,24 +1117,45 @@ preview = {
 }
 EOF
 
-" ===== cursorline=======
 lua <<EOF
-require('nvim-cursorline').setup {
-  cursorline = {
-    enable = true,
-    timeout = 1000,
-    number = false,
-  },
-  cursorword = {
-    enable = true,
-    min_length = 3,
-    hl = { underline = true },
-  }
+require'treesitter-context'.setup{
+    enable = false, -- Enable this plugin (Can be enabled/disabled later via commands)
+    throttle = true, -- Throttles plugin updates (may improve performance)
+    max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+    patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
+        -- For all filetypes
+        -- Note that setting an entry here replaces all other patterns for this entry.
+        -- By setting the 'default' entry below, you can control which nodes you want to
+        -- appear in the context window.
+        default = {
+            'class',
+            'function',
+            'method',
+            'for', -- These won't appear in the context
+            'while',
+            'if',
+            'switch',
+            'case',
+        },
+        -- Example for a specific filetype.
+        -- If a pattern is missing, *open a PR* so everyone can benefit.
+        --   rust = {
+        --       'impl_item',
+        --   },
+    },
+    exact_patterns = {
+        -- Example for a specific filetype with Lua patterns
+        -- Treat patterns.rust as a Lua pattern (i.e "^impl_item$" will
+        -- exactly match "impl_item" only)
+        -- rust = true, 
+    }
 }
 EOF
-
-
+let g:context_add_mappings = 0
+"let g:context_presenter= 'preview'
+let g:context_enabled = 0
+nnoremap <leader>ct :ContextToggleWindow<CR>
 " ===================== others ===========================
 let g:python3_host_prog = 'python3'
-inoremap jk <ESC>
 let g:coc_max_treeview_width=80
+hi String guifg=#11111
