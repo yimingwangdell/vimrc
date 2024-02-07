@@ -1,5 +1,5 @@
-"
 " ===
+"
 " === Auto load for first time uses
 " ===
 "silent curl -sL install-node.vercel.app/lts | bash
@@ -102,6 +102,8 @@ noremap H 0
 nnoremap Y y$
 nnoremap <c-d> 3<c-e>
 nnoremap <c-u> 3<c-y>
+vnoremap <c-d> 3j
+vnoremap <c-u> 3k
 inoremap jk <ESC>
 
 let mapleader=" "
@@ -126,7 +128,7 @@ map <up> :res -5<CR>
 map <down> :res +5<CR>
 map <left> :vertical resize+5<CR>
 map <right> :vertical resize-5<CR>
-map ti :tabnew<CR>:Telescope<CR>
+map ti :tabnew<CR>
 map th :tabp<CR>
 map tl :tabn<CR>
 inoremap <c-a> <ESC>A
@@ -197,16 +199,16 @@ Plug 'morhetz/gruvbox'
 Plug 'nvim-lualine/lualine.nvim'
 " If you want to have icons in your statusline choose one of these
 Plug 'nvim-tree/nvim-web-devicons'
-
 " General Highlighter
 
 " File navigation
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'nvim-lua/plenary.nvim' " don't forget to add this one if you don't have it yet!
+Plug 'nvim-tree/nvim-tree.lua'
 Plug 'nvim-telescope/telescope.nvim',  { 'tag': '0.1.5' }
+Plug 'junegunn/fzf'
+Plug 'nvim-lua/plenary.nvim' " don't forget to add this one if you don't have it yet!
 Plug 'ThePrimeagen/harpoon', {'branch': 'harpoon2'}
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'francoiscabrol/ranger.vim'
+" Plug 'francoiscabrol/ranger.vim'
 Plug 'rbgrouleff/bclose.vim',
 " Plug 'airblade/vim-rooter'
 Plug 'pechorin/any-jump.vim'
@@ -239,6 +241,7 @@ Plug 'kdheepak/lazygit.nvim'
 " Autoformat
 Plug 'google/vim-maktaba'
 Plug 'google/vim-codefmt'
+Plug 'google/vim-glaive'
 
 " Tex
 
@@ -286,7 +289,8 @@ Plug 'rhysd/clever-f.vim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'matze/vim-move'
 " Plug 'jeffkreeftmeijer/vim-numbertoggle'
-Plug 'Yggdroot/indentLine'
+" Plug 'Yggdroot/indentLine'
+Plug 'lukas-reineke/indent-blankline.nvim'
 
 Plug 'theniceboy/pair-maker.vim'
 
@@ -365,7 +369,7 @@ require('lualine').setup(
     lualine_a = {},
     lualine_b = {'branch', 'diff', 'diagnostics'},
     lualine_c = {  {'filename', path = 3, shorting_target = 60,}},
-    lualine_x = {'b:coc_current_function' },
+    lualine_x = {{'b:coc_current_function', align='right' }},
     lualine_y = { 'g:coc_status'},
     lualine_z = {'progress', 'location'}
   },
@@ -403,6 +407,7 @@ let g:coc_global_extensions = ['coc-diagnostic',
 	\ 'coc-go',
 	\ 'coc-java',
 	\ 'coc-json',
+	\ 'coc-protobuf',
 	\ 'coc-snippets',
 	\ 'coc-yank']
 
@@ -520,6 +525,14 @@ xmap ic <Plug>(coc-classobj-i)
 omap ic <Plug>(coc-classobj-i)
 xmap ac <Plug>(coc-classobj-a)
 omap ac <Plug>(coc-classobj-a)
+nmap g[ vifo<Esc>
+nmap g] vifoo<Esc>
+
+
+
+
+
+
 
 " Use CTRL-S for selections ranges
 " Requires 'textDocument/selectionRange' support of language server
@@ -573,17 +586,27 @@ let g:snips_author = 'Wang yiming'
 let g:snips_email = 'yiming.1.wang@nokia-sbell.com'
 
 
+  nnoremap <silent><nowait> <space>o  :call ToggleOutline()<CR>
+  function! ToggleOutline() abort
+    let winid = coc#window#find('cocViewId', 'OUTLINE')
+    if winid == -1
+      call CocActionAsync('showOutline', 1)
+    else
+      call coc#window#close(winid)
+    endif
+  endfunction
 
 let g:vista_close_on_jump=0
 let g:vista_close_on_fzf_select=0
  let g:vista_default_executive="coc"
-nnoremap  tg :CocOutline<CR>
-nnoremap <leader>ft :CocList outline<CR>
+let g:vista_sidebar_width=80
+nnoremap  <leader>tg :Vista!!<CR>
+nnoremap  <leader>tf :Vista finder<CR>
 augroup Vista
     autocmd!
-    autocmd FileType vista nmap <buffer> <c-f> <c-w>h :Vista finder<CR>
 augroup END
 autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
+autocmd FileType vista,vista_kind nnoremap <buffer> <silent> / :<c-u>call vista#finder#fzf#Run()<CR>
 
 
 
@@ -624,6 +647,33 @@ nnoremap <c-p> :silent! InstantMarkdownStop<CR> :InstantMarkdownPreview<CR>
 " ===
 
 
+lua <<EOF
+require('orgmode').setup_ts_grammar()
+require('nvim-treesitter.configs').setup {
+  -- If TS highlights are not enabled at all, or disabled via `disable` prop,
+  -- highlighting will fallback to default Vim syntax highlighting
+  highlight = {
+    enable = true,
+    -- Required for spellcheck, some LaTex highlights and
+    -- code block highlights that do not have ts grammar
+    additional_vim_regex_highlighting = {'org'},
+  },
+  ensure_installed = {'org'}, -- Or run :TSUpdate org
+}
+
+require('orgmode').setup({
+  org_agenda_files = {'~/Dropbox/org/*', '~/my-orgs/**/*'},
+  org_default_notes_file = '~/Dropbox/org/refile.org',
+  mappings = {
+      org = {
+        org_toggle_checkbox = '<space>ok'
+          }
+      }
+})
+EOF
+
+
+
 " === snippets
 au BufNewFile,BufRead *.wiki setl ft=markdown
 autocmd Filetype markdown,wiki map <leader>w yiWi[<esc>Ea](<esc>pa)
@@ -646,13 +696,6 @@ autocmd Filetype markdown,wiki inoremap <buffer> ,4 ####<Space><Enter><++><Esc>k
 autocmd Filetype markdown,wiki inoremap <buffer> ,l --------<Enter>
 
 
-" ===
-" ===
-" === vim-table-mode
-noremap <LEADER>tb :TableModeToggle<CR>
-"let g:table_mode_disable_mappings = 1
-let g:table_mode_cell_text_object_i_map = 'k<Bar>'
-"
 
 " ===
 " === harpoon
@@ -663,7 +706,6 @@ local harpoon = require("harpoon")
 -- REQUIRED
 harpoon:setup()
 -- REQUIRED
-
 vim.keymap.set("n", "<leader>aa", function() harpoon:list():append() end)
 vim.keymap.set("n", "<leader>af", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 
@@ -673,17 +715,34 @@ vim.keymap.set("n", "<c-k>", function() harpoon:list():prev() end)
 vim.keymap.set("n", "<c-j>", function() harpoon:list():next() end)
 EOF
 
+"=====nvim-tree======
+lua <<EOF
+require("nvim-tree").setup({
+  sort_by = "case_sensitive",
+  view = {
+    width = {},
+  },
+  renderer = {
+    group_empty = true,
+  },
+  filters = {
+    dotfiles = true,
+  },
+  on_attach = my_on_attach
+})
 
+EOF
 
 "=====telescope======
 
-nnoremap <leader>fo :Telescope oldfiles <CR>
+nnoremap <leader>fr :Telescope oldfiles <CR>
+nnoremap <leader>fh :Telescope resume <CR>
 nnoremap <leader>fb :Telescope buffers<CR>
 nnoremap <leader>fw :Telescope live_grep<CR>
 nnoremap <leader>ff :Telescope find_files<CR>
 
 
-nnoremap <leader>lg :LazyGit<CR>
+nnoremap <leader>lg :LazyGitCurrentFile<CR>
 nnoremap <leader>log :Gclog! -5000 -- %
 vnoremap <leader>log :Gclog! -5000<CR>
 nnoremap <leader>cga /\.java<CR>
@@ -874,7 +933,7 @@ let g:rainbow_active = 1
 " === vim-session
 " ===
 let g:session_directory = $HOME."/.config/nvim/tmp/sessions"
-let g:session_autosave = 'no'
+let g:session_autosave = 'yes'
 let g:session_autoload = 'yes'
 "set sessionoptions-=options
 "noremap sl :OpenSession<CR>
@@ -908,7 +967,7 @@ let g:vmt_fence_closing_text = '/TOC'
 
 " nnoremap tt :Fern . -reveal=%<CR>
 nnoremap tt :tabnew<cr>:RangerCurrentDirectoryExistingOrNewTab<CR>
-nnoremap <leader>ex :CocCommand explorer<CR>
+nnoremap <leader>e :NvimTreeFindFileToggle<CR>
 
 
 " ==================== nvim-colorizer.lua ====================
@@ -980,13 +1039,12 @@ vmap <LEADER><LEADER> gcc<ESC>
 " === vim-move
 " ===
 
+let g:move_key_modifier = '<>'
 let g:move_map_keys = 0
-let g:move_key_modifier = '<space>'
-nmap <M-j> <Plug>MoveLineDown
-vmap <M-k> <Plug>MoveBlockUp
-vmap <M-j> <Plug>MoveBlockDown
-nmap <M-k> <Plug>MoveLineUp
-
+"===== indent =====
+lua <<EOF
+require("ibl").setup()
+EOF
 " === nvim-rooter
 " ===
 
@@ -1109,6 +1167,13 @@ let g:cursorword = 1
 lua require("toggleterm").setup()
 nnoremap <leader>tm :execute "ToggleTerm dir=" .. expand("%:p:h")<CR>
 vnoremap <leader>tm :ToggleTermSendVisualLines<CR>
+" ===
+" ===
+" === vim-table-mode
+noremap <LEADER>tb :TableModeToggle<CR>
+let g:table_mode_disable_mappings = 1
+let g:table_mode_cell_text_object_i_map = 'k<Bar>'
+"
 " =================bqf=============================
 
 lua <<EOF
@@ -1211,5 +1276,8 @@ let g:context_enabled = 0
 nnoremap <leader>ct :ContextToggleWindow<CR>
 " ===================== others ===========================
 let g:python3_host_prog = 'python3'
-let g:coc_max_treeview_width=80
 hi String guifg=#11111
+call glaive#Install()
+" Optional: Enable codefmt's default mappings on the <Leader>= prefix.
+Glaive codefmt plugin[mappings]
+Glaive codefmt google_java_executable="java -jar /home/yimwang/google-java-format-1.19.2-all-deps.jar"check_reclaimable_timestamp
