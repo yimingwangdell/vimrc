@@ -54,9 +54,6 @@ set cmdheight=2
 set timeoutlen=400
 set updatetime=300
 set shortmess+=c
-set foldmethod=indent
-set foldlevel=99
-set foldenable
 if has("patch-8.1.1564")
   " Recently vim can merge signcolumn and number column into one
   set signcolumn=number
@@ -107,6 +104,7 @@ vnoremap <c-u> 3k
 inoremap jk <ESC>
 
 let mapleader=" "
+let maplocalleader=" "
 
 
 vnoremap / y/<c-r>0<cr>
@@ -160,6 +158,7 @@ map <LEADER>k <C-w>k
 map <LEADER>h <C-w><left>
 map <LEADER>j <C-w><down>
 map <LEADER>l <C-w><right>
+map <LEADER>Q :qa!
 map <LEADER>fs :call MaximizeToggle()<CR>
 map <LEADER>bl :Gitsigns blame_line<CR>
 
@@ -216,6 +215,7 @@ Plug 'pechorin/any-jump.vim'
 
 " Taglist
 Plug 'liuchengxu/vista.vim'
+Plug 'stevearc/aerial.nvim'
 
 " Debugger
 
@@ -264,6 +264,7 @@ Plug 'mzlogin/vim-markdown-toc'
 Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
 Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeToggle', 'for': ['text', 'markdown', 'vim-plug'] }
 Plug 'vimwiki/vimwiki'
+Plug 'nvim-neorg/neorg'
 
 " Other filetypes
 " Plug ''
@@ -305,10 +306,10 @@ Plug 'MattesGroeger/vim-bookmarks'
 Plug 'KabbAmine/zeavim.vim' " <LEADER>z to find doc
 
 " Mini Vim-APP
-Plug 'nvim-orgmode/orgmode'
-Plug 'eckon/treesitter-current-functions' "daf to delete a function
+Plug 'dhruvasagar/vim-dotoo'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/nvim-treesitter-context'
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'wellle/context.vim'
 Plug 'talbergs/context.nvim'
 Plug 'skywind3000/asynctasks.vim'
@@ -367,7 +368,7 @@ require('lualine').setup(
   },
   sections = {
     lualine_a = {},
-    lualine_b = {'branch', 'diff', 'diagnostics'},
+    lualine_b = {{'branch', fmt = function(str) return str:sub(1,20) end}, 'diff', 'diagnostics'},
     lualine_c = {  {'filename', path = 3, shorting_target = 60,}},
     lualine_x = {{'b:coc_current_function', align='right' }},
     lualine_y = { 'g:coc_status'},
@@ -391,6 +392,7 @@ EOF
 " ===
 " === coc.nvim
 " ===
+let g:coc_enable_locationlist=0
 set tagfunc=CocTagFunc
 let g:coc_global_extensions = ['coc-diagnostic',
 	\ 'coc-gitignore',
@@ -515,18 +517,6 @@ nmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
 " Run the Code Lens action on the current line
 nmap <leader>cl  <Plug>(coc-codelens-action)
 
-" Map function and class text objects
-" NOTE: Requires 'textDocument.documentSymbol' support from the language server
-xmap if <Plug>(coc-funcobj-i)
-omap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-a)
-omap af <Plug>(coc-funcobj-a)
-xmap ic <Plug>(coc-classobj-i)
-omap ic <Plug>(coc-classobj-i)
-xmap ac <Plug>(coc-classobj-a)
-omap ac <Plug>(coc-classobj-a)
-nmap g[ vifo<Esc>
-nmap g] vifoo<Esc>
 
 
 
@@ -586,29 +576,19 @@ let g:snips_author = 'Wang yiming'
 let g:snips_email = 'yiming.1.wang@nokia-sbell.com'
 
 
-  nnoremap <silent><nowait> <space>o  :call ToggleOutline()<CR>
-  function! ToggleOutline() abort
-    let winid = coc#window#find('cocViewId', 'OUTLINE')
-    if winid == -1
-      call CocActionAsync('showOutline', 1)
-    else
-      call coc#window#close(winid)
-    endif
-  endfunction
 
-let g:vista_close_on_jump=0
-let g:vista_close_on_fzf_select=0
- let g:vista_default_executive="coc"
-let g:vista_sidebar_width=80
-nnoremap  <leader>tg :Vista!!<CR>
-nnoremap  <leader>tf :Vista finder<CR>
-augroup Vista
-    autocmd!
-augroup END
-autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
-autocmd FileType vista,vista_kind nnoremap <buffer> <silent> / :<c-u>call vista#finder#fzf#Run()<CR>
-
-
+lua <<EOF
+require("aerial").setup({
+  -- optionally use on_attach to set keymaps when aerial has attached to a buffer
+  on_attach = function(bufnr)
+    -- Jump forwards/backwards with '{' and '}'
+    vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
+    vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
+  end,
+})
+-- You probably also want to set a keymap to toggle aerial
+vim.keymap.set("n", "<leader>tg", "<cmd>AerialToggle!<CR><c-w>l")
+EOF
 
 nnoremap <leader>, `[V`]<
 nnoremap <leader>. `[V`]>
@@ -640,37 +620,29 @@ let g:instant_markdown_autoscroll = 1
 let g:instant_markdown_browser = "google-chrome-stable --new-window"
 nnoremap <c-p> :silent! InstantMarkdownStop<CR> :InstantMarkdownPreview<CR>
 
-
+" === dotoo ====
 
 " ===
 " === orgmode
 " ===
-
-
-lua <<EOF
-require('orgmode').setup_ts_grammar()
-require('nvim-treesitter.configs').setup {
-  -- If TS highlights are not enabled at all, or disabled via `disable` prop,
-  -- highlighting will fallback to default Vim syntax highlighting
-  highlight = {
-    enable = true,
-    -- Required for spellcheck, some LaTex highlights and
-    -- code block highlights that do not have ts grammar
-    additional_vim_regex_highlighting = {'org'},
-  },
-  ensure_installed = {'org'}, -- Or run :TSUpdate org
+lua << EOF
+require('neorg').setup {
+    load = {
+        ["core.defaults"] = {}, -- Loads default behaviour
+        ["core.completion"] = {}, -- Loads default behaviour
+        ["core.concealer"] = {}, -- Adds pretty icons to your documents
+        ["core.dirman"] = { -- Manages Neorg workspaces
+            config = {
+                workspaces = {
+                    notes = "~/notes",
+                },
+            },
+        },
+    },
 }
-
-require('orgmode').setup({
-  org_agenda_files = {'~/Dropbox/org/*', '~/my-orgs/**/*'},
-  org_default_notes_file = '~/Dropbox/org/refile.org',
-  mappings = {
-      org = {
-        org_toggle_checkbox = '<space>ok'
-          }
-      }
-})
 EOF
+
+
 
 
 
@@ -740,6 +712,7 @@ nnoremap <leader>fh :Telescope resume <CR>
 nnoremap <leader>fb :Telescope buffers<CR>
 nnoremap <leader>fw :Telescope live_grep<CR>
 nnoremap <leader>ff :Telescope find_files<CR>
+nnoremap <leader>ft :Telescope aerial<CR>
 
 
 nnoremap <leader>lg :LazyGitCurrentFile<CR>
@@ -1156,6 +1129,16 @@ lua <<EOF
       layout_strategy = 'vertical',
       layout_config = { height = 0.99, width = 0.99 },
     },
+    extensions = {
+        aerial = {
+          -- Display symbols as <root>.<parent>.<symbol>
+          show_nesting = {
+            ["_"] = false, -- This key will be the default
+            json = true, -- You can set the option for specific filetypes
+            yaml = true,
+          },
+    },
+  },
   }
 EOF
 
@@ -1177,9 +1160,25 @@ let g:table_mode_cell_text_object_i_map = 'k<Bar>'
 " =================bqf=============================
 
 lua <<EOF
+local bqf_pv_timer
 require('bqf').setup{
 preview = {
-    auto_preview = false
+    should_preview_cb = function(bufnr, qwinid)
+        local bufname = vim.api.nvim_buf_get_name(bufnr)
+        if bufname:match '^fugitive://' and not vim.api.nvim_buf_is_loaded(bufnr) then
+            if bqf_pv_timer and bqf_pv_timer:get_due_in() > 0 then
+                bqf_pv_timer:stop()
+                bqf_pv_timer = nil
+            end
+            bqf_pv_timer = vim.defer_fn(function()
+                vim.api.nvim_buf_call(bufnr, function()
+                    vim.cmd(('do fugitive BufReadCmd %s'):format(bufname))
+                end)
+                require('bqf.preview.handler').open(qwinid, nil, true)
+            end, 60)
+        end
+        return true
+    end
 },
  filter = {
         fzf = {
@@ -1188,6 +1187,60 @@ preview = {
     }
 
 }
+
+
+local fn = vim.fn
+local cmd = vim.cmd
+local api = vim.api
+cmd([[
+    aug Coc
+        au!
+        au User CocLocationsChange lua _G.jumpToLoc()
+    aug END
+]])
+
+cmd([[
+    nmap <silent> gr <Plug>(coc-references)
+    nnoremap <silent> <leader>qd <Cmd>lua _G.diagnostic()<CR>
+]])
+
+-- just use `_G` prefix as a global function for a demo
+-- please use module instead in reality
+function _G.jumpToLoc(locs)
+    locs = locs or vim.g.coc_jump_locations
+    fn.setloclist(0, {}, ' ', {title = 'CocLocationList', items = locs})
+    local winid = fn.getloclist(0, {winid = 0}).winid
+    if winid == 0 then
+        cmd('abo lw')
+    else
+        api.nvim_set_current_win(winid)
+    end
+end
+
+function _G.diagnostic()
+    fn.CocActionAsync('diagnosticList', '', function(err, res)
+        if err == vim.NIL then
+            local items = {}
+            for _, d in ipairs(res) do
+                local text = ('[%s%s] %s'):format((d.source == '' and 'coc.nvim' or d.source),
+                    (d.code == vim.NIL and '' or ' ' .. d.code), d.message:match('([^\n]+)\n*'))
+                local item = {
+                    filename = d.file,
+                    lnum = d.lnum,
+                    end_lnum = d.end_lnum,
+                    col = d.col,
+                    end_col = d.end_col,
+                    text = text,
+                    type = d.severity
+                }
+                table.insert(items, item)
+            end
+            fn.setqflist({}, ' ', {title = 'CocDiagnosticList', items = items})
+
+            cmd('bo cope')
+        end
+    end)
+end
 EOF
 " === treesitter ===
 lua <<EOF
@@ -1221,7 +1274,7 @@ require'nvim-treesitter.configs'.setup {
         if lang == "java" then
             return true
         end
-        local max_filesize = 100 * 1024 -- 100 KB
+        local max_filesize = 1000 * 1024 -- 100 KB
         local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
         if ok and stats and stats.size > max_filesize then
             return true
@@ -1270,6 +1323,54 @@ require'treesitter-context'.setup{
     }
 }
 EOF
+
+
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  textobjects = {
+    select = {
+      enable = true,
+
+      -- Automatically jump forward to textobj, similar to targets.vim
+      lookahead = true,
+
+      keymaps = {
+        -- You can use the capture groups defined in textobjects.scm
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        ["ac"] = "@class.outer",
+        -- You can optionally set descriptions to the mappings (used in the desc parameter of
+        -- nvim_buf_set_keymap) which plugins like which-key display
+        ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
+        -- You can also use captures from other query groups like `locals.scm`
+        ["as"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },
+      },
+      -- You can choose the select mode (default is charwise 'v')
+      --
+      -- Can also be a function which gets passed a table with the keys
+      -- * query_string: eg '@function.inner'
+      -- * method: eg 'v' or 'o'
+      -- and should return the mode ('v', 'V', or '<c-v>') or a table
+      -- mapping query_strings to modes.
+      selection_modes = {
+        ['@parameter.outer'] = 'v', -- charwise
+        ['@function.outer'] = 'V', -- linewise
+        ['@class.outer'] = '<c-v>', -- blockwise
+      },
+      -- If you set this to `true` (default is `false`) then any textobject is
+      -- extended to include preceding or succeeding whitespace. Succeeding
+      -- whitespace has priority in order to act similarly to eg the built-in
+      -- `ap`.
+      --
+      -- Can also be a function which gets passed a table with the keys
+      -- * query_string: eg '@function.inner'
+      -- * selection_mode: eg 'v'
+      -- and should return true of false
+      include_surrounding_whitespace = true,
+    },
+  },
+}
+EOF
 let g:context_add_mappings = 0
 "let g:context_presenter= 'preview'
 let g:context_enabled = 0
@@ -1277,7 +1378,3 @@ nnoremap <leader>ct :ContextToggleWindow<CR>
 " ===================== others ===========================
 let g:python3_host_prog = 'python3'
 hi String guifg=#11111
-call glaive#Install()
-" Optional: Enable codefmt's default mappings on the <Leader>= prefix.
-Glaive codefmt plugin[mappings]
-Glaive codefmt google_java_executable="java -jar /home/yimwang/google-java-format-1.19.2-all-deps.jar"check_reclaimable_timestamp
