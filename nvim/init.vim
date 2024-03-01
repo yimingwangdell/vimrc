@@ -121,7 +121,7 @@ augroup NVIMRC
 augroup END
 map <leader>sl :set nosplitright<CR>:set splitright<CR>:vnew <CR>
 map <leader>sv :set nosplitright<CR>:set splitright<CR>:vsplit $MYVIMRC<CR>
-map <leader>sj :set nosplitbelow<CR>:set splitbelow<CR>:new <CR> 
+map <leader>sj :set nosplitbelow<CR>:set splitbelow<CR>:new <CR>
 map <up> :res -5<CR>
 map <down> :res +5<CR>
 map <left> :vertical resize+5<CR>
@@ -716,8 +716,9 @@ nnoremap <leader>ft :Telescope aerial<CR>
 
 
 nnoremap <leader>lg :LazyGitCurrentFile<CR>
-nnoremap <leader>log :Gclog! -5000 -- %
-vnoremap <leader>log :Gclog! -5000<CR>
+nnoremap <leader>log :Gclog! -5000 -- <CR>:copen<CR>
+nnoremap <leader>logg :Gclog! -5000 -- %<CR>:copen<CR>
+vnoremap <leader>log :Gclog! -5000<CR>:copen<CR>
 nnoremap <leader>cga /\.java<CR>
 nnoremap <leader>cgj /^(Test)\.java$<CR>
 nnoremap <leader>cgt /Test\.java<CR>
@@ -1211,7 +1212,7 @@ function _G.jumpToLoc(locs)
     fn.setloclist(0, {}, ' ', {title = 'CocLocationList', items = locs})
     local winid = fn.getloclist(0, {winid = 0}).winid
     if winid == 0 then
-        cmd('abo lw')
+        cmd('bel lw')
     else
         api.nvim_set_current_win(winid)
     end
