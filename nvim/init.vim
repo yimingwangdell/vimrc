@@ -783,6 +783,8 @@ endfunc
 lua <<EOF
 require('gitsigns').setup()
 EOF
+nnoremap [[ :Gitsign prev_hunk<CR>
+nnoremap ]] :Gitsign next_hunk<CR>
 
 " ===
 " === auto-pairs
