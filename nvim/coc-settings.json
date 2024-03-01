@@ -1,4 +1,5 @@
 {
+  "java.compile.nullAnalysis.mode": "disabled",
     "java.import.maven.enabled": false,
     
     "list.interactiveDebounceTime":10,
@@ -84,13 +85,9 @@
     "<<": "gitStage",
     ">>": "gitUnstage"
   },
-  "java.autobuild.enable": "false",
-  "java.jdt.ls.directory": "/home/yimwang/jdtls",
-  "java.jdt.ls.java.home": "/usr/lib/jvm/jdk-11-oracle-x64",
   "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx16G -Xms10G -Xlog:disable",
   "java.project.referencedLibraries": [
       "lib/**/*.jar",
-      "/root/workspace/projects/storage/build/lib/*.jar"
   ],
     "java.enabled": true,
     "java.autobuild.enabled": false,
@@ -103,9 +100,7 @@
             "default":true
         }
     ],
-"memoryMode": "DegradeClosed",
-"explorer.width": 60,
-"documentHighlight.priority": -1,
+  "documentHighlight.priority": -1,
 	"coc.preferences.extensionUpdateCheck": "daily",
 	"coc.preferences.messageLevel": "error",
 	"coc.source.syntax.firstMatch": false,
@@ -236,7 +231,6 @@
     }
   },
   "snippets.ultisnips.pythonPrompt": false,
-  "inlayHint.enableParameter": true,
-  "inlayHint.display": true,
+  "inlayHint.enable": false,
   "java.inlayHints.parameterNames.enabled": "all"
 }
