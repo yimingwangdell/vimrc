@@ -85,7 +85,7 @@
     "<<": "gitStage",
     ">>": "gitUnstage"
   },
-  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx16G -Xms10G -Xlog:disable",
+  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx16G -Xms10G -Xlog:disable -Djavax.net.ssl.trustStore=/usr/lib/jvm/jdk-11-oracle-x64/lib/security/cacerts -Djavax.net.ssl.trustStorePassword=changeit",
   "java.project.referencedLibraries": [
       "lib/**/*.jar",
   ],
