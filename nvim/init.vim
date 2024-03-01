@@ -202,7 +202,7 @@ Plug 'nvim-tree/nvim-web-devicons'
 
 " File navigation
 Plug 'nvim-tree/nvim-tree.lua'
-Plug 'nvim-telescope/telescope.nvim',  { 'tag': '0.1.5' }
+Plug 'nvim-telescope/telescope.nvim',
 Plug 'junegunn/fzf'
 Plug 'nvim-lua/plenary.nvim' " don't forget to add this one if you don't have it yet!
 Plug 'ThePrimeagen/harpoon', {'branch': 'harpoon2'}
@@ -717,7 +717,7 @@ nnoremap <leader>ft :Telescope aerial<CR>
 
 nnoremap <leader>lg :LazyGitCurrentFile<CR>
 nnoremap <leader>log :Gclog! -5000 -- <CR>:copen<CR>
-nnoremap <leader>logg :Gclog! -5000 -- %<CR>:copen<CR>
+nnoremap <leader>logc :Gclog! -5000 -- %<CR>:copen<CR>
 vnoremap <leader>log :Gclog! -5000<CR>:copen<CR>
 nnoremap <leader>cga /\.java<CR>
 nnoremap <leader>cgj /^(Test)\.java$<CR>
