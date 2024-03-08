@@ -97,10 +97,10 @@ set ww+=h,l
 noremap L $
 noremap H 0
 nnoremap Y y$
-nnoremap <c-d> 3<c-e>
-nnoremap <c-u> 3<c-y>
-vnoremap <c-d> 3j
-vnoremap <c-u> 3k
+nnoremap <c-d> 4<c-e>
+nnoremap <c-u> 4<c-y>
+vnoremap <c-d> 4j
+vnoremap <c-u> 4k
 inoremap jk <ESC>
 
 let mapleader=" "
@@ -198,6 +198,8 @@ Plug 'morhetz/gruvbox'
 Plug 'nvim-lualine/lualine.nvim'
 " If you want to have icons in your statusline choose one of these
 Plug 'nvim-tree/nvim-web-devicons'
+Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'SmiteshP/nvim-gps'
 " General Highlighter
 
 " File navigation
@@ -346,6 +348,7 @@ let g:copilot_no_tab_map = v:true
 
 " ============== lualine =============
 lua << EOF
+local gps = require("nvim-gps")
 require('lualine').setup(
  {
   options = {
@@ -369,18 +372,20 @@ require('lualine').setup(
   sections = {
     lualine_a = {},
     lualine_b = {{'branch', fmt = function(str) return str:sub(1,20) end}, 'diff', 'diagnostics'},
-    lualine_c = {  {'filename', path = 3, shorting_target = 60,}},
-    lualine_x = {{'b:coc_current_function', align='right' }},
-    lualine_y = { 'g:coc_status'},
-    lualine_z = {'progress', 'location'}
+    lualine_c = {  {'filename', path = 3, shorting_target = 60 }},
+    lualine_x = {{gps.get_location, cond = gps.is_available, color="WildMenu"}},
+
+    lualine_y = { {'g:coc_status', fmt= function(str) return str:sub(-30, -1) end, icon = {'', align='left'}}},
+    lualine_z = {'progress', 'encoding', 'fileformat'}
   },
   inactive_sections = {
     lualine_a = {},
-    lualine_b = {},
-    lualine_c = {'filename'},
-    lualine_x = {'location'},
-    lualine_y = {},
-    lualine_z = {}
+    lualine_b = {{'branch', fmt = function(str) return str:sub(1,20) end}, 'diff', 'diagnostics'},
+    lualine_c = {  {'filename', path = 3, shorting_target = 60 }},
+    lualine_x = {{gps.get_location, cond = gps.is_available, color="Folded"}},
+
+    lualine_y = { {'g:coc_status', fmt= function(str) return str:sub(-30, -1) end, icon = {'', align='left'}}},
+    lualine_z = {'progress', 'encoding', 'fileformat'}
   },
   tabline = {},
   winbar = {},
@@ -1373,6 +1378,9 @@ require'nvim-treesitter.configs'.setup {
     },
   },
 }
+EOF
+lua <<EOF
+require("nvim-gps").setup()
 EOF
 let g:context_add_mappings = 0
 "let g:context_presenter= 'preview'
