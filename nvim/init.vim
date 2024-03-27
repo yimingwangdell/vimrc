@@ -122,6 +122,8 @@ vnoremap / y/<c-r>0<cr>
 map s <nop>
 map S :w<CR>
 map J <nop>
+map ; <nop>
+map , <nop>
 nmap Q :q<CR>
 
 let mapleader=" "
@@ -149,7 +151,41 @@ nnoremap th :tabp<CR>
 "jump to right side tab
 nnoremap tl :tabn<CR>
 "jump to N tab
-nnoremap tj :tabn 
+nnoremap t1 :tabn1<CR>
+nnoremap t2 :tabn2<CR>
+nnoremap t3 :tabn3<CR>
+nnoremap t4 :tabn4<CR>
+nnoremap t5 :tabn5<CR>
+nnoremap t6 :tabn6<CR>
+nnoremap t7 :tabn7<CR>
+nnoremap t8 :tabn8<CR>
+nnoremap t9 :tabn9<CR>
+nnoremap t10 :tabn10<CR>
+nnoremap t11 :tabn11<CR>
+nnoremap t12 :tabn12<CR>
+nnoremap t13 :tabn13<CR>
+nnoremap t14 :tabn14<CR>
+nnoremap t15 :tabn15<CR>
+nnoremap t16 :tabn16<CR>
+nnoremap t17 :tabn17<CR>
+nnoremap t18 :tabn18<CR>
+nnoremap t19 :tabn19<CR>
+nnoremap t20 :tabn20<CR>
+nnoremap t21 :tabn21<CR>
+nnoremap t22 :tabn22<CR>
+nnoremap t23 :tabn23<CR>
+nnoremap t24 :tabn24<CR>
+nnoremap t25 :tabn25<CR>
+nnoremap t26 :tabn26<CR>
+nnoremap t27 :tabn27<CR>
+nnoremap t28 :tabn28<CR>
+nnoremap t29 :tabn29<CR>
+nnoremap t30 :tabn30<CR>
+nnoremap t31 :tabn31<CR>
+nnoremap t32 :tabn32<CR>
+nnoremap t33 :tabn33<CR>
+nnoremap t34 :tabn34<CR>
+nnoremap t35 :tabn35<CR>
 
 
 " Display translation in a window
@@ -320,7 +356,6 @@ Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'theniceboy/pair-maker.vim'
 
 " For general writing
-Plug 'reedes/vim-wordy'
 
 " Bookmarks
 Plug 'MattesGroeger/vim-bookmarks'
@@ -336,8 +371,6 @@ Plug 'nvim-treesitter/nvim-treesitter-context'
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'wellle/context.vim'
 Plug 'talbergs/context.nvim'
-Plug 'skywind3000/asynctasks.vim'
-Plug 'skywind3000/asyncrun.vim'
 
 " Vim Applications
 
@@ -352,7 +385,6 @@ Plug 'lambdalisue/suda.vim' " do stuff like :sudowrite
 Plug 'xolox/vim-session'
 Plug 'xolox/vim-misc' " vim-session dep
 Plug 'voldikss/vim-translator' "ty to translate
-Plug 'theniceboy/vim-calc'
 
 " Dependencies
 
@@ -1138,7 +1170,6 @@ lua <<EOF
 EOF
 noremap s <Cmd>lua require("substitute").operator()<CR>
 vnoremap s <Cmd>lua require("substitute").visual()<CR>
-
 " ==================== WhichKey ====================
 nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
 
@@ -1156,8 +1187,6 @@ noremap ' <Cmd>lua require('flash').jump()<CR>
 
 
 " ====================== flash =====================
-map ; <Plug>(clever-f-repeat-forward)
-map , <Plug>(clever-f-repeat-back)
 
 " ====================== flash =====================
 let g:indentLine_setColors = 0
