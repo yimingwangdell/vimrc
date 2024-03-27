@@ -82,7 +82,6 @@ set clipboard+=unnamedplus
     "       \   },
     "       \   'cache_enabled': 1,
     "       \ }
-vmap y ygv<Esc>
 
 set hlsearch
 exec "nohlsearch"
@@ -94,42 +93,63 @@ set ww+=h,l
 
 
 
-noremap L $
+" calculate selection
+vnoremap <LEADER>c yo<c-r>=<c-r>"<CR>
+" copy current file path
+nnoremap <leader>cp :let @*=expand('%:t')<CR>:echo "path copied"<CR>
+nnoremap <leader>cfp :let @*=expand('%')<CR>:echo "full path copied"<CR>
+" fix wrong cursor postion in vim after yanking
+vmap y ygv<Esc>
+" paste to new line
+nnoremap P o<Esc>p
+
 noremap H 0
+noremap L $
+" jump to end in insert mode
+inoremap jk <ESC>
+inoremap jl <ESC>A
+inoremap jh <ESC>0i
+" delete a word backward 
+inoremap j<BS> <ESC>bC
+" copy whole line
 nnoremap Y y$
 nnoremap <c-d> 4<c-e>
 nnoremap <c-u> 4<c-y>
 vnoremap <c-d> 4j
 vnoremap <c-u> 4k
-inoremap jk <ESC>
-
-let mapleader=" "
-let maplocalleader=" "
-
-
+" search selection
 vnoremap / y/<c-r>0<cr>
 map s <nop>
 map S :w<CR>
 map J <nop>
 nmap Q :q<CR>
-fun! Getchar()
-  return strcharpart(strpart(getline('.'), col('.') - 1), 0, 1)
-endfun
+
+let mapleader=" "
+let maplocalleader=" "
+
+
+" auto reload vimrc
 augroup NVIMRC
     autocmd!
     autocmd BufWritePost init.vim exec ":so %"
 augroup END
+" split window
 map <leader>sl :set nosplitright<CR>:set splitright<CR>:vnew <CR>
 map <leader>sv :set nosplitright<CR>:set splitright<CR>:vsplit $MYVIMRC<CR>
 map <leader>sj :set nosplitbelow<CR>:set splitbelow<CR>:new <CR>
+" resize window
 map <up> :res -5<CR>
 map <down> :res +5<CR>
 map <left> :vertical resize+5<CR>
 map <right> :vertical resize-5<CR>
-map ti :tabnew<CR>
-map th :tabp<CR>
-map tl :tabn<CR>
-inoremap <c-a> <ESC>A
+" new tab
+nnoremap ti :tabnew<CR>
+"jump to left side tab
+nnoremap th :tabp<CR>
+"jump to right side tab
+nnoremap tl :tabn<CR>
+"jump to N tab
+nnoremap tj :tabn 
 
 
 " Display translation in a window
@@ -160,7 +180,6 @@ map <LEADER>j <C-w><down>
 map <LEADER>l <C-w><right>
 map <LEADER>Q :qa!
 map <LEADER>fs :call MaximizeToggle()<CR>
-map <LEADER>bl :Gitsigns blame_line<CR>
 
 function! MaximizeToggle()
   if exists("s:maximize_session")
@@ -193,13 +212,16 @@ Plug 'github/copilot.vim'
 Plug 'arzg/vim-colors-xcode'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'morhetz/gruvbox'
+Plug 'rebelot/kanagawa.nvim'
+Plug 'catppuccin/vim'
+Plug 'tomasr/molokai'
 
 " Status line
 Plug 'nvim-lualine/lualine.nvim'
 " If you want to have icons in your statusline choose one of these
 Plug 'nvim-tree/nvim-web-devicons'
 Plug 'nvim-treesitter/nvim-treesitter'
-Plug 'SmiteshP/nvim-gps'
+Plug 'yimingwangdell/nvim-gps'
 " General Highlighter
 
 " File navigation
@@ -322,8 +344,6 @@ Plug 'skywind3000/asyncrun.vim'
 " Other visual enhancement
 Plug 'luochen1990/rainbow'
 Plug 'ryanoasis/vim-devicons'
-Plug 'arecarn/vim-crunch'
-Plug 'arecarn/vim-selection'
 Plug 'kevinhwang91/nvim-bqf'
 "
 "
@@ -332,6 +352,7 @@ Plug 'lambdalisue/suda.vim' " do stuff like :sudowrite
 Plug 'xolox/vim-session'
 Plug 'xolox/vim-misc' " vim-session dep
 Plug 'voldikss/vim-translator' "ty to translate
+Plug 'theniceboy/vim-calc'
 
 " Dependencies
 
@@ -371,7 +392,7 @@ require('lualine').setup(
   },
   sections = {
     lualine_a = {},
-    lualine_b = {{'branch', fmt = function(str) return str:sub(1,20) end}, 'diff', 'diagnostics'},
+    lualine_b = {{'branch', fmt = function(str) return str:sub(1,20) end}, 'diff',},
     lualine_c = {  {'filename', path = 3, shorting_target = 60 }},
     lualine_x = {{gps.get_location, cond = gps.is_available, color="WildMenu"}},
 
@@ -380,14 +401,20 @@ require('lualine').setup(
   },
   inactive_sections = {
     lualine_a = {},
-    lualine_b = {{'branch', fmt = function(str) return str:sub(1,20) end}, 'diff', 'diagnostics'},
+    lualine_b = {{'branch', fmt = function(str) return str:sub(1,20) end}, 'diff',},
     lualine_c = {  {'filename', path = 3, shorting_target = 60 }},
     lualine_x = {{gps.get_location, cond = gps.is_available, color="Folded"}},
 
     lualine_y = { {'g:coc_status', fmt= function(str) return str:sub(-30, -1) end, icon = {'', align='left'}}},
     lualine_z = {'progress', 'encoding', 'fileformat'}
   },
-  tabline = {},
+  tabline = { 
+      lualine_a = {{'tabs',tab_max_length = 40, max_length = vim.o.columns*9/10 , use_mode_colors = false, mode=2, path=0}},
+  lualine_b = {},
+  lualine_c = {},
+  lualine_x = {},
+  lualine_y = {},
+  lualine_z = { 'diagnostics'}},
   winbar = {},
   inactive_winbar = {},
   extensions = {}
@@ -722,7 +749,8 @@ nnoremap <leader>ft :Telescope aerial<CR>
 
 nnoremap <leader>lg :LazyGitCurrentFile<CR>
 nnoremap <leader>log :Gclog! -5000 -- <CR>:copen<CR>
-nnoremap <leader>logc :Gclog! -5000 -- %<CR>:copen<CR>
+nnoremap <leader>logd :0Gclog! -5000 -- %<CR>:copen<CR>
+nnoremap <leader>logc :Git log -5000 --patch -- %<CR>:copen<CR>
 vnoremap <leader>log :Gclog! -5000<CR>:copen<CR>
 nnoremap <leader>cga /\.java<CR>
 nnoremap <leader>cgj /^(Test)\.java$<CR>
@@ -783,6 +811,10 @@ function g:Undotree_CustomMap()
     nmap <buffer> <c-j> <plug>UndotreeNextState
     nmap <buffer> <c-k> <plug>UndotreePreviousState
 endfunc
+
+
+" === git blame ===
+map <LEADER>bl :Gitsigns blame_line<CR>
 
 " === gitsign ===
 lua <<EOF
