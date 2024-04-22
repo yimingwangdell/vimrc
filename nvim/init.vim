@@ -33,6 +33,7 @@ let g:terminal_color_14 = '#9AEDFE'
 syntax sync minlines=999999
 autocmd BufEnter * :syntax sync fromstart
 set laststatus=3
+set scrolloff=10
 set synmaxcol=0
 set iskeyword+=-
 set termguicolors
@@ -96,8 +97,8 @@ set ww+=h,l
 " calculate selection
 vnoremap <LEADER>c yo<c-r>=<c-r>"<CR>
 " copy current file path
-nnoremap <leader>cp :let @*=expand('%:t')<CR>:echo "path copied"<CR>
-nnoremap <leader>cfp :let @*=expand('%')<CR>:echo "full path copied"<CR>
+nnoremap <space>cp :let @*=expand('%:t')<CR>:echo "path copied"<CR>
+nnoremap <space>cfp :let @*=expand('%')<CR>:echo "full path copied"<CR>
 " fix wrong cursor postion in vim after yanking
 vmap y ygv<Esc>
 " paste to new line
@@ -110,7 +111,7 @@ inoremap jk <ESC>
 inoremap jl <ESC>A
 inoremap jh <ESC>0i
 " delete a word backward 
-inoremap j<BS> <ESC>bC
+inoremap j<BS> <ESC>bcw
 " copy whole line
 nnoremap Y y$
 nnoremap <c-d> 4<c-e>
@@ -124,7 +125,7 @@ map S :w<CR>
 map J <nop>
 map ; <nop>
 map , <nop>
-nmap Q :q<CR>
+nmap Q :bd<CR>
 
 let mapleader=" "
 let maplocalleader=" "
@@ -209,13 +210,13 @@ function! s:toggle_lang()
   endif
 endfunction
 let g:translator_window_type = 'preview'
-let g:translator_default_engines = ['bing', 'google'] 
+let g:translator_default_engines = ['google', 'bing'] 
 map <LEADER>k <C-w>k
 map <LEADER>h <C-w><left>
 map <LEADER>j <C-w><down>
 map <LEADER>l <C-w><right>
 map <LEADER>Q :qa!
-map <LEADER>fs :call MaximizeToggle()<CR>
+map <LEADER>fs :call ToggleFs()<CR>
 
 function! MaximizeToggle()
   if exists("s:maximize_session")
@@ -231,6 +232,18 @@ function! MaximizeToggle()
     exec "mksession! " . s:maximize_session
     only
   endif
+endfunction
+
+let s:enabled = 0
+function! ToggleFs()
+    if s:enabled
+        normal <c-w>=
+        :exe "norm \<c-w>="
+        let s:enabled = 0
+    else
+        :exe "norm \<c-w>|"
+        let s:enabled = 1
+    endif
 endfunction
 
 call plug#begin('~/.vim/plugged')
@@ -527,7 +540,8 @@ nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
 " GoTo code navigation
-nmap <silent> gd <Plug>(coc-definition)
+" nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gd <c-]>
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
@@ -777,13 +791,17 @@ nnoremap <leader>fb :Telescope buffers<CR>
 nnoremap <leader>fw :Telescope live_grep<CR>
 nnoremap <leader>ff :Telescope find_files<CR>
 nnoremap <leader>ft :Telescope aerial<CR>
+nnoremap <leader>f/ :Telescope search_history<CR>
 
 
 nnoremap <leader>lg :LazyGitCurrentFile<CR>
 nnoremap <leader>log :Gclog! -5000 -- <CR>:copen<CR>
+"show commit
 nnoremap <leader>logd :0Gclog! -5000 -- %<CR>:copen<CR>
-nnoremap <leader>logc :Git log -5000 --patch -- %<CR>:copen<CR>
+"show only file changes
+nnoremap <leader>logc :tab Git --paginate log -5000 --patch -- %<CR>
 vnoremap <leader>log :Gclog! -5000<CR>:copen<CR>
+
 nnoremap <leader>cga /\.java<CR>
 nnoremap <leader>cgj /^(Test)\.java$<CR>
 nnoremap <leader>cgt /Test\.java<CR>
@@ -844,9 +862,12 @@ function g:Undotree_CustomMap()
     nmap <buffer> <c-k> <plug>UndotreePreviousState
 endfunc
 
-
+" === fugitive ===
+let g:fugitive_summary_format = "%<(16,trunc)%an || %s"
+nnoremap <leader>diff :Gvdiffsplit!<CR>
 " === git blame ===
 map <LEADER>bl :Gitsigns blame_line<CR>
+vnoremap <leader>bl :Git blame<CR>
 
 " === gitsign ===
 lua <<EOF
@@ -1150,9 +1171,6 @@ noremap # #<Cmd>lua require('hlslens').start()<CR>N
 noremap g* g*<Cmd>lua require('hlslens').start()<CR>
 noremap g# g#<cmd>lua require('hlslens').start()<CR>
 
-" ==================== vim-matchup ====================
-map { %
-map } ]%
 
 " ==================== bufjump ====================
 
@@ -1443,6 +1461,7 @@ EOF
 lua <<EOF
 require("nvim-gps").setup()
 EOF
+
 let g:context_add_mappings = 0
 "let g:context_presenter= 'preview'
 let g:context_enabled = 0
