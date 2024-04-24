@@ -125,7 +125,7 @@ map S :w<CR>
 map J <nop>
 map ; <nop>
 map , <nop>
-nmap Q :bd<CR>
+nmap Q :Sayonara<CR>
 
 let mapleader=" "
 let maplocalleader=" "
@@ -151,6 +151,7 @@ nnoremap ti :tabnew<CR>
 nnoremap th :tabp<CR>
 "jump to right side tab
 nnoremap tl :tabn<CR>
+nnoremap ts :tab split<CR>
 "jump to N tab
 nnoremap t1 :tabn1<CR>
 nnoremap t2 :tabn2<CR>
@@ -343,6 +344,7 @@ Plug 'nvim-neorg/neorg'
 " Plug ''
 "
 " Editor Enhancement
+Plug 'mhinz/vim-sayonara'
 Plug 'petertriho/nvim-scrollbar'
 Plug 'kwkarlwang/bufjump.nvim'
 Plug 'liuchengxu/vim-which-key'
