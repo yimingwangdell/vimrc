@@ -162,32 +162,6 @@ nnoremap t6 :tabn6<CR>
 nnoremap t7 :tabn7<CR>
 nnoremap t8 :tabn8<CR>
 nnoremap t9 :tabn9<CR>
-nnoremap t10 :tabn10<CR>
-nnoremap t11 :tabn11<CR>
-nnoremap t12 :tabn12<CR>
-nnoremap t13 :tabn13<CR>
-nnoremap t14 :tabn14<CR>
-nnoremap t15 :tabn15<CR>
-nnoremap t16 :tabn16<CR>
-nnoremap t17 :tabn17<CR>
-nnoremap t18 :tabn18<CR>
-nnoremap t19 :tabn19<CR>
-nnoremap t20 :tabn20<CR>
-nnoremap t21 :tabn21<CR>
-nnoremap t22 :tabn22<CR>
-nnoremap t23 :tabn23<CR>
-nnoremap t24 :tabn24<CR>
-nnoremap t25 :tabn25<CR>
-nnoremap t26 :tabn26<CR>
-nnoremap t27 :tabn27<CR>
-nnoremap t28 :tabn28<CR>
-nnoremap t29 :tabn29<CR>
-nnoremap t30 :tabn30<CR>
-nnoremap t31 :tabn31<CR>
-nnoremap t32 :tabn32<CR>
-nnoremap t33 :tabn33<CR>
-nnoremap t34 :tabn34<CR>
-nnoremap t35 :tabn35<CR>
 
 
 " Display translation in a window
@@ -350,6 +324,7 @@ Plug 'kwkarlwang/bufjump.nvim'
 Plug 'liuchengxu/vim-which-key'
 Plug 'kevinhwang91/nvim-hlslens'
 Plug 'jiangmiao/auto-pairs'
+Plug 'azabiong/vim-highlighter'
 
 Plug 'mg979/vim-visual-multi'
 Plug 'tomtom/tcomment_vim' "<space><space> to comment a line
@@ -456,7 +431,7 @@ require('lualine').setup(
     lualine_z = {'progress', 'encoding', 'fileformat'}
   },
   tabline = { 
-      lualine_a = {{'tabs',tab_max_length = 40, max_length = vim.o.columns*9/10 , use_mode_colors = false, mode=2, path=0}},
+      lualine_a = {{'tabs',tab_max_length = 40, max_length = vim.o.columns*35/36 , use_mode_colors = false, mode=2, path=0}},
   lualine_b = {},
   lualine_c = {},
   lualine_x = {},
@@ -791,6 +766,8 @@ nnoremap <leader>fr :Telescope oldfiles <CR>
 nnoremap <leader>fh :Telescope resume <CR>
 nnoremap <leader>fb :Telescope buffers<CR>
 nnoremap <leader>fw :Telescope live_grep<CR>
+nnoremap <leader>fv :lua require('telescope.builtin').live_grep({default_text = " ", search_dirs = { "/root/vimwiki" }})<CR>
+
 nnoremap <leader>ff :Telescope find_files<CR>
 nnoremap <leader>ft :Telescope aerial<CR>
 nnoremap <leader>f/ :Telescope search_history<CR>
@@ -865,7 +842,7 @@ function g:Undotree_CustomMap()
 endfunc
 
 " === fugitive ===
-let g:fugitive_summary_format = "%<(16,trunc)%an || %s"
+let g:fugitive_summary_format = "%<(16,trunc)%an||%<(30,trunc)%ad||%s"
 nnoremap <leader>diff :Gvdiffsplit!<CR>
 " === git blame ===
 map <LEADER>bl :Gitsigns blame_line<CR>
@@ -953,7 +930,7 @@ function! s:go_guru_scope_from_git_root()
   return substitute(gitroot, pattern, "", "") . "/... -vendor/"
 endfunction
 
-au FileType go silent exe "GoGuruScope " . s:go_guru_scope_from_git_root()
+" au FileType go silent exe "GoGuruScope " . s:go_guru_scope_from_git_root()
 
 
 " ===
@@ -1267,7 +1244,10 @@ preview = {
             end, 60)
         end
         return true
-    end
+    end,
+    win_height = 999,
+    win_vheight = 999,
+
 },
  filter = {
         fzf = {
