@@ -147,9 +147,12 @@ map <left> :vertical resize+5<CR>
 map <right> :vertical resize-5<CR>
 " new tab
 nnoremap ti :tabnew<CR>
+nnoremap ta :tablast<CR>:tabnew<CR>
 "jump to left side tab
+nnoremap - :tabp<CR>
 nnoremap th :tabp<CR>
 "jump to right side tab
+nnoremap = :tabn<CR>
 nnoremap tl :tabn<CR>
 nnoremap ts :tab split<CR>
 "jump to N tab
@@ -251,6 +254,7 @@ Plug 'yimingwangdell/nvim-gps'
 " File navigation
 Plug 'nvim-tree/nvim-tree.lua'
 Plug 'nvim-telescope/telescope.nvim',
+Plug 'LukasPietzschmann/telescope-tabs'
 Plug 'junegunn/fzf'
 Plug 'nvim-lua/plenary.nvim' " don't forget to add this one if you don't have it yet!
 Plug 'ThePrimeagen/harpoon', {'branch': 'harpoon2'}
@@ -517,8 +521,8 @@ nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
 " GoTo code navigation
-" nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gd <c-]>
+nmap <silent> gd <Plug>(coc-definition)
+" nmap <silent> gd <c-]>
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
@@ -764,7 +768,8 @@ EOF
 
 nnoremap <leader>fr :Telescope oldfiles <CR>
 nnoremap <leader>fh :Telescope resume <CR>
-nnoremap <leader>fb :Telescope buffers<CR>
+" nnoremap <leader>fb :Telescope buffers<CR>
+nnoremap <leader>fb :Telescope telescope-tabs list_tabs<CR>
 nnoremap <leader>fw :Telescope live_grep<CR>
 nnoremap <leader>fv :lua require('telescope.builtin').live_grep({default_text = " ", search_dirs = { "/root/vimwiki" }})<CR>
 
@@ -1194,6 +1199,11 @@ lua <<EOF
     defaults = {
       layout_strategy = 'vertical',
       layout_config = { height = 0.99, width = 0.99 },
+      mappings = {
+        i = {
+          ["<esc>"] = require("telescope.actions").close,
+        },
+      },
     },
     extensions = {
         aerial = {
@@ -1206,7 +1216,12 @@ lua <<EOF
     },
   },
   }
+	require('telescope').load_extension 'telescope-tabs'
+  require('telescope-tabs').setup {
+			-- Your custom config :^)
+  }
 EOF
+
 
 "===cursorword===
 let g:cursorword = 1
