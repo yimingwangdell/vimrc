@@ -15,7 +15,7 @@
 ### basic key mappings
 
 | cmd                                 | description                                            |
-| basic                               | basic                                                  |
+|-------------------------------------|--------------------------------------------------------|
 | shift + s                           | save file                                              |
 | shift + q                           | quit file                                              |
 | space shift + q                     | quit neovim                                            |
@@ -41,7 +41,7 @@
 | space fs                            | toggle windows fullscreen                              |
 | space e                             | toggle file explorer                                   |
 | tt                                  | open ranger(require ranger installed)                  |
-| search                              | search                                                 |
+|-------------------------------------|--------------------------------------------------------|
 | space ff                            | search file in project(require fzf installed)          |
 | space fr                            | search opened once history file                        |
 | space fw                            | search string in project(require rg installed)         |
@@ -49,7 +49,7 @@
 | space fb                            | search opened file name                                |
 | space fh                            | resume last searching result                           |
 | use <down><up>                      | next/previous item in search result window             |
-| lsp                                 | lsp                                                    |
+|-------------------------------------|--------------------------------------------------------|
 | tab(insert mode)                    | autocomplete(using LSP)                                |
 | gk                                  | show under cursor method doc(using LSP)                |
 | gd                                  | goto under cursor symbol definition(using LSP)         |
@@ -60,7 +60,7 @@
 | space tg                            | show current file symbol outline                       |
 | space gd                            | go to definition/implementatio(using anyjump)          |
 | alt+o/alt+i                         | jump back/forward between file                         |
-| useful tool                         | useful tool                                            |
+|-------------------------------------|--------------------------------------------------------|
 | ctrl+n....nnnnn                     | mutiple cursor  enter/increase                         |
 | shift + Q                           | mutiple cursor decrease                                |
 | space +enter...enter enter          | select block                                           |
@@ -68,7 +68,7 @@
 | space oa/oc                         | nvim orgmode menu/action                               |
 | ty                                  | translate under cursor/selected content to chinese     |
 | ctrl + p                            | markdown preview using chrome                          |
-| git                                 | git                                                    |
+|-------------------------------------|--------------------------------------------------------|
 | space log                           | open git log for this project/also work in visual mode |
 | space logc                          | open git log for current file                          |
 | space bl                            | open git blame current line/also work in visual mode   |
