@@ -14,59 +14,65 @@
 
 ### basic key mappings
 
-| cmd                                 | description                                            |
-|-------------------------------------|--------------------------------------------------------|
-| shift + s                           | save file                                              |
-| shift + q                           | quit                                                   |
-| shift + h                           | goto line begining                                     |
-| shift + l                           | goto line end                                          |
-| shift + j                           | 5 lines down                                           |
-| shift + k                           | 5 lines up                                             |
-| ti                                  | add new tab to right                                   |
-| ta                                  | add new tab to end                                     |
-| th                                  | jump to left tab                                       |
-| tl                                  | jump to right tab                                      |
-| shift s+ ' or " or ( in visual mode | surround you select with ""/ ''/ ()                    |
-| shift + u                           | open file modify history                               |
-| /                                   | enhanced current file search                           |
-| space space                         | comment code                                           |
-| space sl/sj                         | split windows right/below                              |
-| space sv                            | open vim configuration                                 |
-| space h/j/k/l                       | jump between split windows                             |
-| space fs                            | toggle windows fullscreen                              |
-| space e                             | toggle file explorer                                   |
-| tt                                  | open ranger(require ranger installed)                  |
-|-------------------------------------|--------------------------------------------------------|
-| space ff                            | search file in project(require fzf installed)          |
-| space fr                            | search opened once history file                        |
-| space fw                            | search string in project(require rg installed)         |
-| space ft                            | search symbol in current file                          |
-| space fb                            | search opened file name                                |
-| space fh                            | resume last searching result                           |
-| use <down><up>                      | next/previous item in search result window             |
-|-------------------------------------|--------------------------------------------------------|
-| tab(insert mode)                    | autocomplete(using LSP)                                |
-| gk                                  | show under cursor method doc(using LSP)                |
-| gd                                  | goto under cursor symbol definition(using LSP)         |
-| gi                                  | goto implementation(using LSP)                         |
-| go                                  | goto type(using LSP)                                   |
-| gb                                  | jump back(using LSP)                                   |
-| gf                                  | open under cursor file path                            |
-| space tg                            | show current file symbol outline                       |
-| space gd                            | go to definition/implementatio(using anyjump)          |
-| alt+o/alt+i                         | jump back/forward between file                         |
-|-------------------------------------|--------------------------------------------------------|
-| ctrl+n....nnnnn                     | mutiple cursor  enter/increase                         |
-| shift + Q                           | mutiple cursor decrease                                |
-| space +enter...enter enter          | select block                                           |
-| space ww                            | open vimwiki notebook                                  |
-| space oa/oc                         | nvim orgmode menu/action                               |
-| space log                           | open git log for this project/also work in visual mode |
-| space logc                          | open git log for current file                          |
-| space bl                            | open git blame current line/also work in visual mode   |
-| space lg                            | open lazygit(awesome git tool)                         |
-| ty                                  | translate under cursor/selected content to chinese     |
-| ctrl + p                            | markdown preview using chrome                          |
+| cmd                                         | description                                            |
+| ---------------------------------------     | basic                                                  |
+| shift + s                                   | save file                                              |
+| shift + q                                   | quit file                                              |
+| space shift + q                             | quit neovim                                            |
+| shift + h                                   | goto line begining                                     |
+| shift + l                                   | goto line end                                          |
+| shift + j                                   | 5 lines down                                           |
+| shift + k                                   | 5 lines up                                             |
+| ti                                          | add new tab to right                                   |
+| ta                                          | add new tab to end                                     |
+| th                                          | jump to left tab                                       |
+| tl                                          | jump to right tab                                      |
+| {{                                          | jump to previous symbol                                |
+| }}                                          | jump to next symbol                                    |
+| [[                                          | jump to previous git hunk                              |
+| ]]                                          | jump to next git hunk                                  |
+| shift s+ ' or " or ( in visual mode         | surround you select with ""/ ''/ ()                    |
+| shift + u                                   | open file modify history                               |
+| /                                           | enhanced current file search                           |
+| space space                                 | comment code                                           |
+| space sl/sj                                 | split windows right/below                              |
+| space sv                                    | open vim configuration                                 |
+| space h/j/k/l                               | jump between split windows                             |
+| space fs                                    | toggle windows fullscreen                              |
+| space e                                     | toggle file explorer                                   |
+| tt                                          | open ranger(require ranger installed)                  |
+| -------------------------------------       | search                                                 |
+| space ff                                    | search file in project(require fzf installed)          |
+| space fr                                    | search opened once history file                        |
+| space fw                                    | search string in project(require rg installed)         |
+| space ft                                    | search symbol in current file                          |
+| space fb                                    | search opened file name                                |
+| space fh                                    | resume last searching result                           |
+| use <down><up>                              | next/previous item in search result window             |
+| -----------------------------------------   | lsp                                                    |
+| tab(insert mode)                            | autocomplete(using LSP)                                |
+| gk                                          | show under cursor method doc(using LSP)                |
+| gd                                          | goto under cursor symbol definition(using LSP)         |
+| gi                                          | goto implementation(using LSP)                         |
+| go                                          | goto type(using LSP)                                   |
+| gb                                          | jump back(using LSP)                                   |
+| gf                                          | open under cursor file path                            |
+| space tg                                    | show current file symbol outline                       |
+| space gd                                    | go to definition/implementatio(using anyjump)          |
+| alt+o/alt+i                                 | jump back/forward between file                         |
+| ------------------------------------------- | useful tool                                            |
+| ctrl+n....nnnnn                             | mutiple cursor  enter/increase                         |
+| shift + Q                                   | mutiple cursor decrease                                |
+| space +enter...enter enter                  | select block                                           |
+| space ww                                    | open vimwiki notebook                                  |
+| space oa/oc                                 | nvim orgmode menu/action                               |
+| ty                                          | translate under cursor/selected content to chinese     |
+| ctrl + p                                    | markdown preview using chrome                          |
+| ------------------------------------------- | git                                                    |
+| space log                                   | open git log for this project/also work in visual mode |
+| space logc                                  | open git log for current file                          |
+| space bl                                    | open git blame current line/also work in visual mode   |
+| space lg                                    | open lazygit(awesome git tool)                         |
 
 **For more features, please check vim configuration file.
 
