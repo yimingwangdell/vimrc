@@ -34,15 +34,15 @@
 | space sv                            | open vim configuration                                 |
 | space h/j/k/l                       | jump between split windows                             |
 | space fs                            | toggle windows fullscreen                              |
-| <leader>e                           | toggle file explorer                                   |
+| \<leader\>e                         | toggle file explorer                                   |
 | tt                                  | open ranger(require ranger installed)                  |
 |-------------------------------------|--------------------------------------------------------|
-| <leader>ff                          | search file in project(require fzf installed)          |
-| <leader>fr                          | search opened once history file                        |
-| <leader>fw                          | search string in project(require rg installed)         |
-| <leader>ft                          | search symbol in current file                          |
-| <leader>fb                          | search opened file name                                |
-| <leader>fh                          | resume last searching result                           |
+| \<leader\>ff                        | search file in project(require fzf installed)          |
+| \<leader\>fr                        | search opened once history file                        |
+| \<leader\>fw                        | search string in project(require rg installed)         |
+| \<leader\>ft                        | search symbol in current file                          |
+| \<leader\>fb                        | search opened file name                                |
+| \<leader\>fh                        | resume last searching result                           |
 | use <down><up>                      | next/previous item in search result window             |
 |-------------------------------------|--------------------------------------------------------|
 | tab(insert mode)                    | autocomplete(using LSP)                                |
@@ -52,7 +52,7 @@
 | go                                  | goto type(using LSP)                                   |
 | gb                                  | jump back(using LSP)                                   |
 | gf                                  | open under cursor file path                            |
-| <leader>tg                          | show current file symbol outline                       |
+| \<leader\>tg                        | show current file symbol outline                       |
 | space gd                            | go to definition/implementatio(using anyjump)          |
 | alt+o/alt+i                         | jump back/forward between file                         |
 |-------------------------------------|--------------------------------------------------------|
