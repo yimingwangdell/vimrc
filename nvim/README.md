@@ -34,15 +34,15 @@
 | space sv                            | open vim configuration                                 |
 | space h/j/k/l                       | jump between split windows                             |
 | space fs                            | toggle windows fullscreen                              |
-| \<leader\>e                         | toggle file explorer                                   |
+| space e                             | toggle file explorer                                   |
 | tt                                  | open ranger(require ranger installed)                  |
 |-------------------------------------|--------------------------------------------------------|
-| \<leader\>ff                        | search file in project(require fzf installed)          |
-| \<leader\>fr                        | search opened once history file                        |
-| \<leader\>fw                        | search string in project(require rg installed)         |
-| \<leader\>ft                        | search symbol in current file                          |
-| \<leader\>fb                        | search opened file name                                |
-| \<leader\>fh                        | resume last searching result                           |
+| space ff                            | search file in project(require fzf installed)          |
+| space fr                            | search opened once history file                        |
+| space fw                            | search string in project(require rg installed)         |
+| space ft                            | search symbol in current file                          |
+| space fb                            | search opened file name                                |
+| space fh                            | resume last searching result                           |
 | use <down><up>                      | next/previous item in search result window             |
 |-------------------------------------|--------------------------------------------------------|
 | tab(insert mode)                    | autocomplete(using LSP)                                |
@@ -52,19 +52,19 @@
 | go                                  | goto type(using LSP)                                   |
 | gb                                  | jump back(using LSP)                                   |
 | gf                                  | open under cursor file path                            |
-| \<leader\>tg                        | show current file symbol outline                       |
+| space tg                            | show current file symbol outline                       |
 | space gd                            | go to definition/implementatio(using anyjump)          |
 | alt+o/alt+i                         | jump back/forward between file                         |
 |-------------------------------------|--------------------------------------------------------|
 | ctrl+n....nnnnn                     | mutiple cursor  enter/increase                         |
 | shift + Q                           | mutiple cursor decrease                                |
-| <space>+enter...enter enter         | select block                                           |
+| space +enter...enter enter          | select block                                           |
 | space ww                            | open vimwiki notebook                                  |
 | space oa/oc                         | nvim orgmode menu/action                               |
-| <space>log                          | open git log for this project/also work in visual mode |
-| <space>logc                         | open git log for current file                          |
-| <space>bl                           | open git blame current line/also work in visual mode   |
-| <space>lg                           | open lazygit(awesome git tool)                         |
+| space log                           | open git log for this project/also work in visual mode |
+| space logc                          | open git log for current file                          |
+| space bl                            | open git blame current line/also work in visual mode   |
+| space lg                            | open lazygit(awesome git tool)                         |
 | ty                                  | translate under cursor/selected content to chinese     |
 | ctrl + p                            | markdown preview using chrome                          |
 
