@@ -127,28 +127,6 @@ map ; <nop>
 map , <nop>
 nmap Q :Sayonara<CR>
 
-let s:last_list_win_type = 0
-function! s:toggle_list()
-    if get(getloclist(0, {'winid':0}), 'winid', 0)
-        exec "lcl"
-        let s:last_list_win_type = 1
-        return
-    endif
-    if get(getqflist({'winid':0}), 'winid', 0)
-        exec "ccl"
-        let s:last_list_win_type = 2
-        return
-    endif
-    if s:last_list_win_type == 1
-        exec "lopen"
-        return
-    endif
-    if s:last_list_win_type == 2
-        exec "copen"
-        return
-    endif
-endfunction
-nnoremap <leader>q :call <SID>toggle_list()<CR>
 
 let mapleader=" "
 let maplocalleader=" "
@@ -189,6 +167,28 @@ nnoremap t7 :tabn7<CR>
 nnoremap t8 :tabn8<CR>
 nnoremap t9 :tabn9<CR>
 
+let s:last_list_win_type = 0
+function! s:toggle_list()
+    if get(getloclist(0, {'winid':0}), 'winid', 0)
+        exec "lcl"
+        let s:last_list_win_type = 1
+        return
+    endif
+    if get(getqflist({'winid':0}), 'winid', 0)
+        exec "ccl"
+        let s:last_list_win_type = 2
+        return
+    endif
+    if s:last_list_win_type == 1
+        exec "lopen"
+        return
+    endif
+    if s:last_list_win_type == 2
+        exec "copen"
+        return
+    endif
+endfunction
+nnoremap <leader>qq :call <SID>toggle_list()<CR>
 
 " Display translation in a window
 nmap <silent> ty :Translate<CR>
@@ -210,13 +210,17 @@ function! s:toggle_lang()
       let g:translator_target_lang = 'zh'
   endif
 endfunction
+
+        
+    " the location window is open
 let g:translator_window_type = 'preview'
 let g:translator_default_engines = ['google', 'bing'] 
 map <LEADER>k <C-w>k
 map <LEADER>h <C-w><left>
 map <LEADER>j <C-w><down>
 map <LEADER>l <C-w><right>
-map <LEADER>Q :qa!
+map <LEADER>Q :qa!<CR>
+      
 map <LEADER>fs :call ToggleFs()<CR>
 
 function! MaximizeToggle()
@@ -282,7 +286,6 @@ Plug 'LukasPietzschmann/telescope-tabs'
 Plug 'junegunn/fzf'
 Plug 'nvim-lua/plenary.nvim' " don't forget to add this one if you don't have it yet!
 Plug 'ThePrimeagen/harpoon', {'branch': 'harpoon2'}
-Plug 'ctrlpvim/ctrlp.vim'
 " Plug 'francoiscabrol/ranger.vim'
 Plug 'rbgrouleff/bclose.vim',
 " Plug 'airblade/vim-rooter'
@@ -820,22 +823,15 @@ nnoremap <leader>cga /\.java<CR>
 nnoremap <leader>cgj /^(Test)\.java$<CR>
 nnoremap <leader>cgt /Test\.java<CR>
 
-" ===
-" === CTRLP (Dependency for omnisharp)
-" ===
-let g:ctrlp_map = ''
-let g:ctrlp_cmd = 'CtrlP'
-let g:ctrlp_show_hidden = 1
 
 
 " ===
 " === vim-bookmarks
 " ===
-let g:bookmark_disable_ctrlp = 1
 " let g:bookmark_no_default_key_mappings = 1
 nmap <leader>ma <Plug>BookmarkToggle
 nmap <leader>mt <Plug>BookmarkAnnotate
-nmap <leader>ml :CtrlPBookmark<CR>
+nmap <leader>ml :BookmarkShowAll<CR>
 " nmap mi <Plug>BookmarkNext
 " nmap mn <Plug>BookmarkPrev
 nmap <leader>mC <Plug>BookmarkClear
@@ -1356,6 +1352,7 @@ function _G.diagnostic()
     end)
 end
 EOF
+
 " === treesitter ===
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
@@ -1488,7 +1485,6 @@ EOF
 lua <<EOF
 require("nvim-gps").setup()
 EOF
-
 " ==================== context ====================
 let g:context_add_mappings = 0
 "let g:context_presenter= 'preview'
