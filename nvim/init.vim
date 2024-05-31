@@ -114,8 +114,8 @@ inoremap jh <ESC>0i
 inoremap j<BS> <ESC>bcw
 " copy whole line
 nnoremap Y y$
-nnoremap <c-d> 4<c-e>
-nnoremap <c-u> 4<c-y>
+nnoremap <c-d> 3<c-e>
+nnoremap <c-u> 3<c-y>
 vnoremap <c-d> 4j
 vnoremap <c-u> 4k
 " search selection
@@ -126,6 +126,29 @@ map J <nop>
 map ; <nop>
 map , <nop>
 nmap Q :Sayonara<CR>
+
+let s:last_list_win_type = 0
+function! s:toggle_list()
+    if get(getloclist(0, {'winid':0}), 'winid', 0)
+        exec "lcl"
+        let s:last_list_win_type = 1
+        return
+    endif
+    if get(getqflist({'winid':0}), 'winid', 0)
+        exec "ccl"
+        let s:last_list_win_type = 2
+        return
+    endif
+    if s:last_list_win_type == 1
+        exec "lopen"
+        return
+    endif
+    if s:last_list_win_type == 2
+        exec "copen"
+        return
+    endif
+endfunction
+nnoremap <leader>q :call <SID>toggle_list()<CR>
 
 let mapleader=" "
 let maplocalleader=" "
@@ -147,12 +170,12 @@ map <left> :vertical resize+5<CR>
 map <right> :vertical resize-5<CR>
 " new tab
 nnoremap ti :tabnew<CR>
-nnoremap ta :tablast<CR>:tabnew<CR>
+nnoremap ta :tablast\|:tabnew<CR>
 "jump to left side tab
-nnoremap - :tabp<CR>
+nnoremap <leader><left> :tabp<CR>
 nnoremap th :tabp<CR>
 "jump to right side tab
-nnoremap = :tabn<CR>
+nnoremap <leader><right> :tabn<CR>
 nnoremap tl :tabn<CR>
 nnoremap ts :tab split<CR>
 "jump to N tab
@@ -231,7 +254,8 @@ Plug 'itchyny/vim-cursorword'
 Plug 'akinsho/toggleterm.nvim', {'tag' : '*'}
 
 " copilot
-Plug 'github/copilot.vim'
+" Plug 'github/copilot.vim'
+Plug 'Exafunction/codeium.vim', { 'tag': '1.8.37' }
 "
 
 
@@ -327,7 +351,6 @@ Plug 'petertriho/nvim-scrollbar'
 Plug 'kwkarlwang/bufjump.nvim'
 Plug 'liuchengxu/vim-which-key'
 Plug 'kevinhwang91/nvim-hlslens'
-Plug 'jiangmiao/auto-pairs'
 Plug 'azabiong/vim-highlighter'
 
 Plug 'mg979/vim-visual-multi'
@@ -347,7 +370,6 @@ Plug 'matze/vim-move'
 " Plug 'Yggdroot/indentLine'
 Plug 'lukas-reineke/indent-blankline.nvim'
 
-Plug 'theniceboy/pair-maker.vim'
 
 " For general writing
 
@@ -389,9 +411,17 @@ let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
 colorscheme  gruvbox
 
-" ================== copilot ===================
-imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
-let g:copilot_no_tab_map = v:true
+" ==================codeium===================
+imap <script><silent><nowait><expr> <C-j> codeium#Accept()
+imap <C-c>   <Cmd>call codeium#CycleCompletions(1)<CR>
+imap <C-x>   <Cmd>call codeium#CycleCompletions(-1)<CR>
+imap <C-z>   <Cmd>call codeium#Clear()<CR>
+if !empty(glob('~/dellcodeium.vim'))
+    source ~/dellcodeium.vim
+endif
+highlight CodeiumSuggestion guifg=#555555 ctermfg=8
+
+
 
 " ============== lualine =============
 lua << EOF
@@ -847,8 +877,11 @@ function g:Undotree_CustomMap()
 endfunc
 
 " === fugitive ===
-let g:fugitive_summary_format = "%<(16,trunc)%an||%<(30,trunc)%ad||%s"
-nnoremap <leader>diff :Gvdiffsplit!<CR>
+let g:fugitive_summary_format = "%<(16,trunc)%an||%<(27,trunc)%ad||%s"
+nnoremap <leader>rc :Gvdiffsplit!<CR>
+" resolve conflict
+nnoremap <leader>df :Gvdiffsplit 
+" Gvdiffsplit <commitId> <commitId>
 " === git blame ===
 map <LEADER>bl :Gitsigns blame_line<CR>
 vnoremap <leader>bl :Git blame<CR>
@@ -859,11 +892,8 @@ require('gitsigns').setup()
 EOF
 nnoremap [[ :Gitsign prev_hunk<CR>
 nnoremap ]] :Gitsign next_hunk<CR>
+nnoremap <leader>u :Gitsign reset_hunk<CR>
 
-" ===
-" === auto-pairs
-" ===
-let g:AutoPairs= {'(':')', '[':']', '{':'}',"'":"'",'"':'"', "`":"`", '```':'```', '"""':'"""', "'''":"'''"}
 
 " ==
 " == vim-multiple-cursor
@@ -1459,6 +1489,7 @@ lua <<EOF
 require("nvim-gps").setup()
 EOF
 
+" ==================== context ====================
 let g:context_add_mappings = 0
 "let g:context_presenter= 'preview'
 let g:context_enabled = 0
