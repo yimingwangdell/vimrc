@@ -154,8 +154,11 @@ nnoremap <leader><left> :tabp<CR>
 nnoremap th :tabp<CR>
 "jump to right side tab
 nnoremap <leader><right> :tabn<CR>
+nnoremap <leader><down> 0i<cr><ESC>
+nnoremap <leader><up> kdd
 nnoremap tl :tabn<CR>
 nnoremap ts :tab split<CR>
+nnoremap tn <C-W>T
 "jump to N tab
 nnoremap t1 :tabn1<CR>
 nnoremap t2 :tabn2<CR>
@@ -267,6 +270,8 @@ Plug 'Exafunction/codeium.vim', { 'tag': '1.8.37' }
 Plug 'arzg/vim-colors-xcode'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'morhetz/gruvbox'
+Plug 'NLKNguyen/papercolor-theme'
+
 Plug 'rebelot/kanagawa.nvim'
 Plug 'catppuccin/vim'
 Plug 'tomasr/molokai'
@@ -413,6 +418,7 @@ call plug#end()
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
 colorscheme  gruvbox
+" colorscheme  PaperColor 
 
 " ==================codeium===================
 imap <script><silent><nowait><expr> <C-j> codeium#Accept()
@@ -799,25 +805,25 @@ EOF
 
 "=====telescope======
 
-nnoremap <leader>fr :Telescope oldfiles <CR>
+nnoremap <leader>fr :tabnew<CR>:Telescope oldfiles <CR>
 nnoremap <leader>fh :Telescope resume <CR>
-" nnoremap <leader>fb :Telescope buffers<CR>
+" nnoremap <leader>f:tabnew<CR>b :Telescope buffers<CR>
 nnoremap <leader>fb :Telescope telescope-tabs list_tabs<CR>
-nnoremap <leader>fw :Telescope live_grep<CR>
-nnoremap <leader>fv :lua require('telescope.builtin').live_grep({default_text = " ", search_dirs = { "/root/vimwiki" }})<CR>
+nnoremap <leader>fw :tabnew<CR>:Telescope live_grep<CR>
+nnoremap <leader>fv :tabnew<CR>:lua require('telescope.builtin').live_grep({default_text = " ", search_dirs = { "/root/vimwiki" }})<CR>
 
-nnoremap <leader>ff :Telescope find_files<CR>
+nnoremap <leader>ff :tabnew<CR>:Telescope find_files<CR>
 nnoremap <leader>ft :Telescope aerial<CR>
 nnoremap <leader>f/ :Telescope search_history<CR>
 
 
 nnoremap <leader>lg :LazyGitCurrentFile<CR>
-nnoremap <leader>log :Gclog! -5000 -- <CR>:copen<CR>
+nnoremap <leader>log :tab split<CR>:Gclog! -5000 -- <CR>:copen<CR>
 "show commit
 nnoremap <leader>logd :0Gclog! -5000 -- %<CR>:copen<CR>
 "show only file changes
 nnoremap <leader>logc :tab Git --paginate log -5000 --patch -- %<CR>
-vnoremap <leader>log :Gclog! -5000<CR>:copen<CR>
+vnoremap <leader>log <ESC>:tab split<CR>gv:Gclog! -5000<CR>:copen<CR>
 
 nnoremap <leader>cga /\.java<CR>
 nnoremap <leader>cgj /^(Test)\.java$<CR>
@@ -834,7 +840,7 @@ nmap <leader>mt <Plug>BookmarkAnnotate
 nmap <leader>ml :BookmarkShowAll<CR>
 " nmap mi <Plug>BookmarkNext
 " nmap mn <Plug>BookmarkPrev
-nmap <leader>mC <Plug>BookmarkClear
+nmap <leader>mc <Plug>BookmarkClear
 " nmap mX <Plug>BookmarkClearAll
 " nmap mu <Plug>BookmarkMoveUp
 " nmap me <Plug>BookmarkMoveDown
@@ -880,7 +886,8 @@ nnoremap <leader>df :Gvdiffsplit
 " Gvdiffsplit <commitId> <commitId>
 " === git blame ===
 map <LEADER>bl :Gitsigns blame_line<CR>
-vnoremap <leader>bl :Git blame<CR>
+vnoremap <leader>bl :Git blame<CR><c-w>T
+nnoremap <leader>ge :Gedit<CR>
 
 " === gitsign ===
 lua <<EOF
@@ -1493,3 +1500,4 @@ nnoremap <leader>ct :ContextToggleWindow<CR>
 " ===================== others ===========================
 let g:python3_host_prog = 'python3'
 hi String guifg=#11111
+set background=light
