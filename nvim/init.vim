@@ -108,9 +108,6 @@ noremap H 0
 noremap L $
 " jump to end in insert mode
 inoremap jk <ESC>
-inoremap jl <ESC>A
-inoremap jh <ESC>0i
-inoremap <leader>c <ESC>0C
 " copy whole line
 nnoremap Y y$
 nnoremap db dvb
@@ -1514,3 +1511,7 @@ nnoremap <leader>ct :ContextToggleWindow<CR>
 let g:python3_host_prog = 'python3'
 hi String guifg=#11111
 set background=light
+inoremap <leader>c <ESC>0C
+inoremap <leader>h <ESC>0i
+inoremap <leader>l <ESC>A
+inoremap <leader>d <ESC>0D
