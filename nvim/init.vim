@@ -110,10 +110,11 @@ noremap L $
 inoremap jk <ESC>
 inoremap jl <ESC>A
 inoremap jh <ESC>0i
-" delete a word backward 
-inoremap j<BS> <ESC>bcw
+inoremap <leader>c <ESC>0C
 " copy whole line
 nnoremap Y y$
+nnoremap db dvb
+nnoremap cb cvb
 nnoremap <c-d> 3<c-e>
 nnoremap <c-u> 3<c-y>
 vnoremap <c-d> 4j
@@ -191,7 +192,29 @@ function! s:toggle_list()
         return
     endif
 endfunction
+function! s:next_list()
+    if get(getloclist(0, {'winid':0}), 'winid', 0)
+        exec "lnext"
+        return
+    endif
+    if get(getqflist({'winid':0}), 'winid', 0)
+        exec "cnext"
+        return
+    endif
+endfunction
+function! s:prev_list()
+    if get(getloclist(0, {'winid':0}), 'winid', 0)
+        exec "lprev"
+        return
+    endif
+    if get(getqflist({'winid':0}), 'winid', 0)
+        exec "cprev"
+        return
+    endif
+endfunction
 nnoremap <leader>qq :call <SID>toggle_list()<CR>
+nnoremap <leader>nn :call <SID>next_list()<CR>
+nnoremap <leader>pp :call <SID>prev_list()<CR>
 
 " Display translation in a window
 nmap <silent> ty :Translate<CR>
@@ -401,7 +424,7 @@ Plug 'talbergs/context.nvim'
 " Other visual enhancement
 Plug 'luochen1990/rainbow'
 Plug 'ryanoasis/vim-devicons'
-Plug 'kevinhwang91/nvim-bqf'
+Plug 'kevinhwang91/nvim-bqf' "zf search zn new list <c-q> quit search
 "
 "
 " Other useful utilities
@@ -421,6 +444,7 @@ colorscheme  gruvbox
 " colorscheme  PaperColor 
 
 " ==================codeium===================
+let g:codeium_no_map_tab = v:true
 imap <script><silent><nowait><expr> <C-j> codeium#Accept()
 imap <C-c>   <Cmd>call codeium#CycleCompletions(1)<CR>
 imap <C-x>   <Cmd>call codeium#CycleCompletions(-1)<CR>
@@ -486,6 +510,7 @@ require('lualine').setup(
 }
 )
 EOF
+
 " ===
 " === coc.nvim
 " ===
@@ -719,7 +744,8 @@ let g:instant_markdown_browser = "google-chrome-stable --new-window"
 nnoremap <c-p> :silent! InstantMarkdownStop<CR> :InstantMarkdownPreview<CR>
 
 " === dotoo ====
-
+" === vimwiki ====
+nnoremap <leader>ww :VimwikiTabIndex<CR>
 " ===
 " === orgmode
 " ===
@@ -1278,21 +1304,8 @@ local bqf_pv_timer
 require('bqf').setup{
 preview = {
     should_preview_cb = function(bufnr, qwinid)
-        local bufname = vim.api.nvim_buf_get_name(bufnr)
-        if bufname:match '^fugitive://' and not vim.api.nvim_buf_is_loaded(bufnr) then
-            if bqf_pv_timer and bqf_pv_timer:get_due_in() > 0 then
-                bqf_pv_timer:stop()
-                bqf_pv_timer = nil
-            end
-            bqf_pv_timer = vim.defer_fn(function()
-                vim.api.nvim_buf_call(bufnr, function()
-                    vim.cmd(('do fugitive BufReadCmd %s'):format(bufname))
-                end)
-                require('bqf.preview.handler').open(qwinid, nil, true)
-            end, 60)
-        end
-        return true
-    end,
+    return false
+        end,
     win_height = 999,
     win_vheight = 999,
 
