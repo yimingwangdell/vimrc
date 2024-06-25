@@ -334,6 +334,7 @@ Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'aznhe21/actions-preview.nvim'
+Plug 'williamboman/mason.nvim'
 
 " Lint tool
 
@@ -605,6 +606,12 @@ xnoremap <leader>ac :lua require("actions-preview").code_actions()<CR>
 nnoremap <leader>ac :lua require("actions-preview").code_actions()<CR>
 nnoremap [g :lua vim.diagnostic.goto_prev()<CR>
 nnoremap ]g :lua vim.diagnostic.goto_next()<CR>
+
+
+" === mason ===
+lua<<EOF
+ require("mason").setup()
+EOF
 
 let g:snips_author = 'Wang yiming'
 let g:snips_email = 'yiming.1.wang@nokia-sbell.com'
