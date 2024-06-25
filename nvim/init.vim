@@ -9,27 +9,7 @@ if empty(glob('~/.config/nvim/autoload/plug.vim'))
 				\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
-" === Terminal Behavimrs
-" ===
-let g:neoterm_autoscroll = 1
-tnoremap <C-N> <C-\><C-N>
-tnoremap <C-O> <C-\><C-N><C-O>
 let g:syntax_maxlines=999999
-let g:terminal_color_0  = '#000000'
-let g:terminal_color_1  = '#FF5555'
-let g:terminal_color_2  = '#50FA7B'
-let g:terminal_color_3  = '#F1FA8C'
-let g:terminal_color_4  = '#BD93F9'
-let g:terminal_color_5  = '#FF79C6'
-let g:terminal_color_6  = '#8BE9FD'
-let g:terminal_color_7  = '#BFBFBF'
-let g:terminal_color_8  = '#4D4D4D'
-let g:terminal_color_9  = '#FF6E67'
-let g:terminal_color_10 = '#5AF78E'
-let g:terminal_color_11 = '#F4F99D'
-let g:terminal_color_12 = '#CAA9FA'
-let g:terminal_color_13 = '#FF92D0'
-let g:terminal_color_14 = '#9AEDFE'
 syntax sync minlines=999999
 autocmd BufEnter * :syntax sync fromstart
 autocmd TabClosed * tabprevious
@@ -72,18 +52,6 @@ set wrap
 set showcmd
 set wildmenu
 set clipboard+=unnamedplus
-    " let g:clipboard = {
-    "       \   'name': 'myClipboard',
-    "       \   'copy': {
-    "       \      '+': ['tmux', 'load-buffer', '-'],
-    "       \      '*': ['tmux', 'load-buffer', '-'],
-    "       \    },
-    "       \   'paste': {
-    "       \      '+': ['tmux', 'save-buffer', '-'],
-    "       \      '*': ['tmux', 'save-buffer', '-'],
-    "       \   },
-    "       \   'cache_enabled': 1,
-    "       \ }
 
 set hlsearch
 exec "nohlsearch"
@@ -285,15 +253,12 @@ Plug 'akinsho/toggleterm.nvim', {'tag' : '*'}
 " copilot
 " Plug 'github/copilot.vim'
 Plug 'Exafunction/codeium.vim', { 'tag': '1.8.37' }
-"
-
 
 " Pretty Dress
 Plug 'arzg/vim-colors-xcode'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'morhetz/gruvbox'
 Plug 'NLKNguyen/papercolor-theme'
-
 Plug 'rebelot/kanagawa.nvim'
 Plug 'catppuccin/vim'
 Plug 'tomasr/molokai'
@@ -313,17 +278,13 @@ Plug 'LukasPietzschmann/telescope-tabs'
 Plug 'junegunn/fzf'
 Plug 'nvim-lua/plenary.nvim' " don't forget to add this one if you don't have it yet!
 Plug 'ThePrimeagen/harpoon', {'branch': 'harpoon2'}
-" Plug 'francoiscabrol/ranger.vim'
 Plug 'rbgrouleff/bclose.vim',
-" Plug 'airblade/vim-rooter'
 Plug 'pechorin/any-jump.vim'
 
 
 " Taglist
-Plug 'liuchengxu/vista.vim'
 Plug 'stevearc/aerial.nvim'
 
-" Debugger
 
 " Auto Complete
 Plug 'mfussenegger/nvim-jdtls'
@@ -336,14 +297,11 @@ Plug 'hrsh7th/nvim-cmp'
 Plug 'aznhe21/actions-preview.nvim'
 Plug 'williamboman/mason.nvim'
 
-" Lint tool
 
 " Snippets
-Plug 'SirVer/ultisnips'
-Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/vim-vsnip'
 
-"$HOME/.config/nvim/Ultisnips/",
-"$HOME/.config/nvim/plugged/vim-snippets/UltiSnips/"
 
 " Undo Tree
 Plug 'mbbill/undotree'
@@ -356,14 +314,6 @@ Plug 'APZelos/blamer.nvim'
 Plug 'lewis6991/gitsigns.nvim'
 Plug 'kdheepak/lazygit.nvim'
 
-" Autoformat
-Plug 'google/vim-maktaba'
-Plug 'google/vim-codefmt'
-Plug 'google/vim-glaive'
-
-" Tex
-
-" CSharp
 
 " HTML, CSS, JavaScript, Typescript, PHP, JSON, etc.
 Plug 'NvChad/nvim-colorizer.lua'
@@ -374,7 +324,6 @@ Plug 'fatih/vim-go' , { 'for': ['go', 'vim-plug'], 'tag': '*' }
 " Java
 Plug 'uiiaoo/java-syntax.vim'
 
-" Python
 
 " Markdown
 Plug 'dkarter/bullets.vim'
@@ -413,14 +362,9 @@ Plug 'matze/vim-move'
 Plug 'lukas-reineke/indent-blankline.nvim'
 
 
-" For general writing
-
 " Bookmarks
 Plug 'MattesGroeger/vim-bookmarks'
 
-
-" Documentation
-Plug 'KabbAmine/zeavim.vim' " <LEADER>z to find doc
 
 " Mini Vim-APP
 Plug 'dhruvasagar/vim-dotoo'
@@ -429,8 +373,6 @@ Plug 'nvim-treesitter/nvim-treesitter-context'
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'wellle/context.vim'
 Plug 'talbergs/context.nvim'
-
-" Vim Applications
 
 " Other visual enhancement
 Plug 'luochen1990/rainbow'
@@ -458,7 +400,6 @@ colorscheme  gruvbox
 let g:codeium_no_map_tab = v:true
 imap <script><silent><nowait><expr> <C-j> codeium#Accept()
 imap <C-c>   <Cmd>call codeium#CycleCompletions(1)<CR>
-imap <C-x>   <Cmd>call codeium#CycleCompletions(-1)<CR>
 imap <C-z>   <Cmd>call codeium#Clear()<CR>
 if !empty(glob('~/dellcodeium.vim'))
     source ~/dellcodeium.vim
@@ -497,7 +438,7 @@ require('lualine').setup(
     lualine_x = {{gps.get_location, cond = gps.is_available, color="WildMenu"}},
 
     lualine_y = { },
-    lualine_z = {'progress', 'encoding', 'fileformat'}
+    lualine_z = {'filesize', 'progress', 'encoding', 'fileformat'}
   },
   inactive_sections = {
     lualine_a = {},
@@ -532,7 +473,7 @@ lua <<EOF
     snippet = {
       -- REQUIRED - you must specify a snippet engine
       expand = function(args)
-        vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnipusers.
       end,
     },
     window = {
@@ -545,10 +486,12 @@ lua <<EOF
       ['<C-Space>'] = cmp.mapping.complete(),
       ['<C-e>'] = cmp.mapping.abort(),
       ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+      ["<Tab>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
+      ["<S-Tab>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
     }),
     sources = cmp.config.sources({
       { name = 'nvim_lsp' },
-      { name = 'ultisnips' }, -- For ultisnips users.
+      { name = 'vsnip' }, -- For vsnip users.
     }, {
       { name = 'buffer' },
     })
@@ -607,18 +550,18 @@ nnoremap <leader>ac :lua require("actions-preview").code_actions()<CR>
 nnoremap [g :lua vim.diagnostic.goto_prev()<CR>
 nnoremap ]g :lua vim.diagnostic.goto_next()<CR>
 
+" === lspconfig ===
+lua <<EOF
+require'lspconfig'.pyright.setup{}
+EOF
+
 
 " === mason ===
 lua<<EOF
  require("mason").setup()
 EOF
 
-let g:snips_author = 'Wang yiming'
-let g:snips_email = 'yiming.1.wang@nokia-sbell.com'
-
-
-
-
+" === aerial ===
 lua <<EOF
 require("aerial").setup({
   -- optionally use on_attach to set keymaps when aerial has attached to a buffer
@@ -636,18 +579,6 @@ nnoremap <leader>, `[V`]<
 nnoremap <leader>. `[V`]>
 
 
-nmap <Leader>m <Plug>ToggleMarkbar
-
-function! s:find_git_root()
-    return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
-endfunction
-
-" command! -bang -nargs=* Ag
-" \ call fzf#vim#ag(<q-args>,
-" \                 <bang>0 ? fzf#vim#with_preview('up:60%')
-" \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
-" \                 <bang>0)
-"
 " === nvim-jdtls ===
 
 
@@ -800,14 +731,6 @@ let g:bookmark_save_per_working_dir = 0
 let g:bookmark_center = 1
 let g:bookmark_auto_close = 1
 let g:bookmark_location_list = 1
-
-
-" ===
-" === zeavim
-" ===
-let g:zv_zeal_executable = '/home/yimingwang/Downloads/zeal-0.7.0-x86_64.AppImage'
-nnoremap <leader>zv :Zeavim<CR>
-nnoremap <leader>go :AsyncRun -silent google-chrome-stable "www.bing.com/search?q=""<cword>"<CR>
 
 
 " ===
