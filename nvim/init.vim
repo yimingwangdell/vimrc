@@ -19,6 +19,7 @@ set synmaxcol=0
 set iskeyword+=-
 set termguicolors
 set noswapfile
+set hidden
 set ts=2
 set encoding=utf-8
 set autoindent
@@ -28,7 +29,6 @@ set shiftwidth=4
 set cursorline
 set cursorcolumn
 set showmatch
-set nohidden
 set nobackup
 set nowritebackup
 set smartcase
@@ -182,6 +182,7 @@ endfunction
 nnoremap <leader>qq :call <SID>toggle_list()<CR>
 nnoremap <leader>nn :call <SID>next_list()<CR>
 nnoremap <leader>pp :call <SID>prev_list()<CR>
+nnoremap <leader>db :DeleteHiddenBuffers<CR>
 
 " Display translation in a window
 nmap <silent> ty :Translate<CR>
@@ -338,6 +339,7 @@ Plug 'nvim-neorg/neorg'
 "
 " Editor Enhancement
 Plug 'mhinz/vim-sayonara'
+Plug 'karunsiri/vim-delete-hidden-buffers'
 Plug 'petertriho/nvim-scrollbar'
 Plug 'kwkarlwang/bufjump.nvim'
 Plug 'liuchengxu/vim-which-key'
@@ -437,7 +439,7 @@ require('lualine').setup(
     lualine_c = {  {'filename', path = 3, shorting_target = 60 }},
     lualine_x = {{gps.get_location, cond = gps.is_available, color="WildMenu"}},
 
-    lualine_y = { },
+    lualine_y = {},
     lualine_z = {'filesize', 'progress', 'encoding', 'fileformat'}
   },
   inactive_sections = {
@@ -529,9 +531,10 @@ lua <<EOF
 
   -- Set up lspconfig.
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
   -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
-  require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
-    capabilities = capabilities
+  require('lspconfig')['pyright'].setup {
+        capabilities = capabilities,
   }
 EOF
 
@@ -550,10 +553,6 @@ nnoremap <leader>ac :lua require("actions-preview").code_actions()<CR>
 nnoremap [g :lua vim.diagnostic.goto_prev()<CR>
 nnoremap ]g :lua vim.diagnostic.goto_next()<CR>
 
-" === lspconfig ===
-lua <<EOF
-require'lspconfig'.pyright.setup{}
-EOF
 
 
 " === mason ===
@@ -887,7 +886,7 @@ let g:rainbow_active = 1
 let g:session_directory = $HOME."/.config/nvim/tmp/sessions"
 let g:session_autosave = 'yes'
 let g:session_autoload = 'yes'
-"set sessionoptions-=options
+set sessionoptions-=options
 "noremap sl :OpenSession<CR>
 "noremap sS :SaveSession<CR>
 "noremap ss :SaveSession 
