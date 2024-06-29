@@ -1164,8 +1164,9 @@ noremap g# g#<cmd>lua require('hlslens').start()<CR>
 " === vim-highlighter ===
 let g:HiMapKeys=0
 
-nnoremap <leader>ah :HI +<CR>
-nnoremap <leader>dh :HI Clear<CR>
+nnoremap <leader>ah :Hi +<CR>
+vnoremap <leader>ah y:Hi +x <c-r>"<CR>
+nnoremap <leader>dh :Hi Clear<CR>
 
 
 " ==================== bufjump ====================
