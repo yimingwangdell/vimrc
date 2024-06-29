@@ -1161,6 +1161,12 @@ noremap # #<Cmd>lua require('hlslens').start()<CR>N
 noremap g* g*<Cmd>lua require('hlslens').start()<CR>
 noremap g# g#<cmd>lua require('hlslens').start()<CR>
 
+" === vim-highlighter ===
+let g:HiMapKeys=0
+
+nnoremap <leader>ah :HI +<CR>
+nnoremap <leader>dh :HI Clear<CR>
+
 
 " ==================== bufjump ====================
 
@@ -1194,6 +1200,8 @@ require("flash").setup({
 EOF
 noremap ' <Cmd>lua require('flash').jump()<CR>
 
+" === clever-f ===
+let g:clever_f_across_no_line = 1
 
 " ====================== flash =====================
 
