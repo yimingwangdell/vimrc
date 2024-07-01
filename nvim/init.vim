@@ -78,7 +78,7 @@ noremap L $
 inoremap jk <ESC>
 inoremap jh <ESC>0i
 inoremap jl <ESC>A
-" copy whole line
+" copy to end
 nnoremap Y y$
 " b include current char
 nnoremap db dvb
@@ -288,13 +288,11 @@ Plug 'yimingwangdell/nvim-gps'
 " General Highlighter
 
 " File navigation
-Plug 'nvim-tree/nvim-tree.lua'
 Plug 'nvim-telescope/telescope.nvim',
 Plug 'LukasPietzschmann/telescope-tabs'
-Plug 'junegunn/fzf'
 Plug 'nvim-lua/plenary.nvim' " don't forget to add this one if you don't have it yet!
+Plug 'nvim-tree/nvim-tree.lua'
 Plug 'ThePrimeagen/harpoon', {'branch': 'harpoon2'}
-Plug 'rbgrouleff/bclose.vim',
 Plug 'pechorin/any-jump.vim'
 
 
@@ -305,7 +303,7 @@ Plug 'nvim-treesitter/nvim-treesitter-context'
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 
 
-" Auto Complete
+" LSP
 Plug 'mfussenegger/nvim-jdtls'
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lsp'
@@ -328,7 +326,6 @@ Plug 'mbbill/undotree'
 
 " Git
 Plug 'tpope/vim-fugitive'
-" Plug 'rbong/vim-flog'
 Plug 'APZelos/blamer.nvim'
 Plug 'lewis6991/gitsigns.nvim'
 Plug 'kdheepak/lazygit.nvim'
@@ -351,23 +348,21 @@ Plug 'dkarter/bullets.vim'
 Plug 'mzlogin/vim-markdown-toc'
 Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
 Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeToggle', 'for': ['text', 'markdown', 'vim-plug'] }
-Plug 'vimwiki/vimwiki'
+Plug 'vimwiki/vimwiki' " best note taking tool
 Plug 'nvim-neorg/neorg'
+Plug 'dhruvasagar/vim-dotoo'
 
 "
 " Editor Enhancement
-Plug 'mhinz/vim-sayonara'
+Plug 'mhinz/vim-sayonara' " enhanced quit
 Plug 'kevinhwang91/nvim-bqf' " quickfix zf search, zn new list <c-q> quit search
-Plug 'wellle/context.vim'
-Plug 'talbergs/context.nvim'
+Plug 'junegunn/fzf'
 Plug 'karunsiri/vim-delete-hidden-buffers'
 Plug 'petertriho/nvim-scrollbar'
-Plug 'kwkarlwang/bufjump.nvim'
+Plug 'kwkarlwang/bufjump.nvim' "<M-o> jump back file
 Plug 'liuchengxu/vim-which-key'
-Plug 'kevinhwang91/nvim-hlslens'
-Plug 'azabiong/vim-highlighter'
-Plug 'itchyny/vim-cursorword'
-Plug 'mg979/vim-visual-multi'
+Plug 'itchyny/vim-cursorword' " highlight current word
+Plug 'mg979/vim-visual-multi' " multi cursor
 Plug 'tomtom/tcomment_vim' " <space><space> to comment a line
 Plug 'gbprod/substitute.nvim' " s to substitute
 Plug 'machakann/vim-sandwich' " di" to delete inside of ""
@@ -376,8 +371,8 @@ Plug 'gcmt/wildfire.vim' "<leader><enter> to select block
 map <LEADER><ENTER> <Plug>(wildfire-fuel)
 
 Plug 'junegunn/vim-after-object' " da= to delete what's after =
-Plug 'folke/flash.nvim'
-Plug 'rhysd/clever-f.vim'
+Plug 'folke/flash.nvim' " best jump plugin
+Plug 'rhysd/clever-f.vim' " enhanced f,F,t,T
 Plug 'junegunn/vim-peekaboo'
 Plug 'matze/vim-move'
 Plug 'lukas-reineke/indent-blankline.nvim'
@@ -386,21 +381,22 @@ Plug 'lukas-reineke/indent-blankline.nvim'
 " Bookmarks
 Plug 'MattesGroeger/vim-bookmarks'
 
-
-" Mini Vim-APP
-Plug 'dhruvasagar/vim-dotoo'
+" Code Context
+Plug 'wellle/context.vim'
 
 " Other visual enhancement
 Plug 'luochen1990/rainbow'
 Plug 'ryanoasis/vim-devicons'
+Plug 'kevinhwang91/nvim-hlslens'
+Plug 'azabiong/vim-highlighter'
 "
 "
 " Other useful utilities
-Plug 'lambdalisue/suda.vim' " do stuff like :sudowrite
-Plug 'xolox/vim-session'
+Plug 'lambdalisue/suda.vim' " :SudaWrite to write as root
+Plug 'xolox/vim-session' " save session when quit
 Plug 'xolox/vim-misc' " vim-session dep
 Plug 'voldikss/vim-translator' " ty to translate
-Plug 'akinsho/toggleterm.nvim', {'tag' : '*'}
+Plug 'akinsho/toggleterm.nvim', {'tag' : '*'} " open terminal in vim
 
 
 call plug#end()
@@ -901,7 +897,7 @@ nnoremap <leader>rc :Gvdiffsplit!<CR>
 nnoremap <leader>df :Gvdiffsplit 
 " Gvdiffsplit <commitId> <commitId>
 " === git blame ===
-map <LEADER>bl :Gitsigns blame_line<CR>
+map <LEADER>bl V:Git blame<CR><c-w>T
 vnoremap <leader>bl :Git blame<CR><c-w>T
 " view file with commit id :Gedit <commitId>:<file>
 nnoremap <leader>ge :Gedit :<left>
@@ -1203,6 +1199,8 @@ noremap ' <Cmd>lua require('flash').jump()<CR>
 
 " === clever-f ===
 let g:clever_f_across_no_line = 1
+let g:clever_f_timeout_ms = 800
+let g:clever_f_highlight_timeout_ms = 800
 
 " ====================== flash =====================
 
