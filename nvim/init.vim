@@ -349,7 +349,6 @@ Plug 'mzlogin/vim-markdown-toc'
 Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
 Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeToggle', 'for': ['text', 'markdown', 'vim-plug'] }
 Plug 'vimwiki/vimwiki' " best note taking tool
-Plug 'nvim-neorg/neorg'
 Plug 'dhruvasagar/vim-dotoo'
 
 "
@@ -554,19 +553,6 @@ lua <<EOF
 EOF
 
 
-nnoremap K :lua vim.lsp.buf.hover()<CR>
-nnoremap gd :lua vim.lsp.buf.definition()<CR>
-nnoremap gD :tab sp<CR>:lua vim.lsp.buf.definition()<CR>
-nnoremap gi :lua vim.lsp.buf.implementation()<CR>
-nnoremap gy :lua vim.lsp.buf.type_definition()<CR>
-nnoremap gr :lua vim.lsp.buf.references()<CR>
-nnoremap <leader>rn :lua vim.lsp.buf.rename()<CR>
-" nnoremap <leader>fm :lua vim.lsp.buf.format()
-xnoremap <leader>fm :lua function() vim.lsp.buf.format({ async = true }) end<CR>
-xnoremap <leader>ac :lua require("actions-preview").code_actions()<CR>
-nnoremap <leader>ac :lua require("actions-preview").code_actions()<CR>
-nnoremap [g :lua vim.diagnostic.goto_prev()<CR>
-nnoremap ]g :lua vim.diagnostic.goto_next()<CR>
 
 
 
@@ -585,6 +571,8 @@ require("aerial").setup({
     vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
     vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
   end,
+  disable_max_lines = 30000,
+
 })
 vim.keymap.set("n", "<leader>tg", "<cmd>AerialToggle!<CR><c-w>l")
 EOF
@@ -755,22 +743,6 @@ nnoremap <leader>ww :VimwikiTabIndex<CR>
 " ===
 " === orgmode
 " ===
-lua << EOF
-require('neorg').setup {
-    load = {
-        ["core.defaults"] = {}, -- Loads default behaviour
-        ["core.completion"] = {}, -- Loads default behaviour
-        ["core.concealer"] = {}, -- Adds pretty icons to your documents
-        ["core.dirman"] = { -- Manages Neorg workspaces
-            config = {
-                workspaces = {
-                    notes = "~/notes",
-                },
-            },
-        },
-    },
-}
-EOF
 
 
 
@@ -1322,5 +1294,21 @@ function _G.diagnostic()
     end)
 end
 EOF
+
+" LSP key map
+nnoremap K :lua vim.lsp.buf.hover()<CR>
+nnoremap gd :lua vim.lsp.buf.definition()<CR>
+nnoremap gD :tab sp<CR>:lua vim.lsp.buf.definition()<CR>
+nnoremap gi :lua vim.lsp.buf.implementation()<CR>
+nnoremap gy :lua vim.lsp.buf.type_definition()<CR>
+nnoremap gr :lua vim.lsp.buf.references()<CR>
+nnoremap <leader>rn :lua vim.lsp.buf.rename()<CR>
+" nnoremap <leader>fm :lua vim.lsp.buf.format()
+xnoremap <leader>fm :lua function() vim.lsp.buf.format({ async = true }) end<CR>
+xnoremap <leader>ac :lua require("actions-preview").code_actions()<CR>
+nnoremap <leader>ac :lua require("actions-preview").code_actions()<CR>
+nnoremap [g :lua vim.diagnostic.goto_prev()<CR>
+nnoremap ]g :lua vim.diagnostic.goto_next()<CR>
+
 " ===================== others ===========================
 let g:python3_host_prog = 'python3'
