@@ -13,6 +13,7 @@ let g:syntax_maxlines=999999
 syntax sync minlines=999999
 autocmd BufEnter * :syntax sync fromstart
 autocmd TabClosed * tabprevious
+:lua vim.lsp.inlay_hint.enable(false)
 set laststatus=3
 set scrolloff=10
 set synmaxcol=0
@@ -27,13 +28,12 @@ set noautochdir
 set expandtab
 set shiftwidth=4
 set cursorline
-set cursorcolumn
 set showmatch
 set nobackup
 set nowritebackup
 set smartcase
 set cmdheight=2
-set timeoutlen=400
+set timeoutlen=800
 set updatetime=300
 set shortmess+=c
 if has("patch-8.1.1564")
@@ -44,6 +44,8 @@ else
 endif
 
 
+set nocompatible
+filetype plugin on
 syntax on
 set number
 set relativenumber
@@ -78,6 +80,7 @@ noremap L $
 inoremap jk <ESC>
 inoremap jh <ESC>0i
 inoremap jl <ESC>A
+inoremap << <esc>0C
 " copy to end
 nnoremap Y y$
 " b include current char
@@ -143,7 +146,7 @@ nnoremap tl :tabn<CR>
 " duplicate current tab
 nnoremap ts :tab split<CR>
 " move current win to new tab
-nnoremap tn <C-W>T
+nnoremap tfs <C-W>T
 "jump to N tab
 nnoremap t1 :tabn1<CR>
 nnoremap t2 :tabn2<CR>
@@ -269,11 +272,16 @@ let g:plug_url_format = 'https://git::@github.com/%s.git'
 " copilot
 " Plug 'github/copilot.vim'
 Plug 'Exafunction/codeium.vim', { 'tag': '1.8.37' }
+" chatgpt chat
+Plug 'MunifTanjim/nui.nvim'
+Plug 'jackMort/ChatGPT.nvim'
+
 
 " Pretty Dress
 Plug 'arzg/vim-colors-xcode'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'morhetz/gruvbox'
+Plug 'hardhackerlabs/theme-vim', { 'as': 'hardhacker' }
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'rebelot/kanagawa.nvim'
 Plug 'catppuccin/vim'
@@ -357,7 +365,6 @@ Plug 'mhinz/vim-sayonara' " enhanced quit
 Plug 'kevinhwang91/nvim-bqf' " quickfix zf search, zn new list <c-q> quit search
 Plug 'junegunn/fzf'
 Plug 'karunsiri/vim-delete-hidden-buffers'
-Plug 'petertriho/nvim-scrollbar'
 Plug 'kwkarlwang/bufjump.nvim' "<M-o> jump back file
 Plug 'liuchengxu/vim-which-key'
 Plug 'itchyny/vim-cursorword' " highlight current word
@@ -398,12 +405,15 @@ Plug 'voldikss/vim-translator' " ty to translate
 Plug 'akinsho/toggleterm.nvim', {'tag' : '*'} " open terminal in vim
 
 
+
+
+
 call plug#end()
 
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
 colorscheme  gruvbox
-set background=light
+set background=dark
 
 " ==================codeium===================
 let g:codeium_no_map_tab = v:true
@@ -415,7 +425,31 @@ if !empty(glob('~/dellcodeium.vim'))
 endif
 highlight CodeiumSuggestion guifg=#555555 ctermfg=8
 
-
+" ==================chatgpt===================
+lua <<EOF
+require("chatgpt").setup({
+openai_params = {
+        -- NOTE: model can be a function returning the model name
+        -- this is useful if you want to change the model on the fly
+        -- using commands
+        -- Example:
+        -- model = function()
+        --     if some_condition() then
+        --         return "gpt-4-1106-preview"
+        --     else
+        --         return "gpt-3.5-turbo"
+        --     end
+        -- end,
+        model = "gpt-3.5-turbo-0125",
+        frequency_penalty = 0,
+        presence_penalty = 0,
+        max_tokens = 4095,
+        temperature = 0.2,
+        top_p = 0.1,
+        n = 1,
+      }
+})
+EOF
 
 " ============== lualine =============
 lua << EOF
@@ -486,7 +520,7 @@ lua <<EOF
     snippet = {
       -- REQUIRED - you must specify a snippet engine
       expand = function(args)
-        vim.fn["vsnip#anonymous"](args.body) -- For `vsnipusers.
+        vim.snippet.expand(args.body)
       end,
     },
     window = {
@@ -504,7 +538,6 @@ lua <<EOF
     }),
     sources = cmp.config.sources({
       { name = 'nvim_lsp' },
-      { name = 'vsnip' }, -- For vsnip users.
     }, {
       { name = 'buffer' },
     })
@@ -575,6 +608,7 @@ require("aerial").setup({
 
 })
 vim.keymap.set("n", "<leader>tg", "<cmd>AerialToggle!<CR><c-w>l")
+vim.keymap.set("n", "<leader>ts", "<cmd>AerialNavToggle<CR>")
 EOF
 
 
@@ -747,25 +781,32 @@ nnoremap <leader>ww :VimwikiTabIndex<CR>
 
 
 " === markdown snippets
-au BufNewFile,BufRead *.wiki setl ft=markdown
-autocmd Filetype markdown,wiki map <leader>w yiWi[<esc>Ea](<esc>pa)
-autocmd Filetype markdown,wiki inoremap <buffer> ,f <Esc>/<++><CR>:nohlsearch<CR>"_c4l
-" autocmd Filetype markdown,wiki inoremap <buffer> <c-e> <Esc>/<++><CR>:nohlsearch<CR>"_c4l
-" autocmd Filetype markdown,wiki inoremap <buffer> ,w <Esc>/ <++><CR>:nohlsearch<CR>"_c5l<CR>
-" autocmd Filetype markdown,wiki inoremap <buffer> ,n ---<Enter><Enter>
-autocmd Filetype markdown,wiki inoremap <buffer> ,b **** <++><Esc>F*hi
-autocmd Filetype markdown,wiki inoremap <buffer> ,s ~~~~ <++><Esc>F~hi
-autocmd Filetype markdown,wiki inoremap <buffer> ,i ** <++><Esc>F*i
-autocmd Filetype markdown,wiki inoremap <buffer> ,d `` <++><Esc>F`i
-autocmd Filetype markdown,wiki inoremap <buffer> ,c ```<Enter><++><Enter>```<Enter><Enter><++><Esc>4kA
-autocmd Filetype markdown,wiki inoremap <buffer> ,m - [ ] 
-autocmd Filetype markdown,wiki inoremap <buffer> ,p ![](<++>) <++><Esc>F[a
-autocmd Filetype markdown,wiki inoremap <buffer> ,a [](<++>) <++><Esc>F[a
-autocmd Filetype markdown,wiki inoremap <buffer> ,1 #<Space><Enter><++><Esc>kA
-autocmd Filetype markdown,wiki inoremap <buffer> ,2 ##<Space><Enter><++><Esc>kA
-autocmd Filetype markdown,wiki inoremap <buffer> ,3 ###<Space><Enter><++><Esc>kA
-autocmd Filetype markdown,wiki inoremap <buffer> ,4 ####<Space><Enter><++><Esc>kA
-autocmd Filetype markdown,wiki inoremap <buffer> ,l --------<Enter>
+" au BufNewFile,BufRead *.wiki setl ft=markdown
+autocmd Filetype markdown map <leader>w yiWi[<esc>Ea](<esc>pa)
+autocmd Filetype markdown inoremap <buffer> ,f <Esc>/<++><CR>:nohlsearch<CR>"_c4l
+" autocmd Filetype markdown inoremap <buffer> <c-e> <Esc>/<++><CR>:nohlsearch<CR>"_c4l
+" autocmd Filetype markdown inoremap <buffer> ,w <Esc>/ <++><CR>:nohlsearch<CR>"_c5l<CR>
+" autocmd Filetype markdown inoremap <buffer> ,n ---<Enter><Enter>
+autocmd Filetype markdown inoremap <buffer> ,b **** <++><Esc>F*hi
+autocmd Filetype vimwiki inoremap <buffer> ,b ** <++><Esc>F*i
+autocmd Filetype markdown inoremap <buffer> ,s ~~~~ <++><Esc>F~hi
+autocmd Filetype vimwiki inoremap <buffer> ,s ~~ <++><Esc>F~i
+autocmd Filetype markdown inoremap <buffer> ,i ** <++><Esc>F*i
+autocmd Filetype vimwiki inoremap <buffer> ,i __ <++><Esc>F_i
+autocmd Filetype markdown inoremap <buffer> ,d `` <++><Esc>F`i
+autocmd Filetype markdown inoremap <buffer> ,c ```<Enter><++><Enter>```<Enter><Enter><++><Esc>4kA
+autocmd Filetype markdown inoremap <buffer> ,m - [ ] 
+autocmd Filetype markdown inoremap <buffer> ,p ![](<++>) <++><Esc>F[a
+autocmd Filetype markdown inoremap <buffer> ,a [](<++>) <++><Esc>F[a
+autocmd Filetype markdown inoremap <buffer> ,1 #<Space><Enter><++><Esc>kA
+autocmd Filetype vimwiki inoremap <buffer> ,1 =<Space><Space>=<Enter><++><Esc>khi
+autocmd Filetype markdown inoremap <buffer> ,2 ##<Space><Enter><++><Esc>kA
+autocmd Filetype vimwiki inoremap <buffer> ,2 ==<Space><Space>==<Enter><++><Esc>ki
+autocmd Filetype markdown inoremap <buffer> ,3 ###<Space><Enter><++><Esc>kA
+autocmd Filetype vimwiki inoremap <buffer> ,3 ===<Space><Space>===<Enter><++><Esc>kli
+autocmd Filetype markdown inoremap <buffer> ,4 ####<Space><Enter><++><Esc>kA
+autocmd Filetype vimwiki inoremap <buffer> ,4 ====<Space><Space>====<Enter><++><Esc>klli
+autocmd Filetype markdown inoremap <buffer> ,l --------<Enter>
 
 
 
@@ -1093,30 +1134,6 @@ let g:context_enabled = 0
 nnoremap <leader>ct :ContextToggleWindow<CR>
 
 
-" " ==================== nvim-scrollbar ====================
-lua <<EOF
-require("scrollbar").setup()
-require("scrollbar.handlers.search").setup()
-require("scrollbar").setup({
-	show = true,
-	handle = {
-		text = " ",
-		color = "#928374",
-		hide_if_all_visible = true,
-	},
-	marks = {
-		Search = { color = "yellow" },
-		Misc = { color = "purple" },
-	},
-	handlers = {
-		cursor = true,
-		diagnostic = true,
-		gitsigns = true,
-		handle = true,
-		search = true,
-	},
-})
-EOF
 
 
 " ==================== nvim-hlslens ====================
@@ -1134,7 +1151,8 @@ let g:HiMapKeys=0
 
 nnoremap <leader>ah :Hi +<CR>
 vnoremap <leader>ah y:Hi +x <c-r>"<CR>
-nnoremap <leader>dh :Hi Clear<CR>
+nnoremap <leader>dh :Hi -<CR>
+nnoremap <leader>ch :Hi Clear<CR>
 
 
 " ==================== bufjump ====================
@@ -1171,8 +1189,8 @@ noremap ' <Cmd>lua require('flash').jump()<CR>
 
 " === clever-f ===
 let g:clever_f_across_no_line = 1
-let g:clever_f_timeout_ms = 800
-let g:clever_f_highlight_timeout_ms = 800
+let g:clever_f_timeout_ms = 2000
+let g:clever_f_highlight_timeout_ms = 2000
 
 " ====================== flash =====================
 
@@ -1215,8 +1233,9 @@ let g:cursorword = 1
 " ============== toggleterm ================================
 
 lua require("toggleterm").setup()
-nnoremap <leader>tm :execute "ToggleTerm dir=" .. expand("%:p:h")<CR>
+nnoremap <leader>tm :execute "ToggleTerm direction=float dir=" .. expand("%:p:h")<CR>
 vnoremap <leader>tm :ToggleTermSendVisualLines<CR>
+" <c-\> <c-n> to switch to normal mode
 
 "
 " =================bqf=============================
@@ -1300,8 +1319,10 @@ nnoremap K :lua vim.lsp.buf.hover()<CR>
 nnoremap gd :lua vim.lsp.buf.definition()<CR>
 nnoremap gD :tab sp<CR>:lua vim.lsp.buf.definition()<CR>
 nnoremap gi :lua vim.lsp.buf.implementation()<CR>
+nnoremap gI :tab sp<CR:lua vim.lsp.buf.implementation()<CR>
 nnoremap gy :lua vim.lsp.buf.type_definition()<CR>
 nnoremap gr :lua vim.lsp.buf.references()<CR>
+nnoremap gR :tab sp<CR>:lua vim.lsp.buf.references()<CR>
 nnoremap <leader>rn :lua vim.lsp.buf.rename()<CR>
 " nnoremap <leader>fm :lua vim.lsp.buf.format()
 xnoremap <leader>fm :lua function() vim.lsp.buf.format({ async = true }) end<CR>
@@ -1312,3 +1333,5 @@ nnoremap ]g :lua vim.diagnostic.goto_next()<CR>
 
 " ===================== others ===========================
 let g:python3_host_prog = 'python3'
+nnoremap <leader>ihe :lua vim.lsp.inlay_hint.enable(true)<CR>
+nnoremap <leader>ihd :lua vim.lsp.inlay_hint.enable(false)<CR>
