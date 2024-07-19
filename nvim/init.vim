@@ -133,16 +133,20 @@ nnoremap <leader>, `[V`]<
 nnoremap <leader>. `[V`]>
 " new tab after current
 nnoremap ti :tabnew<CR>
+" new tab after first tab
+nnoremap tI :0tabnew<CR>
 " new tab after last tab
-nnoremap ta :tablast\|:tabnew<CR>
+nnoremap tA :$tabnew<CR>
 "jump to left side tab
 nnoremap <leader><left> :tabp<CR>
 nnoremap th :tabp<CR>
+nnoremap tH :tabfirst<CR>
 "jump to right side tab
 nnoremap <leader><right> :tabn<CR>
 nnoremap <leader><down> 0i<cr><ESC>
 nnoremap <leader><up> kdd
 nnoremap tl :tabn<CR>
+nnoremap tL :tablast<CR>
 " duplicate current tab
 nnoremap ts :tab split<CR>
 " move current win to new tab
@@ -286,6 +290,7 @@ Plug 'NLKNguyen/papercolor-theme'
 Plug 'rebelot/kanagawa.nvim'
 Plug 'catppuccin/vim'
 Plug 'tomasr/molokai'
+Plug 'folke/tokyonight.nvim'
 
 " Status line
 Plug 'nvim-lualine/lualine.nvim'
@@ -412,7 +417,7 @@ call plug#end()
 
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
-colorscheme  gruvbox
+colorscheme  tokyonight
 set background=dark
 
 " ==================codeium===================
@@ -807,6 +812,7 @@ autocmd Filetype vimwiki inoremap <buffer> ,3 ===<Space><Space>===<Enter><++><Es
 autocmd Filetype markdown inoremap <buffer> ,4 ####<Space><Enter><++><Esc>kA
 autocmd Filetype vimwiki inoremap <buffer> ,4 ====<Space><Space>====<Enter><++><Esc>klli
 autocmd Filetype markdown inoremap <buffer> ,l --------<Enter>
+autocmd Filetype vimwiki inoremap <buffer> ,t [ ] <++><Esc>F]la
 
 
 
@@ -824,8 +830,8 @@ vim.keymap.set("n", "<leader>af", function() harpoon.ui:toggle_quick_menu(harpoo
 
 
 -- Toggle previous & next buffers stored within Harpoon list
-vim.keymap.set("n", "<c-k>", function() harpoon:list():prev() end)
-vim.keymap.set("n", "<c-j>", function() harpoon:list():next() end)
+vim.keymap.set("n", "<c-h>", function() harpoon:list():prev() end)
+vim.keymap.set("n", "<c-l>", function() harpoon:list():next() end)
 EOF
 
 "=====nvim-tree======
