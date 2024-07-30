@@ -73,6 +73,7 @@ vmap y ygv<Esc>
 " paste to new line
 nnoremap pj o<Esc>p
 nnoremap pk O<Esc>p
+nnoremap pp p
 
 " jump to head and tail
 noremap H 0
@@ -131,8 +132,10 @@ map <right> :vertical resize-5<CR>
 " move pasted content indent to left/right
 nnoremap <leader>, `[V`]<
 nnoremap <leader>. `[V`]>
+" new tab before current
+nnoremap ti :-tabnew<CR>
 " new tab after current
-nnoremap ti :tabnew<CR>
+nnoremap ta :tabnew<CR>
 " new tab after first tab
 nnoremap tI :0tabnew<CR>
 " new tab after last tab
@@ -417,7 +420,7 @@ call plug#end()
 
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
-colorscheme  tokyonight
+colorscheme  tokyonight-moon
 set background=dark
 
 " ==================codeium===================
@@ -455,6 +458,8 @@ openai_params = {
       }
 })
 EOF
+
+nnoremap <leader>gpt :ChatGPT<CR>
 
 " ============== lualine =============
 lua << EOF
@@ -919,7 +924,7 @@ nnoremap <leader>df :Gvdiffsplit
 map <LEADER>bl V:Git blame<CR><c-w>T
 vnoremap <leader>bl :Git blame<CR><c-w>T
 " view file with commit id :Gedit <commitId>:<file>
-nnoremap <leader>ge :Gedit :<left>
+nnoremap <leader>ge :Gedit <commitid>:<file>
 " git log
 nnoremap <leader>log :tab split<CR>:Gclog! -5000 -- <left><left><left><left><left><left><left>
 
@@ -1325,8 +1330,9 @@ nnoremap K :lua vim.lsp.buf.hover()<CR>
 nnoremap gd :lua vim.lsp.buf.definition()<CR>
 nnoremap gD :tab sp<CR>:lua vim.lsp.buf.definition()<CR>
 nnoremap gi :lua vim.lsp.buf.implementation()<CR>
-nnoremap gI :tab sp<CR:lua vim.lsp.buf.implementation()<CR>
+nnoremap gI :tab sp<CR>:lua vim.lsp.buf.implementation()<CR>
 nnoremap gy :lua vim.lsp.buf.type_definition()<CR>
+nnoremap gY :tab sp<CR>:lua vim.lsp.buf.type_definition()<CR>
 nnoremap gr :lua vim.lsp.buf.references()<CR>
 nnoremap gR :tab sp<CR>:lua vim.lsp.buf.references()<CR>
 nnoremap <leader>rn :lua vim.lsp.buf.rename()<CR>
