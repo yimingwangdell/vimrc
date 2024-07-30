@@ -9,10 +9,10 @@ if empty(glob('~/.config/nvim/autoload/plug.vim'))
 				\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
+
 let g:syntax_maxlines=999999
 syntax sync minlines=999999
 autocmd BufEnter * :syntax sync fromstart
-autocmd TabClosed * tabprevious
 :lua vim.lsp.inlay_hint.enable(false)
 set laststatus=3
 set scrolloff=10
@@ -101,6 +101,7 @@ map J <nop>
 map ; <nop>
 map , <nop>
 nmap Q :Sayonara<CR>
+
 " jump split window
 
 
@@ -861,14 +862,14 @@ EOF
 "
 "
 " search recent files
-nnoremap <leader>fr :tabnew<CR>:Telescope oldfiles <CR>
+nnoremap <leader>fr :Telescope oldfiles <CR>
 nnoremap <leader>fh :Telescope resume <CR>
 nnoremap <leader>fb :Telescope telescope-tabs list_tabs<CR>
  "search word
-nnoremap <leader>fw :tabnew<CR>:Telescope live_grep<CR>
-nnoremap <leader>fv :tabnew<CR>:lua require('telescope.builtin').live_grep({default_text = " ", search_dirs = { "/root/vimwiki" }})<CR>
+nnoremap <leader>fw :Telescope live_grep<CR>
+nnoremap <leader>fv :lua require('telescope.builtin').live_grep({default_text = " ", search_dirs = { "/root/vimwiki" }})<CR>
 " search files
-nnoremap <leader>ff :tabnew<CR>:Telescope find_files<CR>
+nnoremap <leader>ff :Telescope find_files<CR>
 " search symbols in current file
 nnoremap <leader>ft :Telescope aerial<CR>
 nnoremap <leader>f/ :Telescope search_history<CR>
@@ -926,14 +927,14 @@ vnoremap <leader>bl :Git blame<CR><c-w>T
 " view file with commit id :Gedit <commitId>:<file>
 nnoremap <leader>ge :Gedit <commitid>:<file>
 " git log
-nnoremap <leader>log :tab split<CR>:Gclog! -5000 -- <left><left><left><left><left><left><left>
+nnoremap <leader>log :-tabnew<CR>:Gclog! -5000 -- <left><left><left><left><left><left><left>
 
 "current file log with related commits
 nnoremap <leader>logd :0Gclog! -5000 -- %<CR>:copen<CR>
 "current file log with only current file changes
 nnoremap <leader>logc :tab Git --paginate log -5000 --patch -- %<CR>
 " selected lines log
-vnoremap <leader>log <ESC>:tab split<CR>gv:Gclog! -5000<CR>:copen<CR>
+vnoremap <leader>log <ESC>:-tabnew<CR>gv:Gclog! -5000<CR>:copen<CR>
 
 " === gitsign ===
 lua <<EOF
@@ -1217,6 +1218,7 @@ lua <<EOF
       mappings = {
         i = {
           ["<esc>"] = require("telescope.actions").close,
+          ["<CR>"] = require("telescope.actions").select_tab_drop,
         },
       },
     },
