@@ -958,6 +958,11 @@ let g:VM_theme             = 'iceblue'
 runtime macros/sandwich/keymap/surround.vim
 
 " ===
+" === vim-wildfire
+" ===
+let g:wildfire_objects = ["i'", 'i"', "i)", "i]", "i}", "i>"]
+
+" ===
 " === Bullets.vim
 " ===
 " let g:bullets_set_mappings = 0
