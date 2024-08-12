@@ -36,12 +36,7 @@ set cmdheight=2
 set timeoutlen=800
 set updatetime=300
 set shortmess+=c
-if has("patch-8.1.1564")
-  " Recently vim can merge signcolumn and number column into one
-  set signcolumn=number
-else
-  set signcolumn=yes
-endif
+set signcolumn=yes
 
 
 set nocompatible
@@ -328,7 +323,6 @@ Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
-Plug 'aznhe21/actions-preview.nvim'
 Plug 'williamboman/mason.nvim'
 
 
@@ -1343,10 +1337,12 @@ nnoremap gY :tab sp<CR>:lua vim.lsp.buf.type_definition()<CR>
 nnoremap gr :lua vim.lsp.buf.references()<CR>
 nnoremap gR :tab sp<CR>:lua vim.lsp.buf.references()<CR>
 nnoremap <leader>rn :lua vim.lsp.buf.rename()<CR>
-" nnoremap <leader>fm :lua vim.lsp.buf.format()
-xnoremap <leader>fm :lua function() vim.lsp.buf.format({ async = true }) end<CR>
-xnoremap <leader>ac :lua require("actions-preview").code_actions()<CR>
-nnoremap <leader>ac :lua require("actions-preview").code_actions()<CR>
+nnoremap <leader>fm :lua vim.lsp.buf.format({async=true})<CR>
+lua <<EOF
+vim.keymap.set('v', '<leader>fm', vim.lsp.buf.format)
+EOF
+xnoremap <leader>ac :lua vim.lsp.buf.code_action()<CR>
+nnoremap <leader>ac :lua vim.lsp.buf.code_action()<CR>
 nnoremap [g :lua vim.diagnostic.goto_prev()<CR>
 nnoremap ]g :lua vim.diagnostic.goto_next()<CR>
 
