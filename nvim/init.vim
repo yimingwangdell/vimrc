@@ -1221,6 +1221,22 @@ lua <<EOF
         },
       },
     },
+    pickers = {
+					search_history = {
+						mappings = {
+							i = {
+								["<CR>"] = require("telescope.actions").select_default,
+							},
+						}
+					},
+					command_history = {
+						mappings = {
+							i = {
+								["<CR>"] = require("telescope.actions").select_default,
+							},
+						}
+					},
+    },
     extensions = {
         aerial = {
           -- Display symbols as <root>.<parent>.<symbol>
