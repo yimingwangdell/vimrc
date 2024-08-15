@@ -296,7 +296,7 @@ Plug 'nvim-lualine/lualine.nvim'
 " If you want to have icons in your statusline choose one of these
 Plug 'nvim-tree/nvim-web-devicons'
 Plug 'nvim-treesitter/nvim-treesitter'
-Plug 'yimingwangdell/nvim-gps'
+Plug 'ColinKennedy/nvim-gps'
 " General Highlighter
 
 " File navigation
