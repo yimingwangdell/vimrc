@@ -360,7 +360,7 @@ Plug 'mzlogin/vim-markdown-toc'
 Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
 Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeToggle', 'for': ['text', 'markdown', 'vim-plug'] }
 Plug 'vimwiki/vimwiki' " best note taking tool
-Plug 'dhruvasagar/vim-dotoo'
+Plug 'nvim-orgmode/orgmode'
 
 "
 " Editor Enhancement
@@ -543,6 +543,7 @@ lua <<EOF
     }),
     sources = cmp.config.sources({
       { name = 'nvim_lsp' },
+      { name = 'orgmode' },
     }, {
       { name = 'buffer' },
     })
@@ -586,6 +587,9 @@ lua <<EOF
         capabilities = capabilities,
   }
   require('lspconfig')['bashls'].setup {
+        capabilities = capabilities,
+  }
+  require('lspconfig')['clangd'].setup {
         capabilities = capabilities,
   }
 EOF
@@ -775,12 +779,19 @@ noremap <LEADER>tb :TableModeToggle<CR>
 let g:table_mode_disable_mappings = 1
 let g:table_mode_cell_text_object_i_map = 'k<Bar>'
 
-" === dotoo ====
 
 " === vimwiki ====
 nnoremap <leader>ww :VimwikiTabIndex<CR>
 " ===
 " === orgmode
+lua << EOF
+
+require('orgmode').setup({
+  org_agenda_files = {'~/Dropbox/org/*', '~/my-orgs/**/*'},
+  org_default_notes_file = '~/Dropbox/org/refile.org',
+})
+
+EOF
 " ===
 
 
