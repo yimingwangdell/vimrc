@@ -1183,6 +1183,9 @@ nnoremap <leader>ct :ContextToggleWindow<CR>
 "             \<Cmd>lua require('hlslens').start()<CR>
 " noremap <silent> - <Cmd>execute('normal! ' . v:count1 . 'N')<CR>
 "             \<Cmd>lua require('hlslens').start()<CR>
+lua <<EOF
+require('hlslens').setup()
+EOF
 noremap * *<Cmd>lua require('hlslens').start()<CR>N
 noremap # #<Cmd>lua require('hlslens').start()<CR>N
 noremap g* g*<Cmd>lua require('hlslens').start()<CR>
