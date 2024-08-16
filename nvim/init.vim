@@ -10,9 +10,9 @@ if empty(glob('~/.config/nvim/autoload/plug.vim'))
 	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-let g:syntax_maxlines=999999
-syntax sync minlines=999999
-autocmd BufEnter * :syntax sync fromstart
+" let g:syntax_maxlines=999999
+" syntax sync minlines=999999
+" autocmd BufEnter * :syntax sync fromstart
 :lua vim.lsp.inlay_hint.enable(false)
 set laststatus=3
 set scrolloff=10
@@ -45,7 +45,7 @@ syntax on
 set number
 set relativenumber
 set cursorline
-set wrap
+set nowrap
 set showcmd
 set wildmenu
 set clipboard+=unnamedplus
@@ -281,14 +281,9 @@ Plug 'jackMort/ChatGPT.nvim'
 
 
 " Pretty Dress
-Plug 'arzg/vim-colors-xcode'
-Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'morhetz/gruvbox'
-Plug 'hardhackerlabs/theme-vim', { 'as': 'hardhacker' }
-Plug 'NLKNguyen/papercolor-theme'
 Plug 'rebelot/kanagawa.nvim'
 Plug 'catppuccin/vim'
-Plug 'tomasr/molokai'
 Plug 'folke/tokyonight.nvim'
 
 " Status line
@@ -337,13 +332,11 @@ Plug 'mbbill/undotree'
 
 " Git
 Plug 'tpope/vim-fugitive'
-Plug 'APZelos/blamer.nvim'
 Plug 'lewis6991/gitsigns.nvim'
 Plug 'kdheepak/lazygit.nvim'
 
 
 " HTML, CSS, JavaScript, Typescript, PHP, JSON, etc.
-Plug 'NvChad/nvim-colorizer.lua'
 
 " Go
 Plug 'fatih/vim-go' , { 'for': ['go', 'vim-plug'], 'tag': '*' }
@@ -369,8 +362,7 @@ Plug 'kevinhwang91/nvim-bqf' " quickfix zf search, zn new list <c-q> quit search
 Plug 'junegunn/fzf'
 Plug 'karunsiri/vim-delete-hidden-buffers'
 Plug 'kwkarlwang/bufjump.nvim' "<M-o> jump back file
-Plug 'liuchengxu/vim-which-key'
-Plug 'itchyny/vim-cursorword' " highlight current word
+" Plug 'itchyny/vim-cursorword' " highlight current word
 Plug 'mg979/vim-visual-multi' " multi cursor
 Plug 'tomtom/tcomment_vim' " <space><space> to comment a line
 Plug 'gbprod/substitute.nvim' " s to substitute
@@ -382,9 +374,7 @@ map <LEADER><ENTER> <Plug>(wildfire-fuel)
 Plug 'junegunn/vim-after-object' " da= to delete what's after =
 Plug 'folke/flash.nvim' " best jump plugin
 Plug 'rhysd/clever-f.vim' " enhanced f,F,t,T
-Plug 'junegunn/vim-peekaboo'
-Plug 'matze/vim-move'
-Plug 'lukas-reineke/indent-blankline.nvim'
+Plug 'nvimdev/indentmini.nvim'
 
 
 " Bookmarks
@@ -396,7 +386,6 @@ Plug 'wellle/context.vim'
 " Other visual enhancement
 Plug 'luochen1990/rainbow'
 Plug 'ryanoasis/vim-devicons'
-Plug 'kevinhwang91/nvim-hlslens'
 Plug 'azabiong/vim-highlighter'
 "
 "
@@ -614,6 +603,9 @@ require("aerial").setup({
     vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
   end,
   disable_max_lines = 30000,
+  layout={
+    min_width = 60
+  }
 
 })
 vim.keymap.set("n", "<leader>tg", "<cmd>AerialToggle!<CR><c-w>l")
@@ -1096,33 +1088,6 @@ nnoremap tt :tabnew<cr>:RangerCurrentDirectoryExistingOrNewTab<CR>
 nnoremap <leader>e :NvimTreeFindFileToggle<CR>
 
 
-" ==================== nvim-colorizer.lua ====================
-lua <<EOF
-require("colorizer").setup {
-	filetypes = { "*" },
-	user_default_options = {
-		RGB = true, -- #RGB hex codes
-		RRGGBB = true, -- #RRGGBB hex codes
-		names = true, -- "Name" codes like Blue or blue
-		RRGGBBAA = false, -- #RRGGBBAA hex codes
-		AARRGGBB = true, -- 0xAARRGGBB hex codes
-		rgb_fn = false, -- CSS rgb() and rgba() functions
-		hsl_fn = false, -- CSS hsl() and hsla() functions
-		css = false, -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
-		css_fn = false, -- Enable all CSS *functions*: rgb_fn, hsl_fn
-		-- Available modes for `mode`: foreground, background,  virtualtext
-		mode = "virtualtext", -- Set the display mode.
-		-- Available methods are false / true / "normal" / "lsp" / "both"
-		-- True is same as normal
-		tailwind = false, -- Enable tailwind colors
-		-- parsers can contain values used in |user_default_options|
-		sass = { enable = false, parsers = { css }, }, -- Enable sass colors
-		virtualtext = "■",
-	},
-	-- all the sub-options of filetypes apply to buftypes
-	buftypes = {},
-}
-EOF
 
 " ===
 " === vim-illuminate
@@ -1152,7 +1117,7 @@ let g:move_map_keys = 0
 
 "===== indent =====
 lua <<EOF
-require("ibl").setup()
+require("indentmini").setup()
 EOF
 
 
@@ -1178,18 +1143,6 @@ nnoremap <leader>ct :ContextToggleWindow<CR>
 
 
 
-" ==================== nvim-hlslens ====================
-" noremap <silent> = <Cmd>execute('normal! ' . v:count1 . 'n')<CR>
-"             \<Cmd>lua require('hlslens').start()<CR>
-" noremap <silent> - <Cmd>execute('normal! ' . v:count1 . 'N')<CR>
-"             \<Cmd>lua require('hlslens').start()<CR>
-lua <<EOF
-require('hlslens').setup()
-EOF
-noremap * *<Cmd>lua require('hlslens').start()<CR>N
-noremap # #<Cmd>lua require('hlslens').start()<CR>N
-noremap g* g*<Cmd>lua require('hlslens').start()<CR>
-noremap g# g#<cmd>lua require('hlslens').start()<CR>
 
 " === vim-highlighter ===
 let g:HiMapKeys=0
