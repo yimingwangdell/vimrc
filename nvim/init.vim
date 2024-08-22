@@ -1177,9 +1177,18 @@ hi Blue guibg=blue guifg=blue
 hi Red guifg=red
 lua <<EOF
 require("flash").setup({
+ modes = {
     char = {
-        enabled = true,
-    }
+      jump_labels = true,
+      multi_line = false,
+      autohide = false,
+        jump = {
+            autojump = true,
+            nohlsearch = true,
+            
+        }
+    },
+  }
 })
 EOF
 noremap ' <Cmd>lua require('flash').jump()<CR>
