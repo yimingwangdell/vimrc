@@ -74,7 +74,7 @@ nnoremap pp p
 noremap H 0
 noremap L $
 inoremap jk <ESC>
-inoremap jh <ESC>0i
+inoremap jh <ESC>^i
 inoremap jl <ESC>A
 inoremap << <esc>0C
 " copy to end
@@ -373,7 +373,6 @@ map <LEADER><ENTER> <Plug>(wildfire-fuel)
 
 Plug 'junegunn/vim-after-object' " da= to delete what's after =
 Plug 'folke/flash.nvim' " best jump plugin
-Plug 'rhysd/clever-f.vim' " enhanced f,F,t,T
 Plug 'nvimdev/indentmini.nvim'
 
 
@@ -1179,21 +1178,12 @@ hi Red guifg=red
 lua <<EOF
 require("flash").setup({
     char = {
-        enabled = false,
+        enabled = true,
     }
 })
 EOF
 noremap ' <Cmd>lua require('flash').jump()<CR>
 
-" === clever-f ===
-let g:clever_f_across_no_line = 1
-let g:clever_f_timeout_ms = 2000
-let g:clever_f_highlight_timeout_ms = 2000
-
-" ====================== flash =====================
-
-" ====================== flash =====================
-let g:indentLine_setColors = 0
 
 " ================telescope==================
 lua <<EOF
