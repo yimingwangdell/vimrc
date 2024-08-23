@@ -58,6 +58,9 @@ set ignorecase
 set ww+=h,l
 
 
+let mapleader=" "
+let maplocalleader=" "
+
 " calculate selected
 vnoremap <LEADER>c yo<c-r>=<c-r>"<CR>
 " copy current file path
@@ -100,8 +103,6 @@ nmap Q :Sayonara<CR>
 " jump split window
 
 
-let mapleader=" "
-let maplocalleader=" "
 
 
 " auto reload vimrc
