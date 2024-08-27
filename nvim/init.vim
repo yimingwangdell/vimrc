@@ -241,21 +241,6 @@ let g:translator_default_engines = ['google', 'bing']
 " toggle full screen for splited window
 map <LEADER>fs :call ToggleFs()<CR>
 
-function! MaximizeToggle()
-  if exists("s:maximize_session")
-    exec "source " . s:maximize_session
-    call delete(s:maximize_session)
-    unlet s:maximize_session
-    let &hidden=s:maximize_hidden_save
-    unlet s:maximize_hidden_save
-  else
-    let s:maximize_hidden_save = &hidden
-    let s:maximize_session = tempname()
-    set hidden
-    exec "mksession! " . s:maximize_session
-    only
-  endif
-endfunction
 
 let s:enabled = 0
 function! ToggleFs()
@@ -391,8 +376,6 @@ Plug 'azabiong/vim-highlighter'
 "
 " Other useful utilities
 Plug 'lambdalisue/suda.vim' " :SudaWrite to write as root
-Plug 'xolox/vim-session' " save session when quit
-Plug 'xolox/vim-misc' " vim-session dep
 Plug 'voldikss/vim-translator' " ty to translate
 Plug 'akinsho/toggleterm.nvim', {'tag' : '*'} " open terminal in vim
 
@@ -936,7 +919,7 @@ endfunc
 let g:fugitive_summary_format = "%<(16,trunc)%an||%<(27,trunc)%ad||%s"
 nnoremap <leader>rc :Gvdiffsplit!<CR>
 " start to resolve conflicts in project
-nnoremap <leader>df :Gvdiffsplit 
+nnoremap <leader>df :G diff
 " Gvdiffsplit <commitId> <commitId>
 " === git blame ===
 map <LEADER>bl V:Git blame<CR><c-w>T
@@ -1046,21 +1029,6 @@ autocmd VimEnter * call after_object#enable('=', ':', '-', '#', ' ')
 let g:rainbow_active = 1
 
 
-
-" ===
-" === vim-session
-" ===
-let g:session_directory = $HOME."/.config/nvim/tmp/sessions"
-let g:session_autosave = 'yes'
-let g:session_autoload = 'yes'
-set sessionoptions-=options
-"noremap sl :OpenSession<CR>
-"noremap sS :SaveSession<CR>
-"noremap ss :SaveSession 
-"noremap sc :SaveSession<CR>:CloseSession<CR>:q<CR>
-"noremap so :OpenSession default<CR>
-"noremap sD :DeleteSession<CR>
-""noremap sA :AppendTabSession<CR>
 
 
 " ===
@@ -1275,58 +1243,6 @@ preview = {
 }
 
 
-local fn = vim.fn
-local cmd = vim.cmd
-local api = vim.api
-cmd([[
-    aug Coc
-        au!
-        au User CocLocationsChange lua _G.jumpToLoc()
-    aug END
-]])
-
-cmd([[
-    nmap <silent> gr <Plug>(coc-references)
-    nnoremap <silent> <leader>qd <Cmd>lua _G.diagnostic()<CR>
-]])
-
--- just use `_G` prefix as a global function for a demo
--- please use module instead in reality
-function _G.jumpToLoc(locs)
-    locs = locs or vim.g.coc_jump_locations
-    fn.setloclist(0, {}, ' ', {title = 'CocLocationList', items = locs})
-    local winid = fn.getloclist(0, {winid = 0}).winid
-    if winid == 0 then
-        cmd('bel lw')
-    else
-        api.nvim_set_current_win(winid)
-    end
-end
-
-function _G.diagnostic()
-    fn.CocActionAsync('diagnosticList', '', function(err, res)
-        if err == vim.NIL then
-            local items = {}
-            for _, d in ipairs(res) do
-                local text = ('[%s%s] %s'):format((d.source == '' and 'coc.nvim' or d.source),
-                    (d.code == vim.NIL and '' or ' ' .. d.code), d.message:match('([^\n]+)\n*'))
-                local item = {
-                    filename = d.file,
-                    lnum = d.lnum,
-                    end_lnum = d.end_lnum,
-                    col = d.col,
-                    end_col = d.end_col,
-                    text = text,
-                    type = d.severity
-                }
-                table.insert(items, item)
-            end
-            fn.setqflist({}, ' ', {title = 'CocDiagnosticList', items = items})
-
-            cmd('bo cope')
-        end
-    end)
-end
 EOF
 
 " LSP key map
