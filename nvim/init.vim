@@ -279,7 +279,7 @@ Plug 'nvim-lualine/lualine.nvim'
 Plug 'nvim-tree/nvim-web-devicons'
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'ColinKennedy/nvim-gps'
-Plug 'nvim-telescope/telescope-fzf-native.nvim'
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' }
 Plug 'Bekaboo/dropbar.nvim'
 " General Highlighter
 
@@ -734,11 +734,12 @@ EOF
 
 lua <<EOF
 local api = require("dropbar.api")
-		vim.keymap.set('n', '<Leader>;', api.pick)
+		vim.keymap.set('n', "<Leader>'", api.pick)
 		vim.keymap.set('n', '[c', api.goto_context_start)
 		vim.keymap.set('n', ']c', api.select_next_context)
 
-		local confirm = function()
+
+    local confirm = function()
 			local menu = api.get_current_dropbar_menu()
 			if not menu then
 				return
@@ -783,10 +784,8 @@ local api = require("dropbar.api")
 						menu:click_at({ mouse.line, mouse.column }, nil, 1, 'l')
 					end,
 					['<CR>'] = confirm,
-					['i'] = confirm,
-					['<esc>'] = quit_curr,
-					['q'] = quit_curr,
-					['n'] = quit_curr,
+					['l'] = confirm,
+					['h'] = quit_curr,
 					['<MouseMove>'] = function()
 						local menu = api.get_current_dropbar_menu()
 						if not menu then
