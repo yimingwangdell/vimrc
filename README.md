@@ -46,7 +46,7 @@
 | space fb                          | search opened file name                        |
 | space fr                          | search opened once history file                |
 | space ft                          | search symbol in current file                  |
-| space ft                          | search symbol in vimwiki folder                |
+| space fv                          | search symbol in vimwiki folder                |
 | space fh                          | resume last searching result                   |
 |-----------------------------------|------------------------------------------------|
 | ctrl space(insert mode)           | autocomplete(using LSP)                        |
@@ -89,7 +89,7 @@
 type `,3Hello,f` in insert mode, will create a 'Hello' title with level 3
 
 ### install lsp
-:Mason to install lsp, then add config below to init.vim
+:Mason to install lsp, then add config below to similar other lspconfig config in init.vim
 ```lua
  require('lspconfig')['<YOURLSP"'].setup {
       capabilities = capabilities,
