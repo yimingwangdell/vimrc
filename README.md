@@ -57,15 +57,15 @@
 | gf                                | open under cursor file path                    |
 | space tg                          | show current file symbol outline               |
 | space gd                          | go to definition/implementatio(using anyjump)  |
-| alt+o or alt+i                    | jump back/forward between file                 |
+| alt o or alt i                    | jump back/forward between file                 |
 |-----------------------------------|------------------------------------------------|
 | ty (normal or visual mode)        | translate
-| ctrl+nnnnnn                       | mutiple cursor increase                        |
+| ctrl nnnnnn                       | mutiple cursor increase                        |
 | shift Q                           | mutiple cursor decrease                        |
 | space enter                       | select block                                   |
 | space ww                          | open vimwiki notebook                          |
 | space oa/oc                       | nvim orgmode menu/action                       |
-| ctrl+p                            | markdown preview using chrome                  |
+| ctrl p                            | markdown preview using chrome                  |
 |-----------------------------------|------------------------------------------------|
 | space log (normal or visual mode) | open git log for this project                  |
 | space logc                        | open git log for current file                  |
@@ -77,12 +77,12 @@
 ### markdown support
 | command(insert mode) | description                     |
 |----------------------|---------------------------------|
-| ,+f                  | close insert                    |
-| ,+<number> 1~3       | level 1~3 title                 |
-| ,+c                  | code with language(close twice) |
-| ,+d                  | single line command             |
-| ,+b                  | bold                            |
-| ,+a                  | link                            |
+| ,<number1~3>         | level 1~3 title                 |
+| ,c                   | code with language(close twice) |
+| ,d                   | single line command             |
+| ,b                   | bold                            |
+| ,a                   | link                            |
+| ,f                   | close insert!                   |
 **for more, see nvim/ftplugin/markdown.vim** 
 
 **example**  
@@ -97,7 +97,7 @@ type `,3Hello,f` in insert mode, will create a 'Hello' title with level 3
 ### markdown table mode
 
 `:TableModeEnable` 
-After enabled, when you can use '|' to create markdown table, table will automatically align.
+After enabled, when you can use '|' to create markdown table, table will automatically get aligned.
 
 ### install language server
 `:LspInstall` install current opened file type language server to enable autocomplete/document/semantic jump/highlighting feature.
