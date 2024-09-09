@@ -55,6 +55,7 @@
 | gi                                | goto implementation(using LSP)                 |
 | gy                                | goto type(using LSP)                           |
 | gf                                | open under cursor file path                    |
+| space fm                          | format code                                    |
 | space tg                          | show current file symbol outline               |
 | space gd                          | go to definition/implementatio(using anyjump)  |
 | alt o or alt i                    | jump back/forward between file                 |
