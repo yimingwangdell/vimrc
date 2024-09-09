@@ -3,7 +3,7 @@
 
 0. you should know vim basic editing like three vim modes, copy, paste, undo...  
 1. network for github
-2. neovim > 0.8.0
+2. neovim > 0.10.0
 
 ### install steps
 
@@ -14,67 +14,65 @@
 
 ### basic key mappings
 
-| cmd                                 | description                                            |
-|-------------------------------------|--------------------------------------------------------|
-| shift + s                           | save file                                              |
-| shift + q                           | quit file                                              |
-| space shift + q                     | quit neovim                                            |
-| shift + h                           | goto line begining                                     |
-| shift + l                           | goto line end                                          |
-| shift + j                           | 5 lines down                                           |
-| shift + k                           | 5 lines up                                             |
-| ti                                  | add new tab to right                                   |
-| ta                                  | add new tab to end                                     |
-| th                                  | jump to left tab                                       |
-| tl                                  | jump to right tab                                      |
-| {{                                  | jump to previous symbol                                |
-| }}                                  | jump to next symbol                                    |
-| [[                                  | jump to previous git hunk                              |
-| ]]                                  | jump to next git hunk                                  |
-| shift s+ ' or " or ( in visual mode | surround you select with ""/ ''/ ()                    |
-| shift + u                           | open file modify history                               |
-| /                                   | enhanced current file search                           |
-| space space                         | comment code                                           |
-| space sl/sj                         | split windows right/below                              |
-| space sv                            | open vim configuration                                 |
-| space h/j/k/l                       | jump between split windows                             |
-| space fs                            | toggle windows fullscreen                              |
-| space e                             | toggle file explorer                                   |
-| tt                                  | open ranger(require ranger installed)                  |
-|-------------------------------------|--------------------------------------------------------|
-| space ff                            | search file in project(require fzf installed)          |
-| space fr                            | search opened once history file                        |
-| space fw                            | search string in project(require rg installed)         |
-| space ft                            | search symbol in current file                          |
-| space fb                            | search opened file name                                |
-| space fh                            | resume last searching result                           |
-| use <down><up>                      | next/previous item in search result window             |
-|-------------------------------------|--------------------------------------------------------|
-| tab(insert mode)                    | autocomplete(using LSP)                                |
-| gk                                  | show under cursor method doc(using LSP)                |
-| gd                                  | goto under cursor symbol definition(using LSP)         |
-| gi                                  | goto implementation(using LSP)                         |
-| go                                  | goto type(using LSP)                                   |
-| gb                                  | jump back(using LSP)                                   |
-| gf                                  | open under cursor file path                            |
-| space tg                            | show current file symbol outline                       |
-| space gd                            | go to definition/implementatio(using anyjump)          |
-| alt+o/alt+i                         | jump back/forward between file                         |
-|-------------------------------------|--------------------------------------------------------|
-| ctrl+n....nnnnn                     | mutiple cursor  enter/increase                         |
-| shift + Q                           | mutiple cursor decrease                                |
-| space +enter...enter enter          | select block                                           |
-| space ww                            | open vimwiki notebook                                  |
-| space oa/oc                         | nvim orgmode menu/action                               |
-| ty                                  | translate under cursor/selected content to chinese     |
-| ctrl + p                            | markdown preview using chrome                          |
-|-------------------------------------|--------------------------------------------------------|
-| space log                           | open git log for this project/also work in visual mode |
-| space logc                          | open git log for current file                          |
-| space bl                            | open git blame current line/also work in visual mode   |
-| space lg                            | open lazygit(awesome git tool)                         |
+| cmd                               | description                                    |
+|-----------------------------------|------------------------------------------------|
+| S                                 | save file                                      |
+| Q                                 | quit file                                      |
+| space Q                           | quit neovim                                    |
+| H                                 | goto line begining                             |
+| L                                 | goto line end                                  |
+| ti                                | create new tab to before current tab           |
+| ta                                | create new tab to after current tab            |
+| th                                | previous tab                                   |
+| tl                                | next tab                                       |
+| tfs                               | tab fullscreen                                 |
+| {{                                | jump to previous symbol                        |
+| }}                                | jump to next symbol                            |
+| [[                                | jump to previous git hunk                      |
+| ]]                                | jump to next git hunk                          |
+| S' or S" or S( in visual mode     | surround you select with ""or''or()            |
+| U                                 | open file modify history                       |
+| /                                 | current file search                            |
+| space space                       | comment code                                   |
+| space sv                          | open init.vim                                  |
+| space sl or space sj              | split windows right/below                      |
+| space h/j/k/l                     | jump between split windows                     |
+| space fs                          | toggle windows fullscreen                      |
+| space e                           | toggle file explorer                           |
+| tt                                | open ranger(require ranger installed)          |
+|-----------------------------------|------------------------------------------------|
+| space ff                          | search file in project(require fzf installed)  |
+| space fw                          | search string in project(require rg installed) |
+| space fb                          | search opened file name                        |
+| space fr                          | search opened once history file                |
+| space ft                          | search symbol in current file                  |
+| space ft                          | search symbol in vimwiki folder                |
+| space fh                          | resume last searching result                   |
+|-----------------------------------|------------------------------------------------|
+| ctrl space(insert mode)           | autocomplete(using LSP)                        |
+| gk                                | show under cursor method doc(using LSP)        |
+| gd                                | goto under cursor symbol definition(using LSP) |
+| gi                                | goto implementation(using LSP)                 |
+| gy                                | goto type(using LSP)                           |
+| gf                                | open under cursor file path                    |
+| space tg                          | show current file symbol outline               |
+| space gd                          | go to definition/implementatio(using anyjump)  |
+| alt+o or alt+i                    | jump back/forward between file                 |
+|-----------------------------------|------------------------------------------------|
+| ty (normal or visual mode)        | translate
+| ctrl+nnnnnn                       | mutiple cursor increase                        |
+| shift Q                           | mutiple cursor decrease                        |
+| space enter                       | select block                                   |
+| space ww                          | open vimwiki notebook                          |
+| space oa/oc                       | nvim orgmode menu/action                       |
+| ctrl+p                            | markdown preview using chrome                  |
+|-----------------------------------|------------------------------------------------|
+| space log (normal or visual mode) | open git log for this project                  |
+| space logc                        | open git log for current file                  |
+| space bl  (normal or visual mode) | git blame                                      |
+| space lg                          | open lazygit(awesome git tool)                 |
 
-**For more features, please check vim configuration file.
+**For more features, please check init.vim file.
 
 ### markdown support
 | command(insert mode) | description                     |
@@ -90,6 +88,12 @@
 **example**  
 type `,3Hello,f` in insert mode, will create a 'Hello' title with level 3
 
+### install lsp
+:Mason to install lsp, then add config below to init.vim
+```lua
+ require('lspconfig')['<YOURLSP"'].setup {
+      capabilities = capabilities,
+```
 ### markdown table mode
 
 `:TableModeEnable` 
