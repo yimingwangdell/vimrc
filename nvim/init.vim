@@ -94,6 +94,8 @@ vnoremap <c-u> 4k
 " search selected
 vnoremap / y/<c-r>0<cr>
 nnoremap * *N
+noremap <silent> n <Cmd>execute('keepjumps normal! ' . v:count1 . 'n')<CR>
+noremap <silent> N <Cmd>execute('keepjumps normal! ' . v:count1 . 'N')<CR>
 map s <nop>
 map S :w<CR>
 map J <nop>
@@ -290,6 +292,8 @@ Plug 'nvim-lua/plenary.nvim' " don't forget to add this one if you don't have it
 Plug 'nvim-tree/nvim-tree.lua'
 Plug 'ThePrimeagen/harpoon', {'branch': 'harpoon2'}
 Plug 'pechorin/any-jump.vim'
+Plug 'francoiscabrol/ranger.vim'
+Plug 'rbgrouleff/bclose.vim'
 
 
 " Outline
@@ -909,8 +913,8 @@ vim.keymap.set("n", "<leader>af", function() harpoon.ui:toggle_quick_menu(harpoo
 
 
 -- Toggle previous & next buffers stored within Harpoon list
-vim.keymap.set("n", "<c-h>", function() harpoon:list():prev() end)
-vim.keymap.set("n", "<c-l>", function() harpoon:list():next() end)
+vim.keymap.set("n", "<c-k>", function() harpoon:list():prev() end)
+vim.keymap.set("n", "<c-j>", function() harpoon:list():next() end)
 EOF
 
 "=====nvim-tree======
@@ -1123,7 +1127,7 @@ let g:vmt_fence_closing_text = '/TOC'
 
 
 " === ranger ===
-nnoremap tt :tabnew<cr>:RangerCurrentDirectoryExistingOrNewTab<CR>
+nnoremap <leader>tt :RangerCurrentFileNewTab<CR>
 
 " === nvim-tree ===
 nnoremap <leader>e :NvimTreeFindFileToggle<CR>
@@ -1342,3 +1346,5 @@ nnoremap ]g :lua vim.diagnostic.goto_next()<CR>
 let g:python3_host_prog = 'python3'
 nnoremap <leader>ihe :lua vim.lsp.inlay_hint.enable(true)<CR>
 nnoremap <leader>ihd :lua vim.lsp.inlay_hint.enable(false)<CR>
+nnoremap <leader>did :lua vim.diagnostic.disable()<CR>
+nnoremap <leader>die :lua vim.diagnostic.enable()<CR>
