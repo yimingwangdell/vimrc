@@ -86,6 +86,10 @@ nnoremap Y y$
 nnoremap db dvb
 nnoremap cb cvb
 nnoremap yb yvb
+nnoremap dw diw
+nnoremap cw ciw
+nnoremap yw yiw
+nmap sw siw
 " scroll up and down
 nnoremap <c-d> 3<c-e>
 nnoremap <c-u> 3<c-y>
@@ -593,13 +597,14 @@ require("aerial").setup({
     vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
   end,
   disable_max_lines = 30000,
+  close_on_select = true,
   layout={
     min_width = 60
   }
 
 })
 vim.keymap.set("n", "<leader>tg", "<cmd>AerialToggle!<CR><c-w>l")
-vim.keymap.set("n", "<leader>ts", "<cmd>AerialNavToggle<CR>")
+vim.keymap.set("n", "<leader>nv", "<cmd>AerialNavToggle<CR>")
 EOF
 
 
@@ -1127,7 +1132,7 @@ let g:vmt_fence_closing_text = '/TOC'
 
 
 " === ranger ===
-nnoremap <leader>tt :RangerCurrentFileNewTab<CR>
+nnoremap <leader>ra :RangerCurrentFileNewTab<CR>
 
 " === nvim-tree ===
 nnoremap <leader>e :NvimTreeFindFileToggle<CR>
