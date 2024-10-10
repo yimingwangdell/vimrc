@@ -935,6 +935,11 @@ require("nvim-tree").setup({
   filters = {
     dotfiles = true,
   },
+  actions = {
+    open_file = {
+      quit_on_open = true,
+    }
+  },
   on_attach = my_on_attach
 })
 
