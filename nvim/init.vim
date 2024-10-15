@@ -10,6 +10,14 @@ if empty(glob('~/.config/nvim/autoload/plug.vim'))
 	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+let s:prevtabnum=tabpagenr('$')
+augroup TabClosed
+    autocmd! TabEnter * :if tabpagenr('$')<s:prevtabnum && tabpagenr()>1
+                \       |   tabprevious
+                \       |endif
+                \       |let s:prevtabnum=tabpagenr('$')
+augroup END
+
 " let g:syntax_maxlines=999999
 " syntax sync minlines=999999
 " autocmd BufEnter * :syntax sync fromstart
@@ -69,9 +77,17 @@ nnoremap <space>cfp :let @*=expand('%')<CR>:echo "full path copied"<CR>
 " fix wrong cursor postion in vim after yanking
 vmap y ygv<Esc>
 " paste to new line
-nnoremap pj o<Esc>p
-nnoremap pk O<Esc>p
-nnoremap pp p
+function! Pcol(...) abort
+  let above = get(a:, 1, 0)
+  let col = virtcol('.')
+  execute 'normal!' above ? 'P' : 'p'
+  call cursor('.', col)
+endfunction
+nnoremap <silent> pp :call Pcol(0)<CR>
+" nnoremap <silent> pk O<ESC>:call Pcol(0)<CR>
+nnoremap <silent> pj o<c-r>"<Esc>
+nnoremap <silent> pk O<c-r>"<Esc>
+nnoremap <silent> P :call Pcol(1)<CR>
 
 " jump to head and tail
 noremap H 0
