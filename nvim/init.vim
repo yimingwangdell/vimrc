@@ -114,6 +114,7 @@ vnoremap <c-u> 4k
 " search selected
 vnoremap / y/<c-r>0<cr>
 nnoremap * *N
+nnoremap - :noh<CR>
 noremap <silent> n <Cmd>execute('keepjumps normal! ' . v:count1 . 'n')<CR>
 noremap <silent> N <Cmd>execute('keepjumps normal! ' . v:count1 . 'N')<CR>
 map s <nop>
@@ -463,8 +464,8 @@ require('lualine').setup(
   options = {
     icons_enabled = true,
     theme = 'auto',
-    component_separators = { left = '', right = ''},
-    section_separators = { left = '', right = ''},
+    component_separators = { left = '', right = ''},
+    section_separators = { left = '', right = ''},
     disabled_filetypes = {
       statusline = {},
       winbar = {},
@@ -784,12 +785,39 @@ local api = require("dropbar.api")
 		end
 
 		require("dropbar").setup({
+      bar = {
+        sources = function(buf, _)
+              local sources = require('dropbar.sources')
+              local utils = require('dropbar.utils')
+              if vim.bo[buf].ft == 'markdown' then
+                return {
+                  sources.path,
+                  sources.markdown,
+                }
+              end
+              if vim.bo[buf].buftype == 'terminal' then
+                return {
+                  sources.terminal,
+                }
+              end
+              return {
+                utils.source.fallback({
+                  sources.lsp,
+                  sources.treesitter,
+                }),
+              }
+        end
+      },
+      fzf = {
+          keymaps = {
+              ['<tab>'] = api.fuzzy_find_click,
+              }
+          },
 			menu = {
 				-- When on, automatically set the cursor to the closest previous/next
 				-- clickable component in the direction of cursor movement on CursorMoved
 				quick_navigation = true,
-				---@type table<string, string|function|table<string, string|function>>
-				keymaps = {
+        keymaps = {
 					['<LeftMouse>'] = function()
 						local menu = api.get_current_dropbar_menu()
 						if not menu then
@@ -808,7 +836,7 @@ local api = require("dropbar.api")
 						end
 						menu:click_at({ mouse.line, mouse.column }, nil, 1, 'l')
 					end,
-					['<CR>'] = confirm,
+					--['<CR>'] = confirm,
 					['l'] = confirm,
 					['h'] = quit_curr,
 					['<MouseMove>'] = function()
@@ -822,7 +850,27 @@ local api = require("dropbar.api")
 						end
 						menu:update_hover_hl({ mouse.line, mouse.column - 1 })
 					end,
-				},
+          ['<CR>'] = function()
+            local utils = require('dropbar.utils')
+            local menu = utils.menu.get_current()
+            if not menu then
+              return
+            end
+            local cursor = vim.api.nvim_win_get_cursor(menu.win)
+            local component = menu.entries[cursor[1]]:first_clickable(cursor[2])
+            if component then
+              menu:click_on(component, nil, 1, 'l')
+            end
+          end,
+          ['f'] = function()
+            local utils = require('dropbar.utils')
+            local menu = utils.menu.get_current()
+            if not menu then
+              return
+            end
+            menu:fuzzy_find_open()
+          end,
+				}
 			},
 		})
 EOF
@@ -1374,3 +1422,4 @@ nnoremap <leader>ihe :lua vim.lsp.inlay_hint.enable(true)<CR>
 nnoremap <leader>ihd :lua vim.lsp.inlay_hint.enable(false)<CR>
 nnoremap <leader>did :lua vim.diagnostic.disable()<CR>
 nnoremap <leader>die :lua vim.diagnostic.enable()<CR>
+nnoremap <leader>df :lua vim.diagnostic.open_float(0, {scope="line"})<CR>
