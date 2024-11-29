@@ -102,10 +102,6 @@ nnoremap Y y$
 nnoremap db dvb
 nnoremap cb cvb
 nnoremap yb yvb
-nnoremap dw diw
-nnoremap cw ciw
-nnoremap yw yiw
-nmap sw siw
 " scroll up and down
 nnoremap <c-d> 3<c-e>
 nnoremap <c-u> 3<c-y>
@@ -291,7 +287,9 @@ Plug 'jackMort/ChatGPT.nvim'
 
 
 " Pretty Dress
+Plug 'NLKNguyen/papercolor-theme'
 Plug 'morhetz/gruvbox'
+Plug 'doums/darcula'
 Plug 'rebelot/kanagawa.nvim'
 Plug 'catppuccin/vim'
 Plug 'folke/tokyonight.nvim'
@@ -333,6 +331,7 @@ Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'williamboman/mason.nvim'
+" Plug 'nvimdev/lspsaga.nvim'
 
 
 " Snippets
@@ -373,6 +372,7 @@ Plug 'nvim-orgmode/orgmode'
 " Editor Enhancement
 Plug 'mhinz/vim-sayonara' " enhanced quit
 Plug 'kevinhwang91/nvim-bqf' " quickfix zf search, zn new list <c-q> quit search
+Plug 'romainl/vim-qf'
 Plug 'junegunn/fzf'
 Plug 'karunsiri/vim-delete-hidden-buffers'
 Plug 'kwkarlwang/bufjump.nvim' "<M-o> jump back file
@@ -387,6 +387,7 @@ map <LEADER><ENTER> <Plug>(wildfire-fuel)
 
 Plug 'junegunn/vim-after-object' " da= to delete what's after =
 Plug 'folke/flash.nvim' " best jump plugin
+Plug 'rhysd/clever-f.vim'
 Plug 'nvimdev/indentmini.nvim'
 
 
@@ -415,8 +416,10 @@ call plug#end()
 
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
-colorscheme  tokyonight-moon
+" colorscheme  tokyonight-moon
+colorscheme  gruvbox
 set background=dark
+" set background=light
 
 " ==================codeium===================
 let g:codeium_no_map_tab = v:true
@@ -443,7 +446,7 @@ openai_params = {
         --         return "gpt-3.5-turbo"
         --     end
         -- end,
-        model = "gpt-3.5-turbo-0125",
+        model = "gpt-3.5-turbo",
         frequency_penalty = 0,
         presence_penalty = 0,
         max_tokens = 4095,
@@ -482,17 +485,19 @@ require('lualine').setup(
   sections = {
     lualine_a = {},
     lualine_b = {{'branch', fmt = function(str) return str:sub(1,20) end}, 'diff',},
-    lualine_c = {  {'filename', path = 3, shorting_target = 60 }},
-    lualine_x = {{gps.get_location, cond = gps.is_available, color="WildMenu"}},
+    lualine_c = {  {'filename', path = 3,   }},
+    -- lualine_x = {{gps.get_location, cond = gps.is_available, color="WildMenu"}},
+    lualine_x = {},
 
     lualine_y = {},
     lualine_z = {'filesize', 'progress', 'encoding', 'fileformat'}
   },
   inactive_sections = {
     lualine_a = {},
-    lualine_b = {{'branch', fmt = function(str) return str:sub(1,20) end}, 'diff',},
-    lualine_c = {  {'filename', path = 3, shorting_target = 60 }},
-    lualine_x = {{gps.get_location, cond = gps.is_available, color="Folded"}},
+    lualine_b = {{'branch', }, 'diff',},
+    lualine_c = {  {'filename', path = 3,}},
+    lualine_x = {},
+    -- lualine_x = {{gps.get_location, cond = gps.is_available, color="Folded"}},
 
     lualine_y = { },
     lualine_z = {'progress', 'encoding', 'fileformat'}
@@ -905,6 +910,7 @@ let g:table_mode_cell_text_object_i_map = 'k<Bar>'
 nnoremap <leader>ww :VimwikiTabIndex<CR>
 " ===
 " === orgmode
+" cit change state
 lua << EOF
 
 require('orgmode').setup({
@@ -1248,7 +1254,7 @@ let g:any_jump_window_width_ratio  = 0.9
 let g:any_jump_window_height_ratio = 0.9
 nnoremap <leader>gd :AnyJump<CR>
 let g:any_jump_grouping_enabled = 1
-nnoremap <leader>gb :AnyJumpLastResults<CR>
+nnoremap <leader>gh :AnyJumpLastResults<CR>
 nnoremap <leader>gi :execute "AnyJumpArg " .. expand("<cword>") .. "Impl"<CR>
 let g:any_jump_disable_default_keybindings = 1
 
@@ -1297,22 +1303,268 @@ hi Blue guibg=blue guifg=blue
 hi Red guifg=red
 lua <<EOF
 require("flash").setup({
- modes = {
-    char = {
-      jump_labels = true,
-      multi_line = false,
-      autohide = false,
-        jump = {
+      -- labels = "abcdefghijklmnopqrstuvwxyz",
+      labels = "asdfghjklqwertyuiopzxcvbnm",
+      search = {
+        -- search/jump in all windows
+        multi_window = true,
+        -- search direction
+        forward = true,
+        -- when `false`, find only matches in the given direction
+        wrap = true,
+        ---@type Flash.Pattern.Mode
+        -- Each mode will take ignorecase and smartcase into account.
+        -- * exact: exact match
+        -- * search: regular search
+        -- * fuzzy: fuzzy search
+        -- * fun(str): custom function that returns a pattern
+        --   For example, to only match at the beginning of a word:
+        --   mode = function(str)
+        --     return "\\<" .. str
+        --   end,
+        mode = "exact",
+        -- behave like `incsearch`
+        incremental = false,
+        -- Excluded filetypes and custom window filters
+        ---@type (string|fun(win:window))[]
+        exclude = {
+          "notify",
+          "cmp_menu",
+          "noice",
+          "flash_prompt",
+          function(win)
+            -- exclude non-focusable windows
+            return not vim.api.nvim_win_get_config(win).focusable
+          end,
+        },
+        -- Optional trigger character that needs to be typed before
+        -- a jump label can be used. It's NOT recommended to set this,
+        -- unless you know what you're doing
+        trigger = "",
+        -- max pattern length. If the pattern length is equal to this
+        -- labels will no longer be skipped. When it exceeds this length
+        -- it will either end in a jump or terminate the search
+        max_length = false, ---@type number|false
+      },
+      jump = {
+        -- save location in the jumplist
+        jumplist = true,
+        -- jump position
+        pos = "start", ---@type "start" | "end" | "range"
+        -- add pattern to search history
+        history = false,
+        -- add pattern to search register
+        register = false,
+        -- clear highlight after jump
+        nohlsearch = false,
+        -- automatically jump when there is only one match
+        autojump = false,
+        -- You can force inclusive/exclusive jumps by setting the
+        -- `inclusive` option. By default it will be automatically
+        -- set based on the mode.
+        inclusive = nil, ---@type boolean?
+        -- jump position offset. Not used for range jumps.
+        -- 0: default
+        -- 1: when pos == "end" and pos < current position
+        offset = nil, ---@type number
+      },
+      label = {
+        -- allow uppercase labels
+        uppercase = true,
+        -- add any labels with the correct case here, that you want to exclude
+        exclude = "",
+        -- add a label for the first match in the current window.
+        -- you can always jump to the first match with `<CR>`
+        current = true,
+        -- show the label after the match
+        after = true, ---@type boolean|number[]
+        -- show the label before the match
+        before = false, ---@type boolean|number[]
+        -- position of the label extmark
+        style = "overlay", ---@type "eol" | "overlay" | "right_align" | "inline"
+        -- flash tries to re-use labels that were already assigned to a position,
+        -- when typing more characters. By default only lower-case labels are re-used.
+        reuse = "lowercase", ---@type "lowercase" | "all" | "none"
+        -- for the current window, label targets closer to the cursor first
+        distance = true,
+        -- minimum pattern length to show labels
+        -- Ignored for custom labelers.
+        min_pattern_length = 0,
+        -- Enable this to use rainbow colors to highlight labels
+        -- Can be useful for visualizing Treesitter ranges.
+        rainbow = {
+          enabled = false,
+          -- number between 1 and 9
+          shade = 5,
+        },
+        -- With `format`, you can change how the label is rendered.
+        -- Should return a list of `[text, highlight]` tuples.
+        ---@class Flash.Format
+        ---@field state Flash.State
+        ---@field match Flash.Match
+        ---@field hl_group string
+        ---@field after boolean
+        ---@type fun(opts:Flash.Format): string[][]
+        format = function(opts)
+          return { { opts.match.label, opts.hl_group } }
+        end,
+      },
+      highlight = {
+        -- show a backdrop with hl FlashBackdrop
+        backdrop = true,
+        -- Highlight the search matches
+        matches = true,
+        -- extmark priority
+        priority = 5000,
+        groups = {
+          match = "FlashMatch",
+          current = "FlashCurrent",
+          backdrop = "FlashBackdrop",
+          label = "FlashLabel",
+        },
+      },
+      -- action to perform when picking a label.
+      -- defaults to the jumping logic depending on the mode.
+      ---@type fun(match:Flash.Match, state:Flash.State)|nil
+      action = nil,
+      -- initial pattern to use when opening flash
+      pattern = "",
+      -- When `true`, flash will try to continue the last search
+      continue = false,
+      -- Set config to a function to dynamically change the config
+      config = nil, ---@type fun(opts:Flash.Config)|nil
+      -- You can override the default options for a specific mode.
+      -- Use it with `require("flash").jump({mode = "forward"})`
+      ---@type table<string, Flash.Config>
+      modes = {
+        -- options used when flash is activated through
+        -- a regular search with `/` or `?`
+        search = {
+          -- when `true`, flash will be activated during regular search by default.
+          -- You can always toggle when searching with `require("flash").toggle()`
+          enabled = false,
+          highlight = { backdrop = false },
+          jump = { history = true, register = true, nohlsearch = true },
+          search = {
+            -- `forward` will be automatically set to the search direction
+            -- `mode` is always set to `search`
+            -- `incremental` is set to `true` when `incsearch` is enabled
+          },
+        },
+        -- options used when flash is activated through
+        -- `f`, `F`, `t`, `T`, `;` and `,` motions
+        char = {
+          enabled = false,
+          -- dynamic configuration for ftFT motions
+          config = function(opts)
+            -- autohide flash when in operator-pending mode
+            opts.autohide = opts.autohide or (vim.fn.mode(true):find("no") and vim.v.operator == "y")
+    
+            -- disable jump labels when not enabled, when using a count,
+            -- or when recording/executing registers
+            opts.jump_labels = opts.jump_labels
+              and vim.v.count == 0
+              and vim.fn.reg_executing() == ""
+              and vim.fn.reg_recording() == ""
+    
+            -- Show jump labels only in operator-pending mode
+            -- opts.jump_labels = vim.v.count == 0 and vim.fn.mode(true):find("o")
+          end,
+          -- hide after jump when not using jump labels
+          autohide = false,
+          -- show jump labels
+          jump_labels = false,
+          -- set to `false` to use the current line only
+          multi_line = false,
+          -- When using jump labels, don't use these keys
+          -- This allows using those keys directly after the motion
+          label = { exclude = "hjkliardc" },
+          -- by default all keymaps are enabled, but you can disable some of them,
+          -- by removing them from the list.
+          -- If you rather use another key, you can map them
+          -- to something else, e.g., { [";"] = "L", [","] = H }
+          keys = { "f", "F", "t", "T", ";", "," },
+          ---@alias Flash.CharActions table<string, "next" | "prev" | "right" | "left">
+          -- The direction for `prev` and `next` is determined by the motion.
+          -- `left` and `right` are always left and right.
+          char_actions = function(motion)
+            return {
+              [";"] = "next", -- set to `right` to always go right
+              [","] = "prev", -- set to `left` to always go left
+              -- clever-f style
+               [motion:lower()] = "next",
+               [motion:upper()] = "prev",
+              -- jump2d style: same case goes next, opposite case goes prev
+              -- [motion] = "next",
+              -- [motion:match("%l") and motion:upper() or motion:lower()] = "prev",
+            }
+          end,
+          search = { wrap = false },
+          highlight = {backdrop = false},
+          jump = {
+            register = false,
+            -- when using jump labels, set to 'true' to automatically jump
+            -- or execute a motion when there is only one match
             autojump = true,
-            nohlsearch = true,
-            
-        }
-    },
-  }
-})
+          },
+        },
+        -- options used for treesitter selections
+        -- `require("flash").treesitter()`
+        treesitter = {
+          labels = "abcdefghijklmnopqrstuvwxyz",
+          jump = { pos = "range", autojump = true },
+          search = { incremental = false },
+          label = { before = true, after = true, style = "inline" },
+          highlight = {
+            backdrop = false,
+            matches = false,
+          },
+        },
+        treesitter_search = {
+          jump = { pos = "range" },
+          search = { multi_window = true, wrap = true, incremental = false },
+          remote_op = { restore = true },
+          label = { before = true, after = true, style = "inline" },
+        },
+        -- options used for remote flash
+        remote = {
+          remote_op = { restore = true, motion = true },
+        },
+      },
+      -- options for the floating window that shows the prompt,
+      -- for regular jumps
+      -- `require("flash").prompt()` is always available to get the prompt text
+      prompt = {
+        enabled = true,
+        prefix = { { "⚡", "FlashPromptIcon" } },
+        win_config = {
+          relative = "editor",
+          width = 1, -- when <=1 it's a percentage of the editor width
+          height = 1,
+          row = -1, -- when negative it's an offset from the bottom
+          col = 0, -- when negative it's an offset from the right
+          zindex = 1000,
+        },
+      },
+      -- options for remote operator pending mode
+      remote_op = {
+        -- restore window views and cursor position
+        -- after doing a remote operation
+        restore = false,
+        -- For `jump.pos = "range"`, this setting is ignored.
+        -- `true`: always enter a new motion when doing a remote operation
+        -- `false`: use the window's cursor position and jump target
+        -- `nil`: act as `true` for remote windows, `false` for the current window
+        motion = false,
+      },
+    })
 EOF
 noremap ' <Cmd>lua require('flash').jump()<CR>
 
+" ================clever-f==================
+let g:clever_f_highlight_timeout_ms=1500
+let g:clever_f_timeout_ms=1500
+let g:clever_f_smart_case=1
 
 " ================telescope==================
 lua <<EOF
@@ -1324,6 +1576,13 @@ lua <<EOF
         i = {
           ["<esc>"] = require("telescope.actions").close,
           ["<CR>"] = require("telescope.actions").select_tab_drop,
+          ["<c-q>"] = function(_prompt_bufnr)
+          require("telescope.actions").smart_send_to_qflist(_prompt_bufnr)
+          require("telescope.actions").open_qflist(_prompt_bufnr)
+          vim.cmd("ccl")
+          vim.cmd("tab split")
+          vim.cmd("copen")
+          end,
         },
       },
     },
@@ -1398,23 +1657,64 @@ EOF
 
 " LSP key map
 nnoremap K :lua vim.lsp.buf.hover()<CR>
-nnoremap gd :lua vim.lsp.buf.definition()<CR>
-nnoremap gD :tab sp<CR>:lua vim.lsp.buf.definition()<CR>
-nnoremap gi :lua vim.lsp.buf.implementation()<CR>
-nnoremap gI :tab sp<CR>:lua vim.lsp.buf.implementation()<CR>
-nnoremap gy :lua vim.lsp.buf.type_definition()<CR>
-nnoremap gY :tab sp<CR>:lua vim.lsp.buf.type_definition()<CR>
-nnoremap gr :lua vim.lsp.buf.references()<CR>
-nnoremap gR :tab sp<CR>:lua vim.lsp.buf.references()<CR>
+" nnoremap K :Lspsaga hover_doc<CR>
+nnoremap gD :lua vim.lsp.buf.definition()<CR>
+nnoremap gd :tab sp<CR>:lua vim.lsp.buf.definition()<CR>
+" noremap gd :Lspsaga peek_definition<CR>
+nnoremap gI :lua vim.lsp.buf.implementation()<CR>
+nnoremap gi :tab sp<CR>:lua vim.lsp.buf.implementation()<CR>
+nnoremap gY :lua vim.lsp.buf.type_definition()<CR>
+nnoremap gy :tab sp<CR>:lua vim.lsp.buf.type_definition()<CR>
+" nnoremap gy :Lspsaga peek_type_definition<CR>
+nnoremap gR :lua vim.lsp.buf.references()<CR>
+nnoremap gr :tab sp<CR>:lua vim.lsp.buf.references()<CR>
 nnoremap <leader>rn :lua vim.lsp.buf.rename()<CR>
 nnoremap <leader>fm :lua vim.lsp.buf.format({async=true})<CR>
 lua <<EOF
+local function get_type_hierarchy(method)
+  vim.lsp.buf_request(0, "textDocument/prepareTypeHierarchy", vim.lsp.util.make_position_params(), function(_, result)
+    if not result then
+      vim.notify_once("Does not support typeHierarchy", vim.log.levels.INFO)
+      return
+    end
+    vim.lsp.buf_request(0, method, { item = result[1] }, function(_, res)
+      if not res or #res == 0 then
+        return
+      end
+
+      if #res == 1 then
+        vim.lsp.util.jump_to_location(res[1], "utf-8", true)
+        return
+      end
+
+      vim.ui.select(res, {
+        format_item = function(item) ---@param item lsp.TypeHierarchyItem
+          local kind = vim.lsp.protocol.SymbolKind[item.kind] or "Unknown"
+          return kind .. ": " .. item.name
+        end,
+        prompt = "Jump to definition",
+      }, function(item) ---@param item lsp.TypeHierarchyItem
+        if item then
+          vim.lsp.util.jump_to_location(item, "utf-8", true)
+        end
+      end)
+    end)
+  end)
+end
 vim.keymap.set('v', '<leader>fm', vim.lsp.buf.format)
+vim.keymap.set('n', '<leader>gm', function() get_type_hierarchy("typeHierarchy/supertypes") end)
 EOF
-xnoremap <leader>ac :lua vim.lsp.buf.code_action()<CR>
+vnoremap <leader>ac :lua vim.lsp.buf.code_action()<CR>
 nnoremap <leader>ac :lua vim.lsp.buf.code_action()<CR>
+" xnoremap <leader>ac :Lspsaga code_action<CR>
+" nnoremap <leader>ac :Lspsaga code_action<CR>
 nnoremap [g :lua vim.diagnostic.goto_prev()<CR>
 nnoremap ]g :lua vim.diagnostic.goto_next()<CR>
+" nnoremap [g :Lspsaga diagnostic_jump_prev<CR>
+" nnoremap ]g :Lspsaga diagnostic_jump_next<CR>
+" lua <<EOF
+" require('lspsaga').setup{}
+" EOF
 
 " ===================== others ===========================
 let g:python3_host_prog = 'python3'
