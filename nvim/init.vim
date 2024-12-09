@@ -405,7 +405,7 @@ Plug 'azabiong/vim-highlighter'
 "
 " Other useful utilities
 Plug 'lambdalisue/suda.vim' " :SudaWrite to write as root
-Plug 'voldikss/vim-translator' " ty to translate
+Plug 'yimingwangdell/vim-translator' " ty to translate
 Plug 'akinsho/toggleterm.nvim', {'tag' : '*'} " open terminal in vim
 
 
@@ -597,6 +597,14 @@ lua <<EOF
   require('lspconfig')['clangd'].setup {
         capabilities = capabilities,
   }
+  require('lspconfig')['jsonls'].setup {
+        capabilities = capabilities,
+  }
+  require('lspconfig')['yamlls'].setup {
+        capabilities = capabilities,
+  }
+
+
 EOF
 
 
@@ -1658,8 +1666,8 @@ EOF
 " LSP key map
 nnoremap K :lua vim.lsp.buf.hover()<CR>
 " nnoremap K :Lspsaga hover_doc<CR>
-nnoremap gD :lua vim.lsp.buf.definition()<CR>
-nnoremap gd :tab sp<CR>:lua vim.lsp.buf.definition()<CR>
+nnoremap gd :lua vim.lsp.buf.definition()<CR>
+nnoremap gD :tab sp<CR>:lua vim.lsp.buf.definition()<CR>
 " noremap gd :Lspsaga peek_definition<CR>
 nnoremap gI :lua vim.lsp.buf.implementation()<CR>
 nnoremap gi :tab sp<CR>:lua vim.lsp.buf.implementation()<CR>
