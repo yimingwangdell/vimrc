@@ -332,6 +332,7 @@ Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'williamboman/mason.nvim'
 " Plug 'nvimdev/lspsaga.nvim'
+Plug 'folke/trouble.nvim'
 
 
 " Snippets
@@ -549,6 +550,7 @@ lua <<EOF
     sources = cmp.config.sources({
       { name = 'nvim_lsp' },
       { name = 'orgmode' },
+      { name = 'path' },
     }, {
       { name = 'buffer' },
     })
@@ -615,6 +617,14 @@ EOF
 lua<<EOF
  require("mason").setup()
 EOF
+
+" === trouble ===
+lua<<EOF
+ require("trouble").setup()
+EOF
+
+nnoremap <leader>dd :Trouble diagnostics toggle filter.buf=0<CR>
+nnoremap <leader>gr :Trouble lsp toggle focus=false win.position=right<CR>
 
 " === aerial ===
 " <leader>tg to show Outline (tags)
