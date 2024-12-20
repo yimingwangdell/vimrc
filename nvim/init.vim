@@ -107,6 +107,8 @@ nnoremap <c-d> 3<c-e>
 nnoremap <c-u> 3<c-y>
 vnoremap <c-d> 4j
 vnoremap <c-u> 4k
+nnoremap <c-j> 4j
+nnoremap <c-k> 4k
 " search selected
 vnoremap / y/<c-r>0<cr>
 nnoremap * *N
@@ -131,14 +133,10 @@ augroup NVIMRC
     autocmd BufWritePost init.vim exec ":so %"
 augroup END
 " split window
-map <leader>sl :set nosplitright<CR>:set splitright<CR>:vnew <CR>
+map <leader>sl :vs
 map <leader>sv :set nosplitright<CR>:set splitright<CR>:vsplit $MYVIMRC<CR>
-map <leader>sj :set nosplitbelow<CR>:set splitbelow<CR>:new <CR>
+map <leader>sj :sp
 " jump down/up/left/right split window
-map <LEADER>j <C-w><down>
-map <LEADER>k <C-w>k
-map <LEADER>h <C-w><left>
-map <LEADER>l <C-w><right>
 " quit vim
 map <LEADER>Q :qa!<CR>
 " resize window
@@ -602,6 +600,9 @@ lua <<EOF
   require('lspconfig')['jsonls'].setup {
         capabilities = capabilities,
   }
+  require('lspconfig')['lemminx'].setup {
+        capabilities = capabilities,
+  }
   require('lspconfig')['yamlls'].setup {
         capabilities = capabilities,
   }
@@ -1006,8 +1007,8 @@ vim.keymap.set("n", "<leader>af", function() harpoon.ui:toggle_quick_menu(harpoo
 
 
 -- Toggle previous & next buffers stored within Harpoon list
-vim.keymap.set("n", "<c-k>", function() harpoon:list():prev() end)
-vim.keymap.set("n", "<c-j>", function() harpoon:list():next() end)
+vim.keymap.set("n", "<leader>k", function() harpoon:list():prev() end)
+vim.keymap.set("n", "<leader>j", function() harpoon:list():next() end)
 EOF
 
 "=====nvim-tree======
@@ -1039,7 +1040,8 @@ EOF
 " search recent files
 nnoremap <leader>fr :Telescope oldfiles <CR>
 nnoremap <leader>fh :Telescope resume <CR>
-nnoremap <leader>fb :Telescope telescope-tabs list_tabs<CR>
+" nnoremap <leader>fb :Telescope telescope-tabs list_tabs<CR>
+nnoremap <leader>fb :Telescope buffers<CR>
  "search word
 nnoremap <leader>fw :Telescope live_grep<CR>
 nnoremap <leader>fv :lua require('telescope.builtin').live_grep({default_text = " ", search_dirs = { "/root/vimwiki" }})<CR>
