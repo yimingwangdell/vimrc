@@ -95,13 +95,16 @@ noremap L $
 inoremap jk <ESC>
 inoremap jh <ESC>^i
 inoremap jl <ESC>A
-inoremap << <esc>0C
 " copy to end
 nnoremap Y y$
 " b include current char
 nnoremap db dvb
 nnoremap cb cvb
 nnoremap yb yvb
+inoremap << <esc>0C
+nnoremap <leader><down> 0i<cr><ESC>
+nnoremap <leader><up> kdd
+nnoremap = :noh<CR>
 " scroll up and down
 nnoremap <c-d> 3<c-e>
 nnoremap <c-u> 3<c-y>
@@ -112,15 +115,11 @@ nnoremap <c-k> 4k
 " search selected
 vnoremap / y/<c-r>0<cr>
 nnoremap * *N
-nnoremap - :noh<CR>
 noremap <silent> n <Cmd>execute('keepjumps normal! ' . v:count1 . 'n')<CR>
 noremap <silent> N <Cmd>execute('keepjumps normal! ' . v:count1 . 'N')<CR>
-map s <nop>
 map S :w<CR>
-map J <nop>
-map ; <nop>
-map , <nop>
 nmap Q :Sayonara<CR>
+map <LEADER>Q :qa!<CR>
 
 " jump split window
 
@@ -133,12 +132,11 @@ augroup NVIMRC
     autocmd BufWritePost init.vim exec ":so %"
 augroup END
 " split window
-map <leader>sl :vs
+map <leader>sl :vs<CR>
 map <leader>sv :set nosplitright<CR>:set splitright<CR>:vsplit $MYVIMRC<CR>
-map <leader>sj :sp
+map <leader>sj :sp<CR><c-w>j
 " jump down/up/left/right split window
 " quit vim
-map <LEADER>Q :qa!<CR>
 " resize window
 map <up> :res -5<CR>
 map <down> :res +5<CR>
@@ -161,8 +159,6 @@ nnoremap th :tabp<CR>
 nnoremap tH :tabfirst<CR>
 "jump to right side tab
 nnoremap <leader><right> :tabn<CR>
-nnoremap <leader><down> 0i<cr><ESC>
-nnoremap <leader><up> kdd
 nnoremap tl :tabn<CR>
 nnoremap tL :tablast<CR>
 " duplicate current tab
@@ -287,6 +283,7 @@ Plug 'jackMort/ChatGPT.nvim'
 " Pretty Dress
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'morhetz/gruvbox'
+Plug 'overcache/NeoSolarized'
 Plug 'doums/darcula'
 Plug 'rebelot/kanagawa.nvim'
 Plug 'catppuccin/vim'
@@ -386,8 +383,8 @@ map <LEADER><ENTER> <Plug>(wildfire-fuel)
 
 Plug 'junegunn/vim-after-object' " da= to delete what's after =
 Plug 'folke/flash.nvim' " best jump plugin
-Plug 'rhysd/clever-f.vim'
 Plug 'nvimdev/indentmini.nvim'
+Plug 'matze/vim-move'
 
 
 " Bookmarks
@@ -416,7 +413,7 @@ call plug#end()
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
 " colorscheme  tokyonight-moon
-colorscheme  gruvbox
+colorscheme gruvbox
 set background=dark
 " set background=light
 
@@ -930,34 +927,14 @@ nnoremap <leader>ww :VimwikiTabIndex<CR>
 " ===
 " === orgmode
 " cit change state
-lua << EOF
-
-require('orgmode').setup({
-  org_agenda_files = {'~/Dropbox/org/*', '~/my-orgs/**/*'},
-  org_default_notes_file = '~/Dropbox/org/refile.org',
-    win_split_mode = function(name)
-      -- Make sure it's not a scratch buffer by passing false as 2nd argument
-      local bufnr = vim.api.nvim_create_buf(false, false)
-      --- Setting buffer name is required
-      vim.api.nvim_buf_set_name(bufnr, name)
-      local fill = 0.8
-      local width = math.floor((vim.o.columns * fill))
-      local height = math.floor((vim.o.lines * fill))
-      local row = math.floor((((vim.o.lines - height) / 2) - 1))
-      local col = math.floor(((vim.o.columns - width) / 2))
-      vim.api.nvim_open_win(bufnr, true, {
-        relative = "editor",
-        width = width,
-        height = height,
-        row = row,
-        col = col,
-        style = "minimal",
-        border = "rounded"
-      })
-    end
-})
-
-EOF
+"lua << EOF
+"
+"require('orgmode').setup({
+"  org_agenda_files = {'~/Dropbox/org/*', '~/my-orgs/**/*'},
+"  org_default_notes_file = '~/Dropbox/org/refile.org',
+"})
+"
+"EOF
 " ===
 
 
@@ -1257,8 +1234,10 @@ vmap <LEADER><LEADER> gcc<ESC>
 " === vim-move
 " ===
 
-let g:move_key_modifier = '<>'
+let g:move_key_modifier = '<leader>'
 let g:move_map_keys = 0
+nmap <leader><down>  <Plug>MoveLineDown
+nmap <leader><up> <Plug>MoveLineUp
 
 "===== indent =====
 lua <<EOF
@@ -1322,7 +1301,7 @@ nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
 hi Blue guibg=blue guifg=blue
 hi Red guifg=red
 lua <<EOF
-require("flash").setup({
+require("flash").setup ({
       -- labels = "abcdefghijklmnopqrstuvwxyz",
       labels = "asdfghjklqwertyuiopzxcvbnm",
       search = {
@@ -1474,7 +1453,7 @@ require("flash").setup({
         -- options used when flash is activated through
         -- `f`, `F`, `t`, `T`, `;` and `,` motions
         char = {
-          enabled = false,
+          enabled = true,
           -- dynamic configuration for ftFT motions
           config = function(opts)
             -- autohide flash when in operator-pending mode
@@ -1495,7 +1474,7 @@ require("flash").setup({
           -- show jump labels
           jump_labels = false,
           -- set to `false` to use the current line only
-          multi_line = false,
+          multi_line = true,
           -- When using jump labels, don't use these keys
           -- This allows using those keys directly after the motion
           label = { exclude = "hjkliardc" },
@@ -1512,20 +1491,20 @@ require("flash").setup({
               [";"] = "next", -- set to `right` to always go right
               [","] = "prev", -- set to `left` to always go left
               -- clever-f style
-               [motion:lower()] = "next",
-               [motion:upper()] = "prev",
+              [motion:lower()] = "next",
+              [motion:upper()] = "prev",
               -- jump2d style: same case goes next, opposite case goes prev
               -- [motion] = "next",
               -- [motion:match("%l") and motion:upper() or motion:lower()] = "prev",
             }
           end,
           search = { wrap = false },
-          highlight = {backdrop = false},
+          highlight = { backdrop = true },
           jump = {
             register = false,
             -- when using jump labels, set to 'true' to automatically jump
             -- or execute a motion when there is only one match
-            autojump = true,
+            autojump = false,
           },
         },
         -- options used for treesitter selections
@@ -1581,10 +1560,6 @@ require("flash").setup({
 EOF
 noremap ' <Cmd>lua require('flash').jump()<CR>
 
-" ================clever-f==================
-let g:clever_f_highlight_timeout_ms=1500
-let g:clever_f_timeout_ms=1500
-let g:clever_f_smart_case=1
 
 " ================telescope==================
 lua <<EOF
@@ -1681,13 +1656,13 @@ nnoremap K :lua vim.lsp.buf.hover()<CR>
 nnoremap gd :lua vim.lsp.buf.definition()<CR>
 nnoremap gD :tab sp<CR>:lua vim.lsp.buf.definition()<CR>
 " noremap gd :Lspsaga peek_definition<CR>
-nnoremap gI :lua vim.lsp.buf.implementation()<CR>
-nnoremap gi :tab sp<CR>:lua vim.lsp.buf.implementation()<CR>
+nnoremap gi :lua vim.lsp.buf.implementation()<CR>
+nnoremap gI :tab sp<CR>:lua vim.lsp.buf.implementation()<CR>
 nnoremap gY :lua vim.lsp.buf.type_definition()<CR>
 nnoremap gy :tab sp<CR>:lua vim.lsp.buf.type_definition()<CR>
 " nnoremap gy :Lspsaga peek_type_definition<CR>
-nnoremap gR :lua vim.lsp.buf.references()<CR>
-nnoremap gr :tab sp<CR>:lua vim.lsp.buf.references()<CR>
+nnoremap gr :lua vim.lsp.buf.references()<CR>
+nnoremap gR :tab sp<CR>:lua vim.lsp.buf.references()<CR>
 nnoremap <leader>rn :lua vim.lsp.buf.rename()<CR>
 nnoremap <leader>fm :lua vim.lsp.buf.format({async=true})<CR>
 lua <<EOF
@@ -1742,4 +1717,4 @@ nnoremap <leader>ihe :lua vim.lsp.inlay_hint.enable(true)<CR>
 nnoremap <leader>ihd :lua vim.lsp.inlay_hint.enable(false)<CR>
 nnoremap <leader>did :lua vim.diagnostic.disable()<CR>
 nnoremap <leader>die :lua vim.diagnostic.enable()<CR>
-nnoremap <leader>df :lua vim.diagnostic.open_float(0, {scope="line"})<CR>
+" nnoremap <leader>df :lua vim.diagnostic.open_float(0, {scope="line"})<CR>
