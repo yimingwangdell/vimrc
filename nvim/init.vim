@@ -927,14 +927,14 @@ nnoremap <leader>ww :VimwikiTabIndex<CR>
 " ===
 " === orgmode
 " cit change state
-"lua << EOF
-"
-"require('orgmode').setup({
-"  org_agenda_files = {'~/Dropbox/org/*', '~/my-orgs/**/*'},
-"  org_default_notes_file = '~/Dropbox/org/refile.org',
-"})
-"
-"EOF
+lua << EOF
+
+require('orgmode').setup({
+  org_agenda_files = {'~/Dropbox/org/*', '~/my-orgs/**/*'},
+  org_default_notes_file = '~/Dropbox/org/refile.org',
+})
+
+EOF
 " ===
 
 
