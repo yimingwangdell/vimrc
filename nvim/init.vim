@@ -106,12 +106,10 @@ nnoremap <leader><down> 0i<cr><ESC>
 nnoremap <leader><up> kdd
 nnoremap = :noh<CR>
 " scroll up and down
-nnoremap <c-d> 3<c-e>
-nnoremap <c-u> 3<c-y>
+nnoremap <c-d> 4j
+nnoremap <c-u> 4k
 vnoremap <c-d> 4j
 vnoremap <c-u> 4k
-nnoremap <c-j> 4j
-nnoremap <c-k> 4k
 " search selected
 vnoremap / y/<c-r>0<cr>
 nnoremap * *N
@@ -530,12 +528,12 @@ lua <<EOF
       end,
     },
     window = {
-      -- completion = cmp.config.window.bordered(),
-      -- documentation = cmp.config.window.bordered(),
+       completion = cmp.config.window.bordered(),
+       documentation = cmp.config.window.bordered(),
     },
     mapping = cmp.mapping.preset.insert({
-      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-k>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-j>'] = cmp.mapping.scroll_docs(4),
       ['<C-Space>'] = cmp.mapping.complete(),
       ['<C-e>'] = cmp.mapping.abort(),
       ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
@@ -635,7 +633,6 @@ require("aerial").setup({
     vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
   end,
   disable_max_lines = 30000,
-  close_on_select = true,
   layout={
     min_width = 60
   }
@@ -1065,8 +1062,8 @@ noremap U :UndotreeToggle<CR>
  let g:undotree_DiffpanelHeight = 8
  let g:undotree_SplitWidth = 24
 function g:Undotree_CustomMap()
-    nmap <buffer> <c-j> <plug>UndotreeNextState
-    nmap <buffer> <c-k> <plug>UndotreePreviousState
+    nmap <buffer> <c-k> <plug>UndotreeNextState
+    nmap <buffer> <c-j> <plug>UndotreePreviousState
 endfunc
 
 " === fugitive ===
@@ -1612,6 +1609,43 @@ lua <<EOF
   require('telescope-tabs').setup {
 			-- Your custom config :^)
   }
+EOF
+
+lua <<EOF
+local builtin = require('telescope.builtin')
+local config = require('telescope.config')
+
+-- Return a list of files found in quickfix, skipping duplicates
+local quickfix_files = function()
+  local qflist = vim.fn.getqflist()
+  local files = {}
+  local seen = {}
+  for k in pairs(qflist) do
+    local path = vim.fn.bufname(qflist[k]["bufnr"])
+    if not seen[path] then
+      files[#files + 1] = path
+      seen[path] = true
+    end
+  end
+  table.sort(files)
+  return files
+end
+
+-- Invoke live_grep on all files in quickfix
+local grep_on_quickfix = function()
+  local args = {}
+
+  for i, v in ipairs(config.values.vimgrep_arguments) do
+    args[#args+1] = v
+  end
+  for i, v in ipairs(quickfix_files()) do
+    args[#args+1] = '-g/'..v
+  end
+
+  builtin.live_grep({vimgrep_arguments = args})
+end
+
+vim.keymap.set('n', '<Leader>fq', grep_on_quickfix, {})
 EOF
 
 
