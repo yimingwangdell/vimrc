@@ -392,7 +392,7 @@ Plug 'MattesGroeger/vim-bookmarks'
 Plug 'wellle/context.vim'
 
 " Other visual enhancement
-Plug 'luochen1990/rainbow'
+Plug 'hiphish/rainbow-delimiters.nvim'
 Plug 'ryanoasis/vim-devicons'
 Plug 'azabiong/vim-highlighter'
 "
@@ -1562,6 +1562,7 @@ noremap ' <Cmd>lua require('flash').jump()<CR>
 lua <<EOF
   require('telescope').setup{
     defaults = {
+      path_display={"smart"},
       layout_strategy = 'vertical',
       layout_config = { height = 0.99, width = 0.99 },
       mappings = {
