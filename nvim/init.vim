@@ -383,9 +383,7 @@ Plug 'mg979/vim-visual-multi' " multi cursor
 Plug 'tomtom/tcomment_vim' " <space><space> to comment a line
 Plug 'gbprod/substitute.nvim' " s to substitute
 Plug 'machakann/vim-sandwich' " di" to delete inside of ""
-Plug 'gcmt/wildfire.vim' "<leader><enter> to select block
     " This selects the next closest text object.
-" map <LEADER><ENTER> <Plug>(wildfire-fuel)
 
 Plug 'junegunn/vim-after-object' " da= to delete what's after =
 Plug 'folke/flash.nvim' " best jump plugin
@@ -658,10 +656,10 @@ require'nvim-treesitter.configs'.setup {
   incremental_selection = {
     enable = true,
     keymaps = {
-      init_selection = "<leader>gnn", -- set to `false` to disable one of the mappings
+      init_selection = "<leader><enter>", -- set to `false` to disable one of the mappings
       node_incremental = "<leader><enter>",
-      scope_incremental = "<leader>]",
-      node_decremental = "<leader>[",
+      scope_incremental = false,
+      node_decremental = false,
     },
   },
   ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
@@ -769,8 +767,8 @@ require'nvim-treesitter.configs'.setup {
       -- mapping query_strings to modes.
       selection_modes = {
         ['@parameter.outer'] = 'v', -- charwise
-        ['@function.outer'] = 'V', -- linewise
-        ['@class.outer'] = '<c-v>', -- blockwise
+        ['@function.outer'] = 'v', -- linewise
+        ['@class.outer'] = 'v', -- blockwise
       },
       -- If you set this to `true` (default is `false`) then any textobject is
       -- extended to include preceding or succeeding whitespace. Succeeding
@@ -1131,10 +1129,6 @@ let g:VM_theme             = 'iceblue'
 
 runtime macros/sandwich/keymap/surround.vim
 
-" ===
-" === vim-wildfire
-" ===
-let g:wildfire_objects = ["i'", 'i"', "i)", "i]", "i}", "i>"]
 
 " ===
 " === Bullets.vim
