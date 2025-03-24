@@ -62,8 +62,8 @@ wireless _first_ {
 }
 
 ethernet _first_ {
-    format_up = "W: %ip"
-    format_down = "W: down"
+    format_up = "E: %ip"
+    format_down = "E: down"
 }
 
 wireless _first_ {
