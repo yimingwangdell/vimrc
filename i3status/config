@@ -36,6 +36,8 @@ general {
 order += "disk /"
 order += "cpu_usage"
 order += "memory"
+order += "wireless _first_"
+order += "ethernet _first_"
 order += "battery all"
 order += "volume master"
 order += "tztime local"
@@ -52,6 +54,21 @@ cpu_usage {
 
 memory {
     format = " 󰍛 %used "
+}
+
+wireless _first_ {
+    format_up = "W: %ip"
+    format_down = "W: down"
+}
+
+ethernet _first_ {
+    format_up = "W: %ip"
+    format_down = "W: down"
+}
+
+wireless _first_ {
+    format_up = "W: %ip"
+    format_down = "W: down"
 }
 
 battery all {

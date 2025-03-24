@@ -53,7 +53,7 @@ syntax on
 set number
 set relativenumber
 set cursorline
-set nowrap
+set wrap
 set showcmd
 set wildmenu
 set clipboard+=unnamedplus
@@ -116,7 +116,15 @@ nnoremap * *N
 noremap <silent> n <Cmd>execute('keepjumps normal! ' . v:count1 . 'n')<CR>
 noremap <silent> N <Cmd>execute('keepjumps normal! ' . v:count1 . 'N')<CR>
 map S :w<CR>
-nmap Q :Sayonara<CR>
+nmap Q :call QuitWithQuickfixCheck()<CR>
+function! QuitWithQuickfixCheck()
+    if get(getqflist({'winid':0}), 'winid', 0)
+        :cclose
+        :Sayonara<CR>
+    else
+        :Sayonara<CR>
+    endif
+endfunction
 map <LEADER>Q :qa!<CR>
 
 " jump split window
@@ -377,7 +385,7 @@ Plug 'gbprod/substitute.nvim' " s to substitute
 Plug 'machakann/vim-sandwich' " di" to delete inside of ""
 Plug 'gcmt/wildfire.vim' "<leader><enter> to select block
     " This selects the next closest text object.
-map <LEADER><ENTER> <Plug>(wildfire-fuel)
+" map <LEADER><ENTER> <Plug>(wildfire-fuel)
 
 Plug 'junegunn/vim-after-object' " da= to delete what's after =
 Plug 'folke/flash.nvim' " best jump plugin
@@ -461,8 +469,8 @@ require('lualine').setup(
   options = {
     icons_enabled = true,
     theme = 'auto',
-    component_separators = { left = '', right = ''},
-    section_separators = { left = '', right = ''},
+    component_separators = { left = '', right = ''},
+    section_separators = { left = '', right = ''},
     disabled_filetypes = {
       statusline = {},
       winbar = {},
@@ -472,7 +480,7 @@ require('lualine').setup(
     globalstatus = false,
     refresh = {
       statusline = 1000,
-      tabline = 1000,
+      tabline = 10,
       winbar = 1000,
     }
   },
@@ -646,8 +654,17 @@ EOF
 " === treesitter ===
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
-  -- A list of parser names, or "all" (the five listed parsers should always be installed)
-  ensure_installed = { "c", "lua", "vim", "vimdoc", "query" },
+  -- A list of parser names, or "all" (the listed parsers MUST always be installed)
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = "<leader>gnn", -- set to `false` to disable one of the mappings
+      node_incremental = "<leader><enter>",
+      scope_incremental = "<leader>]",
+      node_decremental = "<leader>[",
+    },
+  },
+  ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = false,
@@ -669,12 +686,9 @@ require'nvim-treesitter.configs'.setup {
     -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
     -- the name of the parser)
     -- list of language that will be disabled
-    -- disable = { "c", "rust" },
+    disable = { "c", "rust"},
     -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
     disable = function(lang, buf)
-        if lang == "java" then
-            return true
-        end
         local max_filesize = 1000 * 1024 -- 100 KB
         local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
         if ok and stats and stats.size > max_filesize then
@@ -767,7 +781,7 @@ require'nvim-treesitter.configs'.setup {
       -- * query_string: eg '@function.inner'
       -- * selection_mode: eg 'v'
       -- and should return true of false
-      include_surrounding_whitespace = true,
+      include_surrounding_whitespace = false,
     },
   },
 }
@@ -976,7 +990,7 @@ local harpoon = require("harpoon")
 -- REQUIRED
 harpoon:setup()
 -- REQUIRED
-vim.keymap.set("n", "<leader>aa", function() harpoon:list():append() end)
+vim.keymap.set("n", "<leader>aa", function() harpoon:list():add() end)
 vim.keymap.set("n", "<leader>af", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 
 
@@ -1025,6 +1039,15 @@ nnoremap <leader>ff :Telescope find_files<CR>
 nnoremap <leader>ft :Telescope aerial<CR>
 nnoremap <leader>f/ :Telescope search_history<CR>
 nnoremap <leader>f: :Telescope command_history<CR>
+function! SearchProtoBuf()
+    let l:current_file = expand('%:t:r')  " Get the current file name
+
+    lua require('bufjump').backward()
+    execute 'Telescope find_files default_text=' . l:current_file . ".proto"
+
+endfunction
+nnoremap <leader>fp :call SearchProtoBuf()<CR>
+
 
 " === lazygit ===
 nnoremap <leader>lg :LazyGitCurrentFile<CR>
@@ -1562,7 +1585,7 @@ noremap ' <Cmd>lua require('flash').jump()<CR>
 lua <<EOF
   require('telescope').setup{
     defaults = {
-      path_display={"smart"},
+      path_display={"filename_first"},
       layout_strategy = 'vertical',
       layout_config = { height = 0.99, width = 0.99 },
       mappings = {
@@ -1573,7 +1596,7 @@ lua <<EOF
           require("telescope.actions").smart_send_to_qflist(_prompt_bufnr)
           require("telescope.actions").open_qflist(_prompt_bufnr)
           vim.cmd("ccl")
-          vim.cmd("tab split")
+          vim.cmd("tab new")
           vim.cmd("copen")
           end,
         },
@@ -1666,20 +1689,44 @@ vnoremap <leader>tm :ToggleTermSendVisualLines<CR>
 lua <<EOF
 local bqf_pv_timer
 require('bqf').setup{
-preview = {
-    should_preview_cb = function(bufnr, qwinid)
-    return false
-        end,
-    win_height = 999,
-    win_vheight = 999,
-
-},
- filter = {
+   auto_enable = true,
+    auto_resize_height = true, -- highly recommended enable
+    preview = {
+        win_height = 12,
+        win_vheight = 12,
+        delay_syntax = 80,
+        border = {'┏', '━', '┓', '┃', '┛', '━', '┗', '┃'},
+        show_title = false,
+        should_preview_cb = function(bufnr, qwinid)
+            local ret = true
+            local bufname = vim.api.nvim_buf_get_name(bufnr)
+            local fsize = vim.fn.getfsize(bufname)
+            if fsize > 10000 * 1024 then
+                -- skip file size greater than 1000k
+                ret = false
+            elseif bufname:match('^fugitive://') then
+                -- skip fugitive buffer
+                ret = false
+            end
+            return ret
+        end
+    },
+    -- make `drop` and `tab drop` to become preferred
+    func_map = {
+        drop = 'o',
+        openc = 'O',
+        split = '<C-s>',
+        tabdrop = '<C-t>',
+        -- set to empty string to disable
+        tabc = '',
+        ptogglemode = 'z,',
+    },
+    filter = {
         fzf = {
-            extra_opts = {'--bind', 'ctrl-o:toggle-all', '--delimiter', '│'}
+            action_for = {['ctrl-s'] = 'split', ['ctrl-t'] = 'tab drop'},
+            extra_opts = {'--bind', 'ctrl-o:toggle-all', '--prompt', '> '}
         }
     }
-
 }
 
 
@@ -1693,11 +1740,11 @@ nnoremap gD :tab sp<CR>:lua vim.lsp.buf.definition()<CR>
 " noremap gd :Lspsaga peek_definition<CR>
 nnoremap gi :lua vim.lsp.buf.implementation()<CR>
 nnoremap gI :tab sp<CR>:lua vim.lsp.buf.implementation()<CR>
-nnoremap gY :lua vim.lsp.buf.type_definition()<CR>
-nnoremap gy :tab sp<CR>:lua vim.lsp.buf.type_definition()<CR>
+nnoremap gy :lua vim.lsp.buf.type_definition()<CR>
+nnoremap gY :tab sp<CR>:lua vim.lsp.buf.type_definition()<CR>
 " nnoremap gy :Lspsaga peek_type_definition<CR>
-nnoremap gr :lua vim.lsp.buf.references()<CR>
-nnoremap gR :tab sp<CR>:lua vim.lsp.buf.references()<CR>
+" nnoremap gr :lua vim.lsp.buf.references()<CR>
+nnoremap gr :tab sp<CR>:lua vim.lsp.buf.references()<CR>
 nnoremap <leader>rn :lua vim.lsp.buf.rename()<CR>
 nnoremap <leader>fm :lua vim.lsp.buf.format({async=true})<CR>
 lua <<EOF
@@ -1732,7 +1779,7 @@ local function get_type_hierarchy(method)
   end)
 end
 vim.keymap.set('v', '<leader>fm', vim.lsp.buf.format)
-vim.keymap.set('n', '<leader>gm', function() get_type_hierarchy("typeHierarchy/supertypes") end)
+vim.keymap.set('n', 'gp', function() get_type_hierarchy("typeHierarchy/supertypes") end)
 EOF
 vnoremap <leader>ac :lua vim.lsp.buf.code_action()<CR>
 nnoremap <leader>ac :lua vim.lsp.buf.code_action()<CR>
