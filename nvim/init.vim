@@ -330,7 +330,7 @@ Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
-Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/nvim-cmp', { 'commit': 'c27370703e798666486e3064b64d59eaf4bdc6d5'}
 Plug 'williamboman/mason.nvim'
 " Plug 'nvimdev/lspsaga.nvim'
 Plug 'folke/trouble.nvim'
@@ -383,7 +383,6 @@ Plug 'mg979/vim-visual-multi' " multi cursor
 Plug 'tomtom/tcomment_vim' " <space><space> to comment a line
 Plug 'gbprod/substitute.nvim' " s to substitute
 Plug 'machakann/vim-sandwich' " di" to delete inside of ""
-    " This selects the next closest text object.
 
 Plug 'junegunn/vim-after-object' " da= to delete what's after =
 Plug 'folke/flash.nvim' " best jump plugin
@@ -626,7 +625,7 @@ lua<<EOF
 EOF
 
 nnoremap <leader>dd :Trouble diagnostics toggle filter.buf=0<CR>
-nnoremap <leader>gr :Trouble lsp toggle focus=false win.position=right<CR>
+nnoremap <leader>gr :Trouble lsp toggle focus=false<CR>
 
 " === aerial ===
 " <leader>tg to show Outline (tags)
@@ -1219,6 +1218,7 @@ let g:vmt_fence_closing_text = '/TOC'
 
 " === ranger ===
 nnoremap <leader>ra :RangerCurrentFileNewTab<CR>
+let g:ranger_map_keys = 0
 
 " === nvim-tree ===
 nnoremap <leader>e :NvimTreeFindFileToggle<CR>
@@ -1774,6 +1774,29 @@ local function get_type_hierarchy(method)
 end
 vim.keymap.set('v', '<leader>fm', vim.lsp.buf.format)
 vim.keymap.set('n', 'gp', function() get_type_hierarchy("typeHierarchy/supertypes") end)
+
+vim.api.nvim_create_autocmd({ "CursorHold" }, {
+    pattern = "*",
+    callback = function()
+        for _, winid in pairs(vim.api.nvim_tabpage_list_wins(0)) do
+            if vim.api.nvim_win_get_config(winid).zindex then
+                return
+            end
+        end
+        vim.diagnostic.open_float({
+            scope = "cursor",
+            focusable = false,
+            close_events = {
+                "CursorMoved",
+                "CursorMovedI",
+                "BufHidden",
+                "InsertCharPre",
+                "WinLeave",
+            },
+        })
+    end
+})
+
 EOF
 vnoremap <leader>ac :lua vim.lsp.buf.code_action()<CR>
 nnoremap <leader>ac :lua vim.lsp.buf.code_action()<CR>
