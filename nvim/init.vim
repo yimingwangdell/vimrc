@@ -302,7 +302,7 @@ Plug 'nvim-tree/nvim-web-devicons'
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'ColinKennedy/nvim-gps'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' }
-Plug 'Bekaboo/dropbar.nvim'
+Plug 'Bekaboo/dropbar.nvim', { 'tag': 'v12.0.2' }
 " General Highlighter
 
 " File navigation
@@ -386,7 +386,8 @@ Plug 'machakann/vim-sandwich' " di" to delete inside of ""
 
 Plug 'junegunn/vim-after-object' " da= to delete what's after =
 Plug 'folke/flash.nvim' " best jump plugin
-Plug 'nvimdev/indentmini.nvim'
+" Plug 'nvimdev/indentmini.nvim'
+Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'matze/vim-move'
 
 
@@ -1255,7 +1256,7 @@ nmap <leader><up> <Plug>MoveLineUp
 
 "===== indent =====
 lua <<EOF
-require("indentmini").setup()
+require("ibl").setup()
 EOF
 
 
