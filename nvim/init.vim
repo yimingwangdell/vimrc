@@ -74,8 +74,6 @@ vnoremap <LEADER>c yo<c-r>=<c-r>"<CR>
 " copy current file path
 nnoremap <space>cp :let @*=expand('%:t')<CR>:echo "path copied"<CR>
 nnoremap <space>cfp :let @*=expand('%')<CR>:echo "full path copied"<CR>
-" fix wrong cursor postion in vim after yanking
-vmap y ygv<Esc>
 " paste to new line
 function! Pcol(...) abort
   let above = get(a:, 1, 0)
@@ -83,11 +81,6 @@ function! Pcol(...) abort
   execute 'normal!' above ? 'P' : 'p'
   call cursor('.', col)
 endfunction
-nnoremap <silent> pp :call Pcol(0)<CR>
-" nnoremap <silent> pk O<ESC>:call Pcol(0)<CR>
-nnoremap <silent> pj o<c-r>"<Esc>
-nnoremap <silent> pk O<c-r>"<Esc>
-nnoremap <silent> P :call Pcol(1)<CR>
 
 " jump to head and tail
 noremap H 0
@@ -116,7 +109,8 @@ nnoremap * *N
 noremap <silent> n <Cmd>execute('keepjumps normal! ' . v:count1 . 'n')<CR>
 noremap <silent> N <Cmd>execute('keepjumps normal! ' . v:count1 . 'N')<CR>
 map S :w<CR>
-nmap Q :call QuitWithQuickfixCheck()<CR>
+" nmap Q :call QuitWithQuickfixCheck()<CR>
+nmap Q :Sayonara<CR>
 function! QuitWithQuickfixCheck()
     if get(getqflist({'winid':0}), 'winid', 0)
         :cclose
@@ -144,10 +138,10 @@ map <leader>sj :sp<CR><c-w>j
 " jump down/up/left/right split window
 " quit vim
 " resize window
-map <up> :res -5<CR>
-map <down> :res +5<CR>
-map <left> :vertical resize+5<CR>
-map <right> :vertical resize-5<CR>
+map <up> <c-w>k
+map <down> <c-w>j
+map <left> <c-w>h
+map <right> <c-w>l
 " move pasted content indent to left/right
 nnoremap <leader>, `[V`]<
 nnoremap <leader>. `[V`]>
@@ -390,7 +384,6 @@ Plug 'folke/flash.nvim' " best jump plugin
 Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'matze/vim-move'
 
-
 " Bookmarks
 Plug 'MattesGroeger/vim-bookmarks'
 
@@ -503,7 +496,7 @@ require('lualine').setup(
     lualine_z = {'progress', 'encoding', 'fileformat'}
   },
   tabline = { 
-      lualine_a = {{'tabs',tab_max_length = 40, max_length = vim.o.columns*35/36 , use_mode_colors = false, mode=2, path=0}},
+      lualine_a = {{'filename', path=0}},
   lualine_b = {},
   lualine_c = {},
   lualine_x = {},
@@ -991,6 +984,7 @@ harpoon:setup()
 vim.keymap.set("n", "<leader>aa", function() harpoon:list():add() end)
 vim.keymap.set("n", "<leader>af", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 
+vim.keymap.set("n", "<leader>ad", function() harpoon:list():clear() end)
 
 -- Toggle previous & next buffers stored within Harpoon list
 vim.keymap.set("n", "<leader>k", function() harpoon:list():prev() end)
@@ -1094,8 +1088,8 @@ nnoremap <leader>rc :Gvdiffsplit!<CR>
 nnoremap <leader>df :G diff
 " Gvdiffsplit <commitId> <commitId>
 " === git blame ===
-map <LEADER>bl V:Git blame<CR><c-w>T
-vnoremap <leader>bl :Git blame<CR><c-w>T
+map <LEADER>bl V:Git blame<CR>
+vnoremap <leader>bl :Git blame<CR>
 " view file with commit id :Gedit <commitId>:<file>
 nnoremap <leader>ge :Gedit <commitid>:<file>
 " git log
@@ -1586,7 +1580,7 @@ lua <<EOF
       mappings = {
         i = {
           ["<esc>"] = require("telescope.actions").close,
-          ["<CR>"] = require("telescope.actions").select_tab_drop,
+          ["<CR>"] = require("telescope.actions").select_default,
           ["<c-q>"] = function(_prompt_bufnr)
           require("telescope.actions").smart_send_to_qflist(_prompt_bufnr)
           require("telescope.actions").open_qflist(_prompt_bufnr)
@@ -1738,8 +1732,8 @@ nnoremap gI :tab sp<CR>:lua vim.lsp.buf.implementation()<CR>
 nnoremap gy :lua vim.lsp.buf.type_definition()<CR>
 nnoremap gY :tab sp<CR>:lua vim.lsp.buf.type_definition()<CR>
 " nnoremap gy :Lspsaga peek_type_definition<CR>
-" nnoremap gr :lua vim.lsp.buf.references()<CR>
-nnoremap gr :tab sp<CR>:lua vim.lsp.buf.references()<CR>
+nnoremap gr :lua vim.lsp.buf.references()<CR>
+" nnoremap gr :tab sp<CR>:lua vim.lsp.buf.references()<CR>
 nnoremap <leader>rn :lua vim.lsp.buf.rename()<CR>
 nnoremap <leader>fm :lua vim.lsp.buf.format({async=true})<CR>
 lua <<EOF
