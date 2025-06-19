@@ -64,6 +64,8 @@ set incsearch
 set ignorecase
     
 set ww+=h,l
+set list
+set listchars=eol:↓,tab:\ \ ┊,trail:●,extends:…,precedes:…,space:·
 
 
 let mapleader=" "
@@ -326,13 +328,17 @@ Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp', { 'commit': 'c27370703e798666486e3064b64d59eaf4bdc6d5'}
 Plug 'williamboman/mason.nvim'
+Plug 'ray-x/lsp_signature.nvim'
 " Plug 'nvimdev/lspsaga.nvim'
 Plug 'folke/trouble.nvim'
 
 
 " Snippets
-Plug 'hrsh7th/cmp-vsnip'
-Plug 'hrsh7th/vim-vsnip'
+" Plug 'hrsh7th/cmp-vsnip'
+" Plug 'hrsh7th/vim-vsnip'
+Plug 'dcampos/nvim-snippy'
+Plug 'dcampos/cmp-snippy'
+Plug 'honza/vim-snippets'
 
 
 " Undo Tree
@@ -523,7 +529,8 @@ lua <<EOF
     snippet = {
       -- REQUIRED - you must specify a snippet engine
       expand = function(args)
-        vim.snippet.expand(args.body)
+        --vim.snippet.expand(args.body)
+        require('snippy').expand_snippet(args.body) -- For `snippy` users.
       end,
     },
     window = {
@@ -541,6 +548,7 @@ lua <<EOF
     }),
     sources = cmp.config.sources({
       { name = 'nvim_lsp' },
+        { name = 'snippy' }, -- For snippy users.
       { name = 'orgmode' },
       { name = 'path' },
     }, {
@@ -604,8 +612,10 @@ lua <<EOF
 
 EOF
 
-
-
+" === lsp_signature ===
+lua<<EOF
+require "lsp_signature".setup()
+EOF
 
 
 " === mason ===
@@ -1247,6 +1257,7 @@ let g:move_key_modifier = '<leader>'
 let g:move_map_keys = 0
 nmap <leader><down>  <Plug>MoveLineDown
 nmap <leader><up> <Plug>MoveLineUp
+
 
 "===== indent =====
 lua <<EOF
