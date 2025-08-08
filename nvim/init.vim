@@ -96,7 +96,6 @@ nnoremap Y y$
 nnoremap db dvb
 nnoremap cb cvb
 nnoremap yb yvb
-inoremap << <esc>0C
 nnoremap <leader><down> 0i<cr><ESC>
 nnoremap <leader><up> kdd
 nnoremap = :noh<CR>
@@ -106,8 +105,6 @@ nnoremap <c-u> 4k
 vnoremap <c-d> 4j
 vnoremap <c-u> 4k
 " search selected
-vnoremap / y/<c-r>0<cr>
-nnoremap * *N
 noremap <silent> n <Cmd>execute('keepjumps normal! ' . v:count1 . 'n')<CR>
 noremap <silent> N <Cmd>execute('keepjumps normal! ' . v:count1 . 'N')<CR>
 map S :w<CR>
@@ -389,6 +386,10 @@ Plug 'folke/flash.nvim' " best jump plugin
 " Plug 'nvimdev/indentmini.nvim'
 Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'matze/vim-move'
+Plug 'windwp/nvim-autopairs'
+Plug 'theniceboy/pair-maker.vim'
+Plug 'kevinhwang91/nvim-hlslens'
+
 
 " Bookmarks
 Plug 'MattesGroeger/vim-bookmarks'
@@ -542,7 +543,7 @@ lua <<EOF
       ['<C-j>'] = cmp.mapping.scroll_docs(4),
       ['<C-Space>'] = cmp.mapping.complete(),
       ['<C-e>'] = cmp.mapping.abort(),
-      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+      ['<CR>'] = cmp.mapping.confirm({ select = false, behavior = cmp.ConfirmBehavior.Insert }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
       ["<Tab>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
       ["<S-Tab>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
     }),
@@ -611,12 +612,11 @@ lua <<EOF
 
 
 EOF
-
-" === lsp_signature ===
+"
+"=== lsp_signature ===
 lua<<EOF
 require "lsp_signature".setup()
 EOF
-
 
 " === mason ===
 lua<<EOF
@@ -1048,7 +1048,15 @@ function! SearchProtoBuf()
     execute 'Telescope find_files default_text=' . l:current_file . ".proto"
 
 endfunction
+function! SearchUTfile()
+    let l:current_file = expand('%:t:r')  " Get the current file name
+
+    lua require('bufjump').backward()
+    execute 'Telescope find_files default_text=' . l:current_file . "Test"
+
+endfunction
 nnoremap <leader>fp :call SearchProtoBuf()<CR>
+nnoremap <leader>fu :call SearchUTfile()<CR>
 
 
 " === lazygit ===
@@ -1108,7 +1116,7 @@ nnoremap <leader>log :-tabnew<CR>:Gclog! -5000 -- <left><left><left><left><left>
 "current file log with related commits
 nnoremap <leader>logd :0Gclog! -5000 -- %<CR>:copen<CR>
 "current file log with only current file changes
-nnoremap <leader>logc :tab Git --paginate log -5000 --patch -- %<CR>
+nnoremap <leader>logc :Git --paginate log -5000 --patch -- %<CR>
 " selected lines log
 vnoremap <leader>log <ESC>:-tabnew<CR>gv:Gclog! -5000<CR>:copen<CR>
 
@@ -1257,6 +1265,17 @@ let g:move_key_modifier = '<leader>'
 let g:move_map_keys = 0
 nmap <leader><down>  <Plug>MoveLineDown
 nmap <leader><up> <Plug>MoveLineUp
+
+" === vim-auto-pairs
+lua << EOF
+require("nvim-autopairs").setup {}
+EOF
+
+" === hlslens ===
+
+lua <<EOF
+require('hlslens').setup()
+EOF
 
 
 "===== indent =====
@@ -1492,9 +1511,9 @@ require("flash").setup ({
           -- hide after jump when not using jump labels
           autohide = false,
           -- show jump labels
-          jump_labels = false,
+          jump_labels = true,
           -- set to `false` to use the current line only
-          multi_line = true,
+          multi_line = false,
           -- When using jump labels, don't use these keys
           -- This allows using those keys directly after the motion
           label = { exclude = "hjkliardc" },
@@ -1518,7 +1537,7 @@ require("flash").setup ({
               -- [motion:match("%l") and motion:upper() or motion:lower()] = "prev",
             }
           end,
-          search = { wrap = false },
+          search = { wrap = false, mode = "exact"},
           highlight = { backdrop = true },
           jump = {
             register = false,
@@ -1595,9 +1614,6 @@ lua <<EOF
           ["<c-q>"] = function(_prompt_bufnr)
           require("telescope.actions").smart_send_to_qflist(_prompt_bufnr)
           require("telescope.actions").open_qflist(_prompt_bufnr)
-          vim.cmd("ccl")
-          vim.cmd("tab new")
-          vim.cmd("copen")
           end,
         },
       },
@@ -1810,6 +1826,7 @@ nnoremap <leader>ac :lua vim.lsp.buf.code_action()<CR>
 " nnoremap <leader>ac :Lspsaga code_action<CR>
 nnoremap [g :lua vim.diagnostic.goto_prev()<CR>
 nnoremap ]g :lua vim.diagnostic.goto_next()<CR>
+nnoremap <leader>ae <Cmd>lua require('jdtls').extract_variable()<CR>
 " nnoremap [g :Lspsaga diagnostic_jump_prev<CR>
 " nnoremap ]g :Lspsaga diagnostic_jump_next<CR>
 " lua <<EOF
@@ -1823,3 +1840,13 @@ nnoremap <leader>ihd :lua vim.lsp.inlay_hint.enable(false)<CR>
 nnoremap <leader>did :lua vim.diagnostic.disable()<CR>
 nnoremap <leader>die :lua vim.diagnostic.enable()<CR>
 " nnoremap <leader>df :lua vim.diagnostic.open_float(0, {scope="line"})<CR>
+
+noremap <silent> n <Cmd>execute('normal! ' . v:count1 . 'n')<CR>
+            \<Cmd>lua require('hlslens').start()<CR>
+noremap <silent> N <Cmd>execute('normal! ' . v:count1 . 'N')<CR>
+            \<Cmd>lua require('hlslens').start()<CR>
+noremap * *N<Cmd>lua require('hlslens').start()<CR>
+noremap # #<Cmd>lua require('hlslens').start()<CR>
+noremap g* g*<Cmd>lua require('hlslens').start()<CR>
+noremap g# g#<Cmd>lua require('hlslens').start()<CR>
+vnoremap * y/<c-r>0<cr>
