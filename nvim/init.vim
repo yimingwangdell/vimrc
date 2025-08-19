@@ -133,7 +133,7 @@ augroup END
 " split window
 map <leader>sl :vs<CR>
 map <leader>sv :set nosplitright<CR>:set splitright<CR>:vsplit $MYVIMRC<CR>
-map <leader>sj :sp<CR><c-w>j
+map <leader>sj :set nosplitbelow<CR>:set splitbelow<CR>:new<CR><c-w>j
 " jump down/up/left/right split window
 " quit vim
 " resize window
@@ -1111,12 +1111,57 @@ vnoremap <leader>bl :Git blame<CR>
 " view file with commit id :Gedit <commitId>:<file>
 nnoremap <leader>ge :Gedit <commitid>:<file>
 " git log
-nnoremap <leader>log :-tabnew<CR>:Gclog! -5000 -- <left><left><left><left><left><left><left>
+nnoremap <leader>log :call <SID>log()<CR>
 
 "current file log with related commits
 nnoremap <leader>logd :0Gclog! -5000 -- %<CR>:copen<CR>
 "current file log with only current file changes
-nnoremap <leader>logc :Git --paginate log -5000 --patch -- %<CR>
+nnoremap <leader>logcc :Git --paginate log -500 --patch  -- %
+nnoremap <leader>logc :call <SID>logc()<CR>
+function! s:LoadMoreCommits() abort
+    if s:logenabled == 1
+        let s:logindex += 500
+        execute 'Gclog! -500 --skip='.s:logindex
+    endif
+    if s:logcenabled == 1
+        let s:logcindex += 500
+        execute 'Gclog! -500 --skip='.s:logcindex' -- %'
+    endif
+endfunction
+function! s:LoadLessCommits() abort
+    if s:logenabled == 1
+        let s:logindex -= 500
+        if s:logindex < 0
+            let s:logindex = 0
+        endif
+        execute 'Gclog! -500 --skip='.s:logindex
+    endif
+    if s:logcenabled == 1
+        let s:logcindex -= 500
+        if s:logcindex < 0
+            let s:logcindex = 0
+        endif
+        execute 'Gclog! -500 --skip='.s:logcindex' -- %'
+    endif
+endfunction
+function! s:log() abort
+    let s:logindex = 0
+    let s:logenabled = 1
+    let s:logcenabled = 0
+    execute ':Gclog! -500 --'
+endfunction
+
+function! s:logc() abort
+    let s:logcindex = 0
+    let s:logenabled = 0
+    let s:logcenabled = 1
+    execute 'Gclog! -500 -- %'
+endfunction
+command! -nargs=? GMore call <SID>LoadMoreCommits()
+command! -nargs=? GLess call <SID>LoadLessCommits()
+nnoremap <leader>ln :GMore<CR>
+nnoremap <leader>lp :GLess<CR>
+
 " selected lines log
 vnoremap <leader>log <ESC>:-tabnew<CR>gv:Gclog! -5000<CR>:copen<CR>
 
