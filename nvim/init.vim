@@ -131,7 +131,7 @@ augroup NVIMRC
     autocmd BufWritePost init.vim exec ":so %"
 augroup END
 " split window
-map <leader>sl :vs<CR>
+map <leader>sl :vnew<CR><c-w>l
 map <leader>sv :set nosplitright<CR>:set splitright<CR>:vsplit $MYVIMRC<CR>
 map <leader>sj :set nosplitbelow<CR>:set splitbelow<CR>:new<CR><c-w>j
 " jump down/up/left/right split window
