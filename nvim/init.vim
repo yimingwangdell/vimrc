@@ -319,23 +319,17 @@ Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 
 " LSP
 Plug 'mfussenegger/nvim-jdtls'
-Plug 'neovim/nvim-lspconfig', {'tag': 'v2.5.0'}
-Plug 'christopher-francisco/cmp-nvim-lsp'
-Plug 'hrsh7th/cmp-buffer'
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-cmdline'
-Plug 'hrsh7th/nvim-cmp', {'branch': 'v0.0.1'}
 Plug 'williamboman/mason.nvim'
-Plug 'ray-x/lsp_signature.nvim', {'branch': 'nvim-0.9'}
+Plug 'neovim/nvim-lspconfig', {'tag': 'v2.5.0'}
+Plug 'Saghen/blink.cmp', {'tag': '1.*'}
+" Plug 'ray-x/lsp_signature.nvim', {'branch': 'nvim-0.9'}
 
 
 Plug 'folke/trouble.nvim'
 
 
 " Snippets
-Plug 'hrsh7th/cmp-vsnip'
-Plug 'hrsh7th/vim-vsnip'
-Plug 'honza/vim-snippets'
+Plug 'rafamadriz/friendly-snippets'
 
 
 " Undo Tree
@@ -517,91 +511,85 @@ require('lualine').setup(
 EOF
 
 
-" === nvim-cmp ===
-" <c-space> to force trigger lsp completion
-" <tab> to select the next suggestion
-" <S-tab> to select the prev suggestion
-" path/search/commands completion support
-lua <<EOF
-  -- Set up nvim-cmp.
-  local feedkey = function(key, mode)
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
-end
-  local cmp = require'cmp'
-  cmp.setup({
-    snippet = {
-      -- REQUIRED - you must specify a snippet engine
-      expand = function(args)
-        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-      end,
+lua<<EOF
+require("blink.cmp").setup(
+{
+    -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
+    -- 'super-tab' for mappings similar to vscode (tab to accept)
+    -- 'enter' for enter to accept
+    -- 'none' for no mappings
+    --
+    -- All presets have the following mappings:
+    -- C-space: Open menu or open docs if already open
+    -- C-n/C-p or Up/Down: Select next/previous item
+    -- C-e: Hide menu
+    -- C-k: Toggle signature help (if signature.enabled = true)
+    --
+    -- See :h blink-cmp-config-keymap for defining your own keymap
+    signature = { enabled = true },
+    keymap = {
+        ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
+        --['<C-e>'] = { 'hide', 'fallback' },
+        ['<CR>'] = { 'accept', 'fallback' },
+        ['<Tab>'] = { 'select_next', 'fallback' },
+        ['<S-Tab>'] = { 'select_prev', 'fallback' },
+        ['<C-j>'] = { 'snippet_forward', 'fallback' },
+        ['<C-k>'] = { 'snippet_backward', 'fallback' },
+        ['<C-b>'] = { 'scroll_documentation_up', 'fallback' },
+        ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
+        },
+
+    appearance = {
+      -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+      -- Adjusts spacing to ensure icons are aligned
+      nerd_font_variant = 'mono'
     },
-    window = {
-       completion = cmp.config.window.bordered(),
-       documentation = cmp.config.window.bordered(),
-    },
-    mapping = cmp.mapping.preset.insert({
-      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-      ['<C-f>'] = cmp.mapping.scroll_docs(4),
-      ['<C-Space>'] = cmp.mapping.complete(),
-      ['<C-e>'] = cmp.mapping.abort(),
-      ['<CR>'] = cmp.mapping.confirm({select = true}), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-      ["<Tab>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
-    ["<C-j>"] = cmp.mapping(function(fallback)
-        feedkey("<Plug>(vsnip-expand-or-jump)", "")
-    end, { "i", "s" }),
-    ["<C-k>"] = cmp.mapping(function()
-        feedkey("<Plug>(vsnip-jump-prev)", "")
-    end, { "i", "s" }),
 
-    ["<S-Tab>"] = cmp.mapping(function()
-      if cmp.visible() then
-        cmp.select_prev_item()
-      end
-    end, { "i", }),
-    }),
-    sources = cmp.config.sources({
-      { name = 'nvim_lsp' },
-      { name = 'vsnip' }, -- For vsnip users.
-      { name = 'orgmode' },
-      { name = 'path' },
-    }, {
-      { name = 'buffer' }
-    })
-  })
+    -- (Default) Only show the documentation popup when manually triggered
+    completion = { 
+        trigger = {
+            show_on_trigger_character = true,
+            show_on_blocked_trigger_characters = {' ', '\n', '\t'}
+        },
+        documentation = { auto_show = true }
+        },
 
-  -- To use git you need to install the plugin petertriho/cmp-git and uncomment lines below
-  -- Set configuration for specific filetype.
-  --[[ cmp.setup.filetype('gitcommit', {
-    sources = cmp.config.sources({
-      { name = 'git' },
-    }, {
-      { name = 'buffer' },
-    })
- })
- require("cmp_git").setup() ]]-- 
-
-  -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline({ '/', '?' }, {
-    mapping = cmp.mapping.preset.cmdline(),
+    -- Default list of enabled providers defined so that you can extend it
+    -- elsewhere in your config, without redefining it, due to `opts_extend`
     sources = {
-      { name = 'buffer' }
+      default = { 'lsp', 'path', 'snippets', 'buffer' },
+       providers = {
+    snippets = {
+      opts = {
+        friendly_snippets = true, -- default
+
+        -- see the list of frameworks in: https://github.com/rafamadriz/friendly-snippets/tree/main/snippets/frameworks
+        -- and search for possible languages in: https://github.com/rafamadriz/friendly-snippets/blob/main/package.json
+        -- the following is just an example, you should only enable the frameworks that you use
+        extended_filetypes = {
+          markdown = { 'jekyll' },
+          sh = { 'shelldoc' },
+          php = { 'phpdoc' },
+          cpp = { 'unreal' }
+        }
+      }
     }
-  })
+  }
+    },
 
-  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline(':', {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = cmp.config.sources({
-      { name = 'path' }
-    }, {
-      { name = 'cmdline' }
-    }),
-    matching = { disallow_symbol_nonprefix_matching = false }
-  })
-
+    -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
+    -- You may use a lua implementation instead by using `implementation = "lua"` or fallback to the lua implementation,
+    -- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
+    --
+    -- See the fuzzy documentation for more information
+    fuzzy = { implementation = "lua" }
+  }
+)
+EOF
+lua<<EOF
 
   -- Set up lspconfig.
-  local capabilities = require('cmp_nvim_lsp').default_capabilities()
+  local capabilities = require('blink.cmp').get_lsp_capabilities()
 
   -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
   require('lspconfig')['pylsp'].setup {
@@ -626,9 +614,6 @@ EOF
 "
 "=== lsp_signature ===
 
-lua<<EOF
-require "lsp_signature".setup()
-EOF
 
 " === mason ===
 lua<<EOF
