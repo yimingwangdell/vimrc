@@ -90,6 +90,7 @@ noremap L $
 inoremap jk <ESC>
 inoremap jh <ESC>^i
 inoremap jl <ESC>A
+inoremap jo <ESC>o
 " copy to end
 nnoremap Y y$
 " b include current char
@@ -318,23 +319,22 @@ Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 
 " LSP
 Plug 'mfussenegger/nvim-jdtls'
-Plug 'neovim/nvim-lspconfig'
-Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'neovim/nvim-lspconfig', {'tag': 'v2.5.0'}
+Plug 'christopher-francisco/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
-Plug 'hrsh7th/nvim-cmp', { 'commit': 'c27370703e798666486e3064b64d59eaf4bdc6d5'}
+Plug 'hrsh7th/nvim-cmp', {'branch': 'v0.0.1'}
 Plug 'williamboman/mason.nvim'
-Plug 'ray-x/lsp_signature.nvim'
-" Plug 'nvimdev/lspsaga.nvim'
+Plug 'ray-x/lsp_signature.nvim', {'branch': 'nvim-0.9'}
+
+
 Plug 'folke/trouble.nvim'
 
 
 " Snippets
-" Plug 'hrsh7th/cmp-vsnip'
-" Plug 'hrsh7th/vim-vsnip'
-Plug 'dcampos/nvim-snippy'
-Plug 'dcampos/cmp-snippy'
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/vim-vsnip'
 Plug 'honza/vim-snippets'
 
 
@@ -365,7 +365,7 @@ Plug 'mzlogin/vim-markdown-toc'
 Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
 Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeToggle', 'for': ['text', 'markdown', 'vim-plug'] }
 Plug 'vimwiki/vimwiki' " best note taking tool
-Plug 'nvim-orgmode/orgmode'
+Plug 'nvim-orgmode/orgmode', {'tag': '0.6.0'}
 
 "
 " Editor Enhancement
@@ -423,7 +423,7 @@ set background=dark
 
 " ==================codeium===================
 let g:codeium_no_map_tab = v:true
-imap <script><silent><nowait><expr> <C-j> codeium#Accept()
+imap <script><silent><nowait><expr> <C-o> codeium#Accept()
 imap <C-c>   <Cmd>call codeium#CycleCompletions(1)<CR>
 imap <C-z>   <Cmd>call codeium#Clear()<CR>
 if !empty(glob('~/dellcodeium.vim'))
@@ -522,16 +522,15 @@ EOF
 " <tab> to select the next suggestion
 " <S-tab> to select the prev suggestion
 " path/search/commands completion support
+set completeopt=menu,menuone,noselect
 lua <<EOF
   -- Set up nvim-cmp.
   local cmp = require'cmp'
-
   cmp.setup({
     snippet = {
       -- REQUIRED - you must specify a snippet engine
       expand = function(args)
-        --vim.snippet.expand(args.body)
-        require('snippy').expand_snippet(args.body) -- For `snippy` users.
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
       end,
     },
     window = {
@@ -539,21 +538,32 @@ lua <<EOF
        documentation = cmp.config.window.bordered(),
     },
     mapping = cmp.mapping.preset.insert({
-      ['<C-k>'] = cmp.mapping.scroll_docs(-4),
-      ['<C-j>'] = cmp.mapping.scroll_docs(4),
+      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
       ['<C-Space>'] = cmp.mapping.complete(),
       ['<C-e>'] = cmp.mapping.abort(),
-      ['<CR>'] = cmp.mapping.confirm({ select = false, behavior = cmp.ConfirmBehavior.Insert }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+      ['<CR>'] = cmp.mapping.confirm({select = true}), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
       ["<Tab>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
-      ["<S-Tab>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
+    ["<C-j>"] = cmp.mapping(function(fallback)
+        feedkey("<Plug>(vsnip-expand-or-jump)", "")
+    end, { "i", "s" }),
+    ["<C-k>"] = cmp.mapping(function()
+        feedkey("<Plug>(vsnip-jump-prev)", "")
+    end, { "i", "s" }),
+
+    ["<S-Tab>"] = cmp.mapping(function()
+      if cmp.visible() then
+        cmp.select_prev_item()
+      end
+    end, { "i", }),
     }),
     sources = cmp.config.sources({
       { name = 'nvim_lsp' },
-        { name = 'snippy' }, -- For snippy users.
+      { name = 'vsnip' }, -- For vsnip users.
       { name = 'orgmode' },
       { name = 'path' },
     }, {
-      { name = 'buffer' },
+      { name = 'buffer' }
     })
   })
 
@@ -587,6 +597,7 @@ lua <<EOF
     matching = { disallow_symbol_nonprefix_matching = false }
   })
 
+
   -- Set up lspconfig.
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
@@ -609,11 +620,10 @@ lua <<EOF
   require('lspconfig')['yamlls'].setup {
         capabilities = capabilities,
   }
-
-
 EOF
 "
 "=== lsp_signature ===
+
 lua<<EOF
 require "lsp_signature".setup()
 EOF

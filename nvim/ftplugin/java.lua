@@ -2,9 +2,11 @@
 local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
 
 local workspace_dir = '/root/jdtlsws/' .. project_name
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local config = {
   -- The command that starts the language server
   -- See: https://github.com/eclipse/eclipse.jdt.ls#running-from-the-command-line
+  capabilities = capabilities,
   cmd = {
 
     -- 💀
