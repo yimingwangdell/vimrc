@@ -522,9 +522,11 @@ EOF
 " <tab> to select the next suggestion
 " <S-tab> to select the prev suggestion
 " path/search/commands completion support
-set completeopt=menu,menuone,noselect
 lua <<EOF
   -- Set up nvim-cmp.
+  local feedkey = function(key, mode)
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
+end
   local cmp = require'cmp'
   cmp.setup({
     snippet = {
