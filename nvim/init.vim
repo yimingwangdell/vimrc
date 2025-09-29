@@ -186,6 +186,7 @@ endfunction
 function! s:printGitFileName()
     " Get the current line
     let l:gitpreline = line('.')
+    let l:pos = getpos('.')
     call feedkeys('[/', 'x')
     let l:gitkeyline = getline('.')
 
@@ -199,7 +200,8 @@ function! s:printGitFileName()
     else
         echo ""
     endif
-    execute ' ' l:gitpreline
+    call setpos('.', l:pos)
+
 endfunction
 
 function! ShowFugitiveFileName()
@@ -1112,6 +1114,7 @@ function! SearchCurrentFile()
     let l:current_file = expand('%')  " Get the current file name
     " echo l:current_file
     let l:current_line = line('.')
+    let l:pos = getpos('.')
     call EnsureTabExists(2)
     " execute 'Telescope find_files default_text=' . l:current_file
     " call feedkeys("\<CR>", "x")
@@ -1119,7 +1122,7 @@ function! SearchCurrentFile()
     let path = substitute(path, '\.git/\x\+/', '', '')
     execute 'tabnext'
     execute 'edit ' . path
-    execute ' ' l:current_line
+    call setpos('.', l:pos)
 endfunction
 nnoremap <leader>fp :call SearchProtoBuf()<CR>
 nnoremap <leader>fc :call SearchCurrentFile()<CR>
