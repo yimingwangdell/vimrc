@@ -138,10 +138,6 @@ map <leader>sj :set nosplitbelow<CR>:set splitbelow<CR>:new<CR><c-w>j
 " jump down/up/left/right split window
 " quit vim
 " resize window
-map <up> <c-w>k
-map <down> <c-w>j
-map <left> <c-w>h
-map <right> <c-w>l
 " move pasted content indent to left/right
 nnoremap <leader>, `[V`]<
 nnoremap <leader>. `[V`]>
@@ -429,7 +425,7 @@ let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 colorscheme  tokyonight-moon
 " colorscheme gruvbox
 " colorscheme kanagawa-dragon
-" set background=dark
+set background=dark
 " set background=light
 
 " ==================codeium===================
@@ -1242,6 +1238,7 @@ let g:fugitive_summary_format = "%<(16,trunc)%an||%<(27,trunc)%ad||%s"
 nnoremap <leader>rc :Gvdiffsplit!<CR>
 " start to resolve conflicts in project
 nnoremap <leader>df :G diff
+nnoremap <leader>dfv :DiffViewOpen
 " Gvdiffsplit <commitId> <commitId>
 " === git blame ===
 map <LEADER>bl V:Git blame<CR>
