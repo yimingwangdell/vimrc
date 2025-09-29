@@ -11,6 +11,7 @@ if empty(glob('~/.config/nvim/autoload/plug.vim'))
 endif
 autocmd!
     autocmd CursorMoved * call ShowFugitiveFileName()
+
 augroup END
 
 
@@ -467,8 +468,8 @@ call plug#end()
 
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
-colorscheme  tokyonight-moon
-" colorscheme gruvbox
+" colorscheme  tokyonight-moon
+colorscheme gruvbox
 " colorscheme kanagawa-dragon
 set background=dark
 " set background=light
@@ -482,6 +483,8 @@ if !empty(glob('~/dellcodeium.vim'))
     source ~/dellcodeium.vim
 endif
 highlight CodeiumSuggestion guifg=#555555 ctermfg=8
+highlight link GitSignsCurrentLineBlame DiffAdd
+
 
 " ==================chatgpt===================
 lua <<EOF
@@ -1404,11 +1407,13 @@ vnoremap <leader>log <ESC>:-tabnew<CR>gv:Gclog! -5000<CR>:copen<CR>
 
 " === gitsign ===
 lua <<EOF
-require('gitsigns').setup()
+require('gitsigns').setup({ current_line_blame = true })
 EOF
 nnoremap [[ :Gitsign prev_hunk<CR>
 nnoremap ]] :Gitsign next_hunk<CR>
 nnoremap <leader>u :Gitsign reset_hunk<CR>
+let g:gruvbox_invert_signs=1
+
 
 
 " ===
