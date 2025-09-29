@@ -90,7 +90,7 @@ noremap L $
 inoremap jk <ESC>
 inoremap jh <ESC>^i
 inoremap jl <ESC>A
-inoremap jo <ESC>o
+inoremap jj <ESC>o
 " copy to end
 nnoremap Y y$
 " b include current char
@@ -175,6 +175,21 @@ nnoremap t6 :tabn6<CR>
 nnoremap t7 :tabn7<CR>
 nnoremap t8 :tabn8<CR>
 nnoremap t9 :tabn9<CR>
+function! EnsureTabExists(num)
+  let l:current_tab = tabpagenr()
+  if tabpagenr('$') < a:num
+    tabnew
+    execute 'tabnext ' . l:current_tab
+  endif
+endfunction
+
+" Optional: bind to a key
+nnoremap <leader>t2 :call EnsureTabExists(2)<CR>
+nnoremap <leader>t3 :call EnsureTabExists(3)<CR>
+nnoremap <leader>t4 :call EnsureTabExists(4)<CR>
+nnoremap <leader>t5 :call EnsureTabExists(5)<CR>
+
+
 
 let s:last_list_win_type = 0
 function! s:toggle_list()
@@ -340,6 +355,7 @@ Plug 'mbbill/undotree'
 Plug 'tpope/vim-fugitive'
 Plug 'lewis6991/gitsigns.nvim'
 Plug 'kdheepak/lazygit.nvim'
+Plug 'sindrets/diffview.nvim'
 
 
 " HTML, CSS, JavaScript, Typescript, PHP, JSON, etc.
@@ -410,9 +426,10 @@ call plug#end()
 
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
-" colorscheme  tokyonight-moon
-colorscheme gruvbox
-set background=dark
+colorscheme  tokyonight-moon
+" colorscheme gruvbox
+" colorscheme kanagawa-dragon
+" set background=dark
 " set background=light
 
 " ==================codeium===================
@@ -1052,13 +1069,137 @@ function! SearchUTfile()
     execute 'Telescope find_files default_text=' . l:current_file . "Test"
 
 endfunction
+function! SearchCurrentFile()
+    let l:current_file = expand('%')  " Get the current file name
+    " echo l:current_file
+    let l:current_line = line('.')
+    call EnsureTabExists(2)
+    " execute 'Telescope find_files default_text=' . l:current_file
+    " call feedkeys("\<CR>", "x")
+    let path = substitute(l:current_file, 'diffview:\/\/', '', '')
+    let path = substitute(path, '\.git/\x\+/', '', '')
+    execute 'tabnext'
+    execute 'edit ' . path
+    execute ' ' l:current_line
+endfunction
 nnoremap <leader>fp :call SearchProtoBuf()<CR>
+nnoremap <leader>fc :call SearchCurrentFile()<CR>
 nnoremap <leader>fu :call SearchUTfile()<CR>
 
 
 " === lazygit ===
 nnoremap <leader>lg :LazyGitCurrentFile<CR>
 
+
+
+" === diffview
+
+
+
+lua <<EOF
+-- Lua
+local actions = require("diffview.actions")
+
+require("diffview").setup({
+  diff_binaries = false,    -- Show diffs for binaries
+  enhanced_diff_hl = false, -- See |diffview-config-enhanced_diff_hl|
+  git_cmd = { "git" },      -- The git executable followed by default args.
+  hg_cmd = { "hg" },        -- The hg executable followed by default args.
+  use_icons = true,         -- Requires nvim-web-devicons
+  show_help_hints = true,   -- Show hints for how to open the help panel
+  watch_index = true,       -- Update views and index buffers when the git index changes.
+  icons = {                 -- Only applies when use_icons is true.
+    folder_closed = "",
+    folder_open = "",
+  },
+  signs = {
+    fold_closed = "",
+    fold_open = "",
+    done = "✓",
+  },
+  view = {
+    -- Configure the layout and behavior of different types of views.
+    -- Available layouts:
+    --  'diff1_plain'
+    --    |'diff2_horizontal'
+    --    |'diff2_vertical'
+    --    |'diff3_horizontal'
+    --    |'diff3_vertical'
+    --    |'diff3_mixed'
+    --    |'diff4_mixed'
+    -- For more info, see |diffview-config-view.x.layout|.
+    default = {
+      -- Config for changed files, and staged files in diff views.
+      layout = "diff2_horizontal",
+      disable_diagnostics = false,  -- Temporarily disable diagnostics for diff buffers while in the view.
+      winbar_info = false,          -- See |diffview-config-view.x.winbar_info|
+    },
+    merge_tool = {
+      -- Config for conflicted files in diff views during a merge or rebase.
+      layout = "diff3_horizontal",
+      disable_diagnostics = true,   -- Temporarily disable diagnostics for diff buffers while in the view.
+      winbar_info = true,           -- See |diffview-config-view.x.winbar_info|
+    },
+    file_history = {
+      -- Config for changed files in file history views.
+      layout = "diff2_horizontal",
+      disable_diagnostics = false,  -- Temporarily disable diagnostics for diff buffers while in the view.
+      winbar_info = false,          -- See |diffview-config-view.x.winbar_info|
+    },
+  },
+  file_panel = {
+    listing_style = "tree",             -- One of 'list' or 'tree'
+    tree_options = {                    -- Only applies when listing_style is 'tree'
+      flatten_dirs = true,              -- Flatten dirs that only contain one single dir
+      folder_statuses = "only_folded",  -- One of 'never', 'only_folded' or 'always'.
+    },
+    win_config = {                      -- See |diffview-config-win_config|
+      position = "bottom",
+      width = 35,
+      height = 10,
+      win_opts = {},
+    },
+  },
+  file_history_panel = {
+    log_options = {   -- See |diffview-config-log_options|
+      git = {
+        single_file = {
+          diff_merges = "combined",
+        },
+        multi_file = {
+          diff_merges = "first-parent",
+        },
+      },
+      hg = {
+        single_file = {},
+        multi_file = {},
+      },
+    },
+    win_config = {    -- See |diffview-config-win_config|
+      position = "bottom",
+      height = 16,
+      win_opts = {},
+    },
+  },
+  commit_log_panel = {
+    win_config = {},  -- See |diffview-config-win_config|
+  },
+  default_args = {    -- Default args prepended to the arg-list for the listed commands
+    DiffviewOpen = {},
+    DiffviewFileHistory = {},
+  },
+  hooks = {},         -- See |diffview-config-hooks|
+  keymaps = {
+    disable_defaults = false, -- Disable the default keymaps
+    view = {
+      -- The `view` bindings are active in the diff buffers, only when the current
+      -- tabpage is a Diffview.
+      { "n", "<leader>nn",       actions.select_next_entry,              { desc = "Open the diff for the next file" } },
+      { "n", "<leader>pp",     actions.select_prev_entry,              { desc = "Open the diff for the previous file" } },
+    },
+  },
+})
+EOF
 " ===
 " === vim-bookmarks
 " ===
