@@ -211,7 +211,7 @@ function! ShowFugitiveFileName()
         " Extract the filename from the path
         call s:printGitFileName()
     else
-        echo "current file:" expand('%:p')
+        echo  expand('%:p')
     endif
 endfunction
 
