@@ -13,7 +13,9 @@ set $mod Mod1
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:monospace 0
+font pango:monospace 8
+
+for_window [class=".*"] border pixel 20
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -199,6 +201,3 @@ exec --no-startup-id vmware-user
 bindsym Ctrl+Print exec --no-startup-id maim | xclip -selection clipboard -t image/png
 bindsym Ctrl+$mod+Print exec --no-startup-id maim --window $(xdotool getactivewindow) | xclip -selection clipboard -t image/png
 bindsym Ctrl+Shift+Print exec --no-startup-id maim --select | xclip -selection clipboard -t image/png
-bindsym XF86AudioRaiseVolume exec "amixer -q sset Master,0 1+ unmute"
-bindsym XF86AudioLowerVolume exec "amixer -q sset Master,0 1- unmute"
-bindsym XF86AudioMute exec "amixer -q sset Master,0 toggle"
