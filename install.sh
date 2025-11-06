@@ -4,7 +4,7 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 cp ./nvim/init.vim ~/.config/nvim/init.vim
 cp .tmux.conf ~/
 mkdir -p ~/.alacritty
-cp alacritty.toml ~/.config/alacritty/alacritty.toml
+cp alacritty.yml ~/.config/alacritty/alacritty.yml
 sh ./ohmyzsh
 sh ./fzf
 
