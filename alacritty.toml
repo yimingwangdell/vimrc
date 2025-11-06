@@ -1,0 +1,118 @@
+# Author:
+## Angel Jair Haro
+# Date: 
+## 01-22-2023
+
+
+#colorscheme import 
+import:
+  - ~/.config/alacritty/themes/gruvbox-material-alacritty.yml
+  
+  #- ~/.your_path/colorscheme.yml
+#
+# or you can drop your prefered colorscheme here but it looks nicer like an import
+
+
+
+# Font configuration
+font:
+  normal:
+    family: FiraCode Nerd Font Mono
+    style: Regular
+  bold:
+    family: FiraCode Nerd Font Mono
+    style: Bold
+  italic:
+    family: Hack Nerd Font
+    style: Italic
+  bold_italic:
+    family: Hack Nerd Font
+    style: Bold Italic
+  size: 15
+
+# Enable clickable URLs
+mouse:
+  # url:
+  hints:
+    modifiers: Control
+
+
+#cursor stuff
+cursor:
+  # Cursor style
+  style:
+    shape: Block        #   -   Beam |, Block ▇, Underline _
+    blinking: On        #   - Never,Off,On,Alwys
+
+
+
+ # Specifying a `duration` of `0` will disable the visual bell. 
+bell:
+  #   - Ease
+  #   - EaseOut
+  #   - EaseOutSine
+  #   - EaseOutQuad
+  #   - EaseOutCubic
+  #   - EaseOutQuart
+  #   - EaseOutQuint
+  #   - EaseOutExpo
+  #   - EaseOutCirc
+  #   - Linear
+  animation: Linear
+  duration: 500
+
+  # Visual bell animation color.
+  color: '#b59b9c'
+
+
+window:
+  dimensions:
+    columns: 150
+    lines: 45
+  position:
+    x: 2500
+    y: 700
+  padding:
+    x: 0
+    y: 0
+  dynamic_padding: false
+  decorations: transparent     #buttonless,transparent,full,none
+  opacity: 0.8
+  startup_mode: Windowed    #SimpleFullscreen,Fullscreen,Maximized,Windowed
+  #title: Alacritty
+  dynamic_title: false
+
+
+
+#clipboard stuff
+selection:
+  # This string contains all characters that are used as separators for
+  # "semantic words" in Alacritty.
+  semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
+
+  # When set to `true`, selected text will be copied to the primary clipboard.
+  save_to_clipboard: true
+
+
+
+# Line indicator
+line_indicator:
+  # Use a red foreground color
+  foreground: "#b59b9c"
+
+  # Use a blue background color
+  background: "#b59b9c"
+
+
+scrolling:
+  # Scrolling distance multiplier.
+  multiplier: 15
+
+
+##     important if you are running vim/nvim/etc    ##
+# mouse:
+#   hide_when_typing: true
+
+# Live config reload (changes require restart)
+live_config_reload: true
+
