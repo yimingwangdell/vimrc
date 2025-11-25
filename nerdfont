@@ -1,2 +1,6 @@
-git clone --filter=blob:none --sparse https://github.com/ryanoasis/nerd
-使用 install.sh 脚本安装字体，复制到用户文件夹 ~/.local/share/fonts/，并调用 fc-cache 程序注册字体。
+wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/FiraCode.zip
+mkdir -p ~/.local/share/fonts
+mv FiraCode.zip ~/.local/share/fonts/
+cd ~/.local/share/fonts/
+unzip FiraCode.zip
+fc-cache -fv
