@@ -106,10 +106,10 @@ nnoremap <leader><down> 0i<cr><ESC>
 nnoremap <leader><up> kdd
 nnoremap = :noh<CR>
 " scroll up and down
-nnoremap <c-d> 4j
-nnoremap <c-u> 4k
-vnoremap <c-d> 4j
-vnoremap <c-u> 4k
+" nnoremap <c-d> 4j
+" nnoremap <c-u> 4k
+" vnoremap <c-d> 4j
+" vnoremap <c-u> 4k
 " search selected
 noremap <silent> n <Cmd>execute('keepjumps normal! ' . v:count1 . 'n')<CR>
 noremap <silent> N <Cmd>execute('keepjumps normal! ' . v:count1 . 'N')<CR>
@@ -331,6 +331,7 @@ Plug 'Exafunction/windsurf.vim'
 " chatgpt chat
 Plug 'MunifTanjim/nui.nvim'
 Plug 'jackMort/ChatGPT.nvim'
+Plug 'olimorris/codecompanion.nvim'
 
 
 " Pretty Dress
@@ -374,7 +375,7 @@ Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'mfussenegger/nvim-jdtls'
 Plug 'williamboman/mason.nvim'
 Plug 'neovim/nvim-lspconfig', {'tag': 'v2.5.0'}
-Plug 'Saghen/blink.cmp', {'tag': '1.*'}
+Plug 'Saghen/blink.cmp'
 " Plug 'ray-x/lsp_signature.nvim', {'branch': 'nvim-0.9'}
 
 
@@ -437,6 +438,7 @@ Plug 'matze/vim-move'
 Plug 'windwp/nvim-autopairs'
 Plug 'theniceboy/pair-maker.vim'
 Plug 'kevinhwang91/nvim-hlslens'
+Plug 'karb94/neoscroll.nvim'
 
 
 " Bookmarks
@@ -516,6 +518,13 @@ EOF
 
 nnoremap <leader>gpt :ChatGPT<CR>
 " nnoremap <leader>gpt :Codeium Chat<CR>
+
+
+" === codecompanion ===
+lua << EOF
+  require("codecompanion").setup()
+EOF
+
 
 " ============== lualine =============
 lua << EOF
@@ -1354,6 +1363,7 @@ nnoremap <leader>lp :GLess<CR>
 " selected lines log
 vnoremap <leader>log <ESC>:-tabnew<CR>gv:Gclog! -5000<CR>:copen<CR>
 
+
 " === gitsign ===
 lua <<EOF
 require('gitsigns').setup({ current_line_blame = true })
@@ -1511,6 +1521,11 @@ EOF
 
 lua <<EOF
 require('hlslens').setup()
+EOF
+
+" === neoscroll ===
+lua << EOF
+require('neoscroll').setup({})
 EOF
 
 
