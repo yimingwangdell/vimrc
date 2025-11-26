@@ -552,7 +552,7 @@ require('lualine').setup(
   sections = {
     lualine_a = {},
     lualine_b = {{'branch', fmt = function(str) return str:sub(1,20) end}, 'diff',},
-    lualine_c = {  {'filename', path = 3,   }},
+    lualine_c = {  {'filename', path = 0,   }},
     -- lualine_x = {{gps.get_location, cond = gps.is_available, color="WildMenu"}},
     lualine_x = {},
 
@@ -570,7 +570,7 @@ require('lualine').setup(
     lualine_z = {'progress', 'encoding', 'fileformat'}
   },
   tabline = { 
-      lualine_a = {{'filename', path=0}},
+      lualine_a = {{'filename', path=3, shorting_target=15}},
   lualine_b = {},
   lualine_c = {},
   lualine_x = {},
