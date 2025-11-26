@@ -438,7 +438,7 @@ Plug 'matze/vim-move'
 Plug 'windwp/nvim-autopairs'
 Plug 'theniceboy/pair-maker.vim'
 Plug 'kevinhwang91/nvim-hlslens'
-Plug 'karb94/neoscroll.nvim'
+" Plug 'karb94/neoscroll.nvim'
 
 
 " Bookmarks
@@ -601,7 +601,7 @@ require("blink.cmp").setup(
     -- See :h blink-cmp-config-keymap for defining your own keymap
     signature = { enabled = true },
     keymap = {
-        ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
+        ['<C-space>'] = { function(cmp) cmp.show({providers = { 'lsp', 'path', 'snippets', 'buffer' }}) end, 'show_documentation', 'hide_documentation' },
         --['<C-e>'] = { 'hide', 'fallback' },
         ['<CR>'] = { 'accept', 'fallback' },
         ['<Tab>'] = { 'select_next', 'fallback' },
@@ -621,8 +621,15 @@ require("blink.cmp").setup(
     -- (Default) Only show the documentation popup when manually triggered
     completion = { 
         trigger = {
-            show_on_trigger_character = true,
-            show_on_blocked_trigger_characters = {' ', '\n', '\t'}
+            prefetch_on_insert = false,
+            show_on_backspace_after_accept = false,
+            show_on_backspace_after_insert_enter = false,
+            show_on_backspace_after_accept = false,
+            show_on_keyword = true,
+            show_on_trigger_character = false,
+            show_on_blocked_trigger_characters = {' ', '\n', '\t'},
+            show_on_accept_on_trigger_character = false,
+            show_on_insert_on_trigger_character = false,
         },
         documentation = { auto_show = true }
         },
@@ -630,7 +637,7 @@ require("blink.cmp").setup(
     -- Default list of enabled providers defined so that you can extend it
     -- elsewhere in your config, without redefining it, due to `opts_extend`
     sources = {
-      default = { 'lsp', 'path', 'snippets', 'buffer' },
+      default = { 'path', 'snippets', 'buffer' },
        providers = {
     snippets = {
       opts = {
@@ -1524,9 +1531,9 @@ require('hlslens').setup()
 EOF
 
 " === neoscroll ===
-lua << EOF
-require('neoscroll').setup({})
-EOF
+" lua << EOF
+" require('neoscroll').setup({})
+" EOF
 
 
 "===== indent =====
