@@ -1,4 +1,4 @@
-" ===
+" ==
 "
 " === Auto load for first time uses
 " ===
@@ -214,7 +214,7 @@ function! ShowFugitiveFileName()
         " Extract the filename from the path
         call s:printGitFileName()
     else
-        echo  expand('%:p')
+        :echo expand('%') | redraw
     endif
 endfunction
 
@@ -356,6 +356,7 @@ Plug 'Bekaboo/dropbar.nvim', { 'tag': 'v12.0.2' }
 " File navigation
 Plug 'nvim-telescope/telescope.nvim',
 Plug 'LukasPietzschmann/telescope-tabs'
+Plug 'fdschmidt93/telescope-egrepify.nvim'
 Plug 'nvim-lua/plenary.nvim' " don't forget to add this one if you don't have it yet!
 Plug 'nvim-tree/nvim-tree.lua'
 Plug 'ThePrimeagen/harpoon', {'branch': 'harpoon2'}
@@ -562,7 +563,7 @@ require('lualine').setup(
   inactive_sections = {
     lualine_a = {},
     lualine_b = {{'branch', }, 'diff',},
-    lualine_c = {  {'filename', path = 3,}},
+    lualine_c = {  {'filename', path = 0,}},
     lualine_x = {},
     -- lualine_x = {{gps.get_location, cond = gps.is_available, color="Folded"}},
 
@@ -1110,7 +1111,9 @@ nnoremap <leader>fh :Telescope resume <CR>
 " nnoremap <leader>fb :Telescope telescope-tabs list_tabs<CR>
 nnoremap <leader>fb :Telescope buffers<CR>
  "search word
-nnoremap <leader>fw :Telescope live_grep<CR>
+" nnoremap <leader>fw :Telescope live_grep<CR>
+" nnoremap <leader>fw :Telescope egrepify<CR>
+
 nnoremap <leader>fv :lua require('telescope.builtin').live_grep({default_text = " ", search_dirs = { "/root/vimwiki" }})<CR>
 " search files
 nnoremap <leader>ff :Telescope find_files<CR>
@@ -1860,6 +1863,8 @@ noremap ' <Cmd>lua require('flash').jump()<CR>
 
 " ================telescope==================
 lua <<EOF
+local egrep_actions = require "telescope._extensions.egrepify.actions"
+
   require('telescope').setup{
     defaults = {
       path_display={"filename_first"},
@@ -1901,8 +1906,49 @@ lua <<EOF
             yaml = true,
           },
     },
+    egrepify = {
+      -- intersect tokens in prompt ala "str1.*str2" that ONLY matches
+      -- if str1 and str2 are consecutively in line with anything in between (wildcard)
+      AND = true,                     -- default
+      permutations = false,           -- opt-in to imply AND & match all permutations of prompt tokens
+      lnum = true,                    -- default, not required
+      lnum_hl = "EgrepifyLnum",       -- default, not required, links to `Constant`
+      col = false,                    -- default, not required
+      col_hl = "EgrepifyCol",         -- default, not required, links to `Constant`
+      title = true,                   -- default, not required, show filename as title rather than inline
+      filename_hl = "EgrepifyFile",   -- default, not required, links to `Title`
+      results_ts_hl = true,           -- set to false if you experience latency issues!
+      -- suffix = long line, see screenshot
+      -- EXAMPLE ON HOW TO ADD PREFIX!
+      prefixes = {
+        -- ADDED ! to invert matches
+        -- example prompt: ! sorter
+        -- matches all lines that do not comprise sorter
+        -- rg --invert-match -- sorter
+        ["!"] = {
+          flag = "invert-match",
+        },
+        -- HOW TO OPT OUT OF PREFIX
+        -- ^ is not a default prefix and safe example
+        ["^"] = false
+      },
+      -- default mappings
+      mappings = {
+        i = {
+          -- toggle prefixes, prefixes is default
+          ["<C-z>"] = egrep_actions.toggle_prefixes,
+          -- toggle AND, AND is default, AND matches tokens and any chars in between
+          ["<C-a>"] = egrep_actions.toggle_and,
+          -- toggle permutations, permutations of tokens is opt-in
+          ["<C-r>"] = egrep_actions.toggle_permutations,
+        },
+      },
+    },
   },
   }
+
+
+  require "telescope".load_extension "egrepify"
 	require('telescope').load_extension 'telescope-tabs'
   require('telescope-tabs').setup {
 			-- Your custom config :^)
@@ -1944,6 +1990,45 @@ local grep_on_quickfix = function()
 end
 
 vim.keymap.set('n', '<Leader>fq', grep_on_quickfix, {})
+local previewers = require "telescope.previewers"
+local conf = require("telescope.config").values
+
+local ns = vim.api.nvim_create_namespace("")
+
+local my_previewer = function()
+  local jump_to_line = function (self, bufnr, entry)
+    vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
+    vim.api.nvim_buf_add_highlight(bufnr, ns, "TelescopePreviewLine", entry.lnum-1, 0, -1)
+    vim.api.nvim_win_set_cursor(self.state.winid, { entry.lnum, 0 })
+    vim.api.nvim_buf_call(bufnr, function()
+      vim.cmd "norm! zt"
+    end)
+  end
+  return previewers.new_buffer_previewer {
+    title = "Test previewer",
+    get_buffer_by_name = function (self, entry)
+      return entry.path
+    end,
+    define_preview = function (self, entry)
+      local p = entry.path
+      return conf.buffer_previewer_maker(p, self.state.bufnr, {
+        bufname = self.state.bufname,
+        winid = self.state.winid,
+        callback = function(bufnr)
+          jump_to_line(self, bufnr, entry)
+        end,
+      })
+    end,
+  }
+end
+
+
+
+local egrepify = function()
+    require("telescope").extensions.egrepify.egrepify({previewer = my_previewer()})
+end
+vim.keymap.set('n', '<leader>fw', egrepify, { desc = 'Telescope live grep' })
+
 EOF
 
 
