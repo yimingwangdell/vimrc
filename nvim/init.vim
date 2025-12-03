@@ -1114,7 +1114,7 @@ nnoremap <leader>fb :Telescope buffers<CR>
 " nnoremap <leader>fw :Telescope live_grep<CR>
 " nnoremap <leader>fw :Telescope egrepify<CR>
 
-nnoremap <leader>fv :lua require('telescope.builtin').live_grep({default_text = " ", search_dirs = { "/root/vimwiki" }})<CR>
+" nnoremap <leader>fv :lua require('telescope.builtin').live_grep({default_text = " ", search_dirs = { "/root/vimwiki" }})<CR>
 " search files
 nnoremap <leader>ff :Telescope find_files<CR>
 " search symbols in current file
@@ -2058,10 +2058,11 @@ end
 local egrepify = function()
     require("telescope").extensions.egrepify.egrepify({previewer = my_previewer()})
 end
-local telescopefw = function()
-    require("telescope.builtin").live_grep({previewer = my_previewer()})
+local telescopefv = function()
+    require("telescope.builtin").live_grep({previewer = my_previewer(), default_text = " ", search_dirs = { "/root/vimwiki" }})
 end
 vim.keymap.set('n', '<leader>fw', egrepify, { desc = 'Telescope live grep' })
+vim.keymap.set('n', '<leader>fv', telescopefv, { desc = 'Telescope grep vimwiki'})
 
 EOF
 
