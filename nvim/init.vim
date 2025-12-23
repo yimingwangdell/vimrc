@@ -214,7 +214,7 @@ function! ShowFugitiveFileName()
         " Extract the filename from the path
         call s:printGitFileName()
     else
-        :echo expand('%') | redraw
+        " :echo expand('%') | redraw
     endif
 endfunction
 
@@ -331,7 +331,7 @@ Plug 'Exafunction/windsurf.vim'
 " chatgpt chat
 Plug 'MunifTanjim/nui.nvim'
 Plug 'jackMort/ChatGPT.nvim'
-Plug 'olimorris/codecompanion.nvim'
+"Plug 'olimorris/codecompanion.nvim'
 
 
 " Pretty Dress
@@ -347,16 +347,15 @@ Plug 'folke/tokyonight.nvim'
 Plug 'nvim-lualine/lualine.nvim'
 " If you want to have icons in your statusline choose one of these
 Plug 'nvim-tree/nvim-web-devicons'
-Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'ColinKennedy/nvim-gps'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' }
-Plug 'Bekaboo/dropbar.nvim', { 'tag': 'v12.0.2' }
 " General Highlighter
 
 " File navigation
 Plug 'nvim-telescope/telescope.nvim',
 Plug 'LukasPietzschmann/telescope-tabs'
 Plug 'fdschmidt93/telescope-egrepify.nvim'
+Plug 'StefanBartl/telescope-selected-index'
 Plug 'nvim-lua/plenary.nvim' " don't forget to add this one if you don't have it yet!
 Plug 'nvim-tree/nvim-tree.lua'
 Plug 'ThePrimeagen/harpoon', {'branch': 'harpoon2'}
@@ -366,8 +365,8 @@ Plug 'rbgrouleff/bclose.vim'
 
 
 " Outline
-Plug 'stevearc/aerial.nvim'
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'stevearc/aerial.nvim', {'tag': 'nvim-0.9'}
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate', 'tag': 'v0.10.0'}
 Plug 'nvim-treesitter/nvim-treesitter-context'
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 
@@ -523,9 +522,9 @@ nnoremap <leader>gpt :ChatGPT<CR>
 
 
 " === codecompanion ===
-lua << EOF
-  require("codecompanion").setup()
-EOF
+" lua << EOF
+"   require("codecompanion").setup()
+" EOF
 
 
 " ============== lualine =============
@@ -555,9 +554,7 @@ require('lualine').setup(
     lualine_a = {},
     lualine_b = {{'branch', fmt = function(str) return str:sub(1,20) end}, 'diff',},
     lualine_c = {  {'filename', path = 0,   }},
-    -- lualine_x = {{gps.get_location, cond = gps.is_available, color="WildMenu"}},
-    lualine_x = {},
-
+    lualine_x = {{gps.get_location, cond = gps.is_available, color="WildMenu"}},
     lualine_y = {},
     lualine_z = {'filesize', 'progress', 'encoding', 'fileformat'}
   },
@@ -566,7 +563,7 @@ require('lualine').setup(
     lualine_b = {{'branch', }, 'diff',},
     lualine_c = {  {'filename', path = 0,}},
     lualine_x = {},
-    -- lualine_x = {{gps.get_location, cond = gps.is_available, color="Folded"}},
+    lualine_x = {{gps.get_location, cond = gps.is_available, color="Folded"}},
 
     lualine_y = { },
     lualine_z = {'progress', 'encoding', 'fileformat'}
@@ -639,57 +636,42 @@ require("blink.cmp").setup(
     -- Default list of enabled providers defined so that you can extend it
     -- elsewhere in your config, without redefining it, due to `opts_extend`
     sources = {
-      default = { 'path', 'snippets', 'buffer' },
-       providers = {
-    snippets = {
-      opts = {
-        friendly_snippets = true, -- default
+      default = { 'buffer', 'snippets', 'path' },
+      providers = {
+        buffer = {
+         module = 'blink.cmp.sources.buffer',
+         score_offset = -3,
+         opts = {
+           -- default to all visible buffers
+           get_bufnrs = function()
+             return vim
+               .iter(vim.api.nvim_list_wins())
+               :map(function(win) return vim.api.nvim_win_get_buf(win) end)
+               :filter(function(buf) return vim.bo[buf].buftype ~= 'nofile' end)
+               :totable()
+           end,
+           -- buffers when searching with `/` or `?`
+           get_search_bufnrs = function() return { vim.api.nvim_get_current_buf() } end,
+           -- Maximum total number of characters (in an individual buffer) for which buffer completion runs synchronously. Above this, asynchronous processing is used.
+           max_sync_buffer_size = 400000,
+           -- Maximum total number of characters (in an individual buffer) for which buffer completion runs asynchronously. Above this, the buffer will be skipped.
+           max_async_buffer_size = 4000000,
+           -- Maximum text size across all buffers (default: 500KB)
+           max_total_buffer_size = 10000000,
+           -- Order in which buffers are retained for completion, up to the max total size limit (see above)
+           retention_order = { 'focused', 'visible', 'recency', 'largest' },
+           -- Cache words for each buffer which increases memory usage but drastically reduces cpu usage. Memory usage depends on the size of the buffers from `get_bufnrs`. For 100k items, it will use ~20MBs of memory. Invalidated and refreshed whenever the buffer content is modified.
+           use_cache = true,
+           -- Whether to enable buffer source in substitute (:s), global (:g) and grep commands (:grep, :vimgrep, etc.).
+           -- Note: Enabling this option will temporarily disable Neovim's 'inccommand' feature
+           -- while editing Ex commands, due to a known redraw issue (see neovim/neovim#9783).
+           -- This means you will lose live substitution previews when using :s, :smagic, or :snomagic
+           -- while buffer completions are active.
+           enable_in_ex_commands = false,
+         }
+       },
 
-        -- see the list of frameworks in: https://github.com/rafamadriz/friendly-snippets/tree/main/snippets/frameworks
-        -- and search for possible languages in: https://github.com/rafamadriz/friendly-snippets/blob/main/package.json
-        -- the following is just an example, you should only enable the frameworks that you use
-        extended_filetypes = {
-          markdown = { 'jekyll' },
-          sh = { 'shelldoc' },
-          php = { 'phpdoc' },
-          cpp = { 'unreal' }
-        }
-      }
-    },
-      buffer = {
-        module = 'blink.cmp.sources.buffer',
-        score_offset = -3,
-        opts = {
-          -- default to all visible buffers
-          get_bufnrs = function()
-            return vim
-              .iter(vim.api.nvim_list_wins())
-              :map(function(win) return vim.api.nvim_win_get_buf(win) end)
-              :filter(function(buf) return vim.bo[buf].buftype ~= 'nofile' end)
-              :totable()
-          end,
-          -- buffers when searching with `/` or `?`
-          get_search_bufnrs = function() return { vim.api.nvim_get_current_buf() } end,
-          -- Maximum total number of characters (in an individual buffer) for which buffer completion runs synchronously. Above this, asynchronous processing is used.
-          max_sync_buffer_size = 40000,
-          -- Maximum total number of characters (in an individual buffer) for which buffer completion runs asynchronously. Above this, the buffer will be skipped.
-          max_async_buffer_size = 400000,
-          -- Maximum text size across all buffers (default: 500KB)
-          max_total_buffer_size = 1000000,
-          -- Order in which buffers are retained for completion, up to the max total size limit (see above)
-          retention_order = { 'focused', 'visible', 'recency', 'largest' },
-          -- Cache words for each buffer which increases memory usage but drastically reduces cpu usage. Memory usage depends on the size of the buffers from `get_bufnrs`. For 100k items, it will use ~20MBs of memory. Invalidated and refreshed whenever the buffer content is modified.
-          use_cache = true,
-          -- Whether to enable buffer source in substitute (:s), global (:g) and grep commands (:grep, :vimgrep, etc.).
-          -- Note: Enabling this option will temporarily disable Neovim's 'inccommand' feature
-          -- while editing Ex commands, due to a known redraw issue (see neovim/neovim#9783).
-          -- This means you will lose live substitution previews when using :s, :smagic, or :snomagic
-          -- while buffer completions are active.
-          enable_in_ex_commands = false,
-        }
       },
-
-  }
     },
 
     -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
@@ -748,6 +730,7 @@ nnoremap <leader>gr :Trouble lsp toggle focus=false<CR>
 lua <<EOF
 require("aerial").setup({
   -- optionally use on_attach to set keymaps when aerial has attached to a buffer
+      backends = { "treesitter" },
   on_attach = function(bufnr)
     -- Jump forwards/backwards with '{' and '}'
     vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
@@ -766,7 +749,7 @@ EOF
 
 " === treesitter ===
 lua <<EOF
-require'nvim-treesitter.configs'.setup {
+require'nvim-treesitter'.setup {
   -- A list of parser names, or "all" (the listed parsers MUST always be installed)
   incremental_selection = {
     enable = true,
@@ -854,7 +837,7 @@ EOF
 
 
 lua <<EOF
-require'nvim-treesitter.configs'.setup {
+require'nvim-treesitter'.setup {
   textobjects = {
     select = {
       enable = true,
@@ -901,123 +884,6 @@ require'nvim-treesitter.configs'.setup {
 EOF
 lua <<EOF
 require("nvim-gps").setup()
-EOF
-
-lua <<EOF
-local api = require("dropbar.api")
-		vim.keymap.set('n', "<Leader>'", api.pick)
-		vim.keymap.set('n', '[c', api.goto_context_start)
-		vim.keymap.set('n', ']c', api.select_next_context)
-
-
-    local confirm = function()
-			local menu = api.get_current_dropbar_menu()
-			if not menu then
-				return
-			end
-			local cursor = vim.api.nvim_win_get_cursor(menu.win)
-			local component = menu.entries[cursor[1]]:first_clickable(cursor[2])
-			if component then
-				menu:click_on(component)
-			end
-		end
-
-		local quit_curr = function()
-			local menu = api.get_current_dropbar_menu()
-			if menu then
-				menu:close()
-			end
-		end
-
-		require("dropbar").setup({
-      bar = {
-        sources = function(buf, _)
-              local sources = require('dropbar.sources')
-              local utils = require('dropbar.utils')
-              if vim.bo[buf].ft == 'markdown' then
-                return {
-                  sources.path,
-                  sources.markdown,
-                }
-              end
-              if vim.bo[buf].buftype == 'terminal' then
-                return {
-                  sources.terminal,
-                }
-              end
-              return {
-                utils.source.fallback({
-                  sources.lsp,
-                  sources.treesitter,
-                }),
-              }
-        end
-      },
-      fzf = {
-          keymaps = {
-              ['<tab>'] = api.fuzzy_find_click,
-              }
-          },
-			menu = {
-				-- When on, automatically set the cursor to the closest previous/next
-				-- clickable component in the direction of cursor movement on CursorMoved
-				quick_navigation = true,
-        keymaps = {
-					['<LeftMouse>'] = function()
-						local menu = api.get_current_dropbar_menu()
-						if not menu then
-							return
-						end
-						local mouse = vim.fn.getmousepos()
-						if mouse.winid ~= menu.win then
-							local parent_menu = api.get_dropbar_menu(mouse.winid)
-							if parent_menu and parent_menu.sub_menu then
-								parent_menu.sub_menu:close()
-							end
-							if vim.api.nvim_win_is_valid(mouse.winid) then
-								vim.api.nvim_set_current_win(mouse.winid)
-							end
-							return
-						end
-						menu:click_at({ mouse.line, mouse.column }, nil, 1, 'l')
-					end,
-					--['<CR>'] = confirm,
-					['l'] = confirm,
-					['h'] = quit_curr,
-					['<MouseMove>'] = function()
-						local menu = api.get_current_dropbar_menu()
-						if not menu then
-							return
-						end
-						local mouse = vim.fn.getmousepos()
-						if mouse.winid ~= menu.win then
-							return
-						end
-						menu:update_hover_hl({ mouse.line, mouse.column - 1 })
-					end,
-          ['<CR>'] = function()
-            local utils = require('dropbar.utils')
-            local menu = utils.menu.get_current()
-            if not menu then
-              return
-            end
-            local cursor = vim.api.nvim_win_get_cursor(menu.win)
-            local component = menu.entries[cursor[1]]:first_clickable(cursor[2])
-            if component then
-              menu:click_on(component, nil, 1, 'l')
-            end
-          end,
-          ['f'] = function()
-            local utils = require('dropbar.utils')
-            local menu = utils.menu.get_current()
-            if not menu then
-              return
-            end
-            menu:fuzzy_find_open()
-          end,
-				}
-			},
-		})
 EOF
 
 
@@ -2049,6 +1915,7 @@ local egrep_actions = require "telescope._extensions.egrepify.actions"
 
   require "telescope".load_extension "egrepify"
 	require('telescope').load_extension 'telescope-tabs'
+  require('telescope').load_extension('fzf')
   require('telescope-tabs').setup {
 			-- Your custom config :^)
   }
@@ -2155,7 +2022,8 @@ end
 
 
 local egrepify = function()
-    require("telescope").extensions.egrepify.egrepify({previewer = my_previewer()})
+    -- require("telescope").extensions.egrepify.egrepify({previewer = my_previewer()})
+    require("telescope.builtin").live_grep({previewer = my_previewer()})
 end
 local telescopefv = function()
     require("telescope.builtin").live_grep({previewer = my_previewer(), default_text = " ", search_dirs = { "/root/vimwiki" }})
