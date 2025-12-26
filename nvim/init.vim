@@ -81,6 +81,9 @@ vnoremap <LEADER>c yo<c-r>=<c-r>"<CR>
 " copy current file path
 nnoremap <space>cp :let @*=expand('%:t')<CR>:echo "path copied"<CR>
 nnoremap <space>cfp :let @*=expand('%')<CR>:echo "full path copied"<CR>
+" set number in each V selected lines from 1, 2, 3...
+xnoremap <silent> <leader>in :<C-u>'<,'>s/\d\+\ze\D*$/\=line('.')-line("'<")+1/<CR>:noh<CR>
+
 " paste to new line
 function! Pcol(...) abort
   let above = get(a:, 1, 0)
