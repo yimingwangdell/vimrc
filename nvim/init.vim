@@ -186,10 +186,8 @@ endfunction
 
 function! s:printGitFileName()
     " Get the current line
-    let l:gitpreline = line('.')
-    let l:pos = getpos('.')
-    call feedkeys('[/', 'x')
-    let l:gitkeyline = getline('.')
+    let l:p = searchpos('^[A-Z?] .\|^diff --', 'bnW')
+    let l:gitkeyline = getline(l:p[0])
 
     " Extract the filename using a regular expression
     " This assumes the format: diff --git a/.../filename b/.../filename
@@ -201,7 +199,6 @@ function! s:printGitFileName()
     else
         echo ""
     endif
-    call setpos('.', l:pos)
 
 endfunction
 
