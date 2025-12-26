@@ -90,6 +90,7 @@ install_i3() {
 install_sway() {
     mkdir -p ~/.config/sway
     cp sway ~/.config/sway/config
+    apt install wl-clipboard
 }
 
 install_jdtls() {
