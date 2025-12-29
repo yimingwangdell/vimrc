@@ -72,6 +72,12 @@
 | space logc                        | open git log for current file                |
 | space bl  (normal or visual mode) | git blame                                    |
 | space lg                          | open lazygit(awesome git tool)               |
+| space ln                          | quickfix log page down                       |
+| space lp                          | quickfix log page up                         |
+| space qq                          | quit quickfix                                |
+| space nn                          | quickfix jump to next item                   |
+| space pp                          | quickfix jump to previous item               |
+
 
 **For more features, please check init.vim file.
 

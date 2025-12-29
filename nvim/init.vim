@@ -349,14 +349,13 @@ Plug 'folke/tokyonight.nvim'
 Plug 'nvim-lualine/lualine.nvim'
 " If you want to have icons in your statusline choose one of these
 Plug 'nvim-tree/nvim-web-devicons'
-Plug 'ColinKennedy/nvim-gps'
+Plug 'yimingwangdell/nvim-gps'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' }
 " General Highlighter
 
 " File navigation
 Plug 'nvim-telescope/telescope.nvim',
 Plug 'LukasPietzschmann/telescope-tabs'
-Plug 'fdschmidt93/telescope-egrepify.nvim'
 Plug 'StefanBartl/telescope-selected-index'
 Plug 'nvim-lua/plenary.nvim' " don't forget to add this one if you don't have it yet!
 Plug 'nvim-tree/nvim-tree.lua'
@@ -751,7 +750,7 @@ EOF
 
 " === treesitter ===
 lua <<EOF
-require'nvim-treesitter'.setup {
+require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all" (the listed parsers MUST always be installed)
   incremental_selection = {
     enable = true,
@@ -839,7 +838,7 @@ EOF
 
 
 lua <<EOF
-require'nvim-treesitter'.setup {
+require'nvim-treesitter.configs'.setup {
   textobjects = {
     select = {
       enable = true,
@@ -1830,13 +1829,15 @@ noremap ' <Cmd>lua require('flash').jump()<CR>
 
 " ================telescope==================
 lua <<EOF
-local egrep_actions = require "telescope._extensions.egrepify.actions"
-
   require('telescope').setup{
     defaults = {
       path_display={"filename_first"},
       layout_strategy = 'vertical',
-      layout_config = { height = 0.99, width = 0.99 },
+          layout_config = {
+            height = 0.99, width = 0.99,
+            prompt_position = "bottom",
+            preview_cutoff = 0,
+          },
       mappings = {
         i = {
           ["<esc>"] = require("telescope.actions").close,
@@ -1873,49 +1874,10 @@ local egrep_actions = require "telescope._extensions.egrepify.actions"
             yaml = true,
           },
     },
-    egrepify = {
-      -- intersect tokens in prompt ala "str1.*str2" that ONLY matches
-      -- if str1 and str2 are consecutively in line with anything in between (wildcard)
-      AND = true,                     -- default
-      permutations = false,           -- opt-in to imply AND & match all permutations of prompt tokens
-      lnum = true,                    -- default, not required
-      lnum_hl = "EgrepifyLnum",       -- default, not required, links to `Constant`
-      col = false,                    -- default, not required
-      col_hl = "EgrepifyCol",         -- default, not required, links to `Constant`
-      title = true,                   -- default, not required, show filename as title rather than inline
-      filename_hl = "EgrepifyFile",   -- default, not required, links to `Title`
-      results_ts_hl = true,           -- set to false if you experience latency issues!
-      -- suffix = long line, see screenshot
-      -- EXAMPLE ON HOW TO ADD PREFIX!
-      prefixes = {
-        -- ADDED ! to invert matches
-        -- example prompt: ! sorter
-        -- matches all lines that do not comprise sorter
-        -- rg --invert-match -- sorter
-        ["!"] = {
-          flag = "invert-match",
-        },
-        -- HOW TO OPT OUT OF PREFIX
-        -- ^ is not a default prefix and safe example
-        ["^"] = false
-      },
-      -- default mappings
-      mappings = {
-        i = {
-          -- toggle prefixes, prefixes is default
-          ["<C-z>"] = egrep_actions.toggle_prefixes,
-          -- toggle AND, AND is default, AND matches tokens and any chars in between
-          ["<C-a>"] = egrep_actions.toggle_and,
-          -- toggle permutations, permutations of tokens is opt-in
-          ["<C-r>"] = egrep_actions.toggle_permutations,
-        },
-      },
-    },
   },
   }
 
 
-  require "telescope".load_extension "egrepify"
 	require('telescope').load_extension 'telescope-tabs'
   require('telescope').load_extension('fzf')
   require('telescope-tabs').setup {
@@ -2023,15 +1985,15 @@ end
 
 
 
-local egrepify = function()
+local livegrep = function()
     -- require("telescope").extensions.egrepify.egrepify({previewer = my_previewer()})
     require("telescope.builtin").live_grep({previewer = my_previewer()})
 end
-local telescopefv = function()
+local livegrepvimwiki = function()
     require("telescope.builtin").live_grep({previewer = my_previewer(), default_text = " ", search_dirs = { "/root/vimwiki" }})
 end
-vim.keymap.set('n', '<leader>fw', egrepify, { desc = 'Telescope live grep' })
-vim.keymap.set('n', '<leader>fv', telescopefv, { desc = 'Telescope grep vimwiki'})
+vim.keymap.set('n', '<leader>fw', livegrep, { desc = 'Telescope live grep' })
+vim.keymap.set('n', '<leader>fv', livegrepvimwiki, { desc = 'Telescope grep vimwiki'})
 
 EOF
 
