@@ -13,6 +13,13 @@ autocmd!
     autocmd CursorMoved * call ShowFugitiveFileName()
 
 augroup END
+augroup PreserveNoEOL
+  autocmd!
+  " Before write: if buffer is currently marked as no end-of-line, preserve it
+  autocmd BufWritePre * if !&l:endofline | let b:__save_bin=&l:binary | let b:__save_eol=&l:endofline | setlocal binary noeol | endif
+  " After write: restore options if we changed them
+  autocmd BufWritePost * if exists('b:__save_bin') | let &l:binary=b:__save_bin | let &l:endofline=b:__save_eol | unlet b:__save_bin b:__save_eol | endif
+augroup END
 
 
 let s:prevtabnum=tabpagenr('$')
@@ -142,7 +149,7 @@ augroup NVIMRC
     autocmd BufWritePost init.vim exec ":so %"
 augroup END
 " split window
-map <leader>sl :vnew<CR><c-w>l
+map <leader>sl :set nosplitright<CR>:set splitright<CR>:vnew<CR><c-w>l
 map <leader>sv :set nosplitright<CR>:set splitright<CR>:vsplit $MYVIMRC<CR>
 map <leader>sj :set nosplitbelow<CR>:set splitbelow<CR>:new<CR><c-w>j
 " jump down/up/left/right split window
