@@ -608,10 +608,24 @@ require("blink.cmp").setup(
     -- C-k: Toggle signature help (if signature.enabled = true)
     --
     -- See :h blink-cmp-config-keymap for defining your own keymap
-    signature = { enabled = true },
+    signature = { enabled = true,
+        trigger = {
+            -- Show the signature help window after typing any of alphanumerics, `-` or `_`
+            show_on_keyword = true,
+            blocked_trigger_characters = {},
+            blocked_retrigger_characters = {},
+            -- Show the signature help window after typing a trigger character
+            show_on_trigger_character = true,
+            -- Show the signature help window when entering insert mode
+            show_on_insert = true,
+            -- Show the signature help window when the cursor comes after a trigger character when entering insert mode
+            show_on_insert_on_trigger_character = true,
+        },
+    },
     keymap = {
         preset = "enter",
         ['<C-space>'] = { function(cmp) cmp.show({providers = { 'lsp', 'path', 'snippets', 'buffer' }}) end, 'show_documentation', 'hide_documentation'},
+        ['<C-k>'] = { 'show_signature'},
         },
 
     appearance = {
