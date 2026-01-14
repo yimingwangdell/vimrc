@@ -739,6 +739,9 @@ lua<<EOF
   require('lspconfig')['yamlls'].setup {
         capabilities = capabilities,
   }
+  require('lspconfig')['lua_ls'].setup {
+        capabilities = capabilities,
+  }
 EOF
 "
 "=== lsp_signature ===
