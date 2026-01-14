@@ -102,8 +102,10 @@ function! Pcol(...) abort
 endfunction
 
 " jump to head and tail
-noremap H 0
-noremap L $
+nnoremap H 0
+vnoremap H 0
+nnoremap L $
+vnoremap L $
 inoremap jk <ESC>
 inoremap jh <ESC>^i
 inoremap jl <ESC>A
@@ -123,11 +125,11 @@ nnoremap = :noh<CR>
 " vnoremap <c-d> 4j
 " vnoremap <c-u> 4k
 " search selected
-noremap <silent> n <Cmd>execute('keepjumps normal! ' . v:count1 . 'n')<CR>
-noremap <silent> N <Cmd>execute('keepjumps normal! ' . v:count1 . 'N')<CR>
-map S :w<CR>
+nnoremap <silent> n <Cmd>execute('keepjumps normal! ' . v:count1 . 'n')<CR>
+nnoremap <silent> N <Cmd>execute('keepjumps normal! ' . v:count1 . 'N')<CR>
+nnoremap S :w<CR>
 " nmap Q :call QuitWithQuickfixCheck()<CR>
-nmap Q :Sayonara<CR>
+nnoremap Q :Sayonara<CR>
 function! QuitWithQuickfixCheck()
     if get(getqflist({'winid':0}), 'winid', 0)
         :cclose
@@ -136,7 +138,7 @@ function! QuitWithQuickfixCheck()
         :Sayonara<CR>
     endif
 endfunction
-map <LEADER>Q :qa!<CR>
+nnoremap <LEADER>Q :qa!<CR>
 
 " jump split window
 
@@ -384,7 +386,7 @@ Plug 'mfussenegger/nvim-jdtls'
 Plug 'williamboman/mason.nvim'
 Plug 'neovim/nvim-lspconfig', {'tag': 'v2.5.0'}
 Plug 'Saghen/blink.cmp'
-" Plug 'ray-x/lsp_signature.nvim', {'branch': 'nvim-0.9'}
+"Plug 'ray-x/lsp_signature.nvim', {'branch': 'nvim-0.9'}
 
 
 Plug 'folke/trouble.nvim'
@@ -608,17 +610,8 @@ require("blink.cmp").setup(
     -- See :h blink-cmp-config-keymap for defining your own keymap
     signature = { enabled = true },
     keymap = {
-        ['<C-space>'] = { function(cmp) cmp.show({providers = { 'lsp', 'path', 'snippets', 'buffer' }}) end, 'show_documentation', 'hide_documentation' },
-        ['<C-e>'] = { 'hide', 'fallback' },
-        ['<CR>'] = { 'accept', 'fallback' },
-        
-        ['<Tab>'] = { 'snippet_forward', 'fallback' },
-        ['<S-Tab>'] = { 'snippet_backward', 'fallback' },
-        
-        ['<Up>'] = { 'select_prev', 'fallback' },
-        ['<Down>'] = { 'select_next', 'fallback' },
-        ['<C-b>'] = { 'scroll_documentation_up', 'fallback' },
-        ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
+        preset = "enter",
+        ['<C-space>'] = { function(cmp) cmp.show({providers = { 'lsp', 'path', 'snippets', 'buffer' }}) end, 'show_documentation', 'hide_documentation'},
         },
 
     appearance = {
@@ -628,7 +621,7 @@ require("blink.cmp").setup(
     },
 
     -- (Default) Only show the documentation popup when manually triggered
-    completion = { 
+    completion = {
         trigger = {
             prefetch_on_insert = false,
             show_on_backspace_after_accept = false,
@@ -640,8 +633,23 @@ require("blink.cmp").setup(
             show_on_accept_on_trigger_character = false,
             show_on_insert_on_trigger_character = false,
         },
-        documentation = { auto_show = true }
+        accept = {
+          -- experimental auto-brackets support
+          auto_brackets = {
+            enabled = true,
+          },
         },
+        menu = {
+          draw = {
+            treesitter = { "lsp" },
+          },
+        },
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 200,
+        },
+      },
+
 
     -- Default list of enabled providers defined so that you can extend it
     -- elsewhere in your config, without redefining it, due to `opts_extend`
@@ -720,6 +728,9 @@ lua<<EOF
 EOF
 "
 "=== lsp_signature ===
+" lua<<EOF
+"     require "lsp_signature".setup()
+" EOF
 
 
 " === mason ===
@@ -1566,9 +1577,13 @@ lua <<EOF
       timer = 200,
     },
   })
+    vim.keymap.set("n", "s", require('substitute').operator, { noremap = true })
+    --vim.keymap.set("n", "ss", require('substitute').line, { noremap = true })
+    --vim.keymap.set("n", "S", require('substitute').eol, { noremap = true })
+    vim.keymap.set("x", "s", require('substitute').visual, { noremap = true })
 EOF
-noremap s <Cmd>lua require("substitute").operator()<CR>
-vnoremap s <Cmd>lua require("substitute").visual()<CR>
+"nnoremap s <Cmd>lua require("substitute").operator()<CR>
+"vnoremap s <Cmd>lua require("substitute").visual()<CR>
 " ==================== WhichKey ====================
 nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
 
@@ -1833,7 +1848,7 @@ require("flash").setup ({
       },
     })
 EOF
-noremap ' <Cmd>lua require('flash').jump()<CR>
+nnoremap ' <Cmd>lua require('flash').jump()<CR>
 
 
 " ================telescope==================
@@ -2159,13 +2174,13 @@ nnoremap <leader>did :lua vim.diagnostic.disable()<CR>
 nnoremap <leader>die :lua vim.diagnostic.enable()<CR>
 " nnoremap <leader>df :lua vim.diagnostic.open_float(0, {scope="line"})<CR>
 
-noremap <silent> n <Cmd>execute('normal! ' . v:count1 . 'n')<CR>
+nnoremap <silent> n <Cmd>execute('normal! ' . v:count1 . 'n')<CR>
             \<Cmd>lua require('hlslens').start()<CR>
-noremap <silent> N <Cmd>execute('normal! ' . v:count1 . 'N')<CR>
+nnoremap <silent> N <Cmd>execute('normal! ' . v:count1 . 'N')<CR>
             \<Cmd>lua require('hlslens').start()<CR>
-noremap * *N<Cmd>lua require('hlslens').start()<CR>
-noremap # #<Cmd>lua require('hlslens').start()<CR>
-noremap g* g*<Cmd>lua require('hlslens').start()<CR>
-noremap g# g#<Cmd>lua require('hlslens').start()<CR>
+nnoremap * *N<Cmd>lua require('hlslens').start()<CR>
+nnoremap # #<Cmd>lua require('hlslens').start()<CR>
+nnoremap g* g*<Cmd>lua require('hlslens').start()<CR>
+nnoremap g# g#<Cmd>lua require('hlslens').start()<CR>
 vnoremap * y/<c-r>0<cr>
 nnoremap <LEADER>ww :e ~/vimwiki/index.wiki<CR>
