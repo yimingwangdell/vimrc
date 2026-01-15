@@ -99,6 +99,11 @@ install_jdtls() {
     wget https://www.eclipse.org/downloads/download.php\?file\=/jdtls/milestones/1.36.0/jdt-language-server-1.36.0-202405301306.tar.gz
     tar -xf *.tar.gz
     rm *.tar.gz
+    if java -version 2>&1 | grep -qE 'version "11\.|openjdk 11'; then
+      echo ""
+    else
+      echo "Not JDK 11 plese make sure java --version is jdk 11"
+    fi
 }
 
 # Function to nerdfont
