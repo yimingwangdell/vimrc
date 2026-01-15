@@ -6,7 +6,7 @@ local capabilities = require('blink.cmp').get_lsp_capabilities()
 local config = {
   -- The command that starts the language server
   -- See: https://github.com/eclipse/eclipse.jdt.ls#running-from-the-command-line
-  -- capabilities = capabilities,
+  capabilities = capabilities,
   cmd = {
 
     -- 💀
