@@ -106,6 +106,8 @@ nnoremap H 0
 vnoremap H 0
 nnoremap L $
 vnoremap L $
+nnoremap j gj
+nnoremap k gk
 inoremap jk <ESC>
 inoremap jh <ESC>^i
 inoremap jl <ESC>A
@@ -386,7 +388,7 @@ Plug 'mfussenegger/nvim-jdtls'
 Plug 'williamboman/mason.nvim'
 Plug 'neovim/nvim-lspconfig', {'tag': 'v2.5.0'}
 Plug 'Saghen/blink.cmp'
-"Plug 'ray-x/lsp_signature.nvim', {'branch': 'nvim-0.9'}
+" Plug 'ray-x/lsp_signature.nvim', {'branch': 'nvim-0.9'}
 
 
 Plug 'folke/trouble.nvim'
@@ -609,18 +611,19 @@ require("blink.cmp").setup(
     --
     -- See :h blink-cmp-config-keymap for defining your own keymap
     signature = { enabled = true,
-        trigger = {
-            -- Show the signature help window after typing any of alphanumerics, `-` or `_`
-            show_on_keyword = true,
-            blocked_trigger_characters = {},
-            blocked_retrigger_characters = {},
-            -- Show the signature help window after typing a trigger character
-            show_on_trigger_character = true,
-            -- Show the signature help window when entering insert mode
-            show_on_insert = true,
-            -- Show the signature help window when the cursor comes after a trigger character when entering insert mode
-            show_on_insert_on_trigger_character = true,
-        },
+         trigger = {
+              enabled = false,
+             -- Show the signature help window after typing any of alphanumerics, `-` or `_`
+             show_on_keyword = true,
+             blocked_trigger_characters = {},
+             blocked_retrigger_characters = {},
+             -- Show the signature help window after typing a trigger character
+             show_on_trigger_character = true,
+             -- Show the signature help window when entering insert mode
+             show_on_insert = true,
+             -- Show the signature help window when the cursor comes after a trigger character when entering insert mode
+             show_on_insert_on_trigger_character = true,
+         },
     },
     keymap = {
         preset = "enter",
@@ -745,9 +748,10 @@ lua<<EOF
 EOF
 "
 "=== lsp_signature ===
-" lua<<EOF
+"
+"lua<<EOF
 "     require "lsp_signature".setup()
-" EOF
+"EOF
 
 
 " === mason ===
