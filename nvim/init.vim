@@ -155,6 +155,7 @@ augroup END
 " split window
 map <leader>sl :set nosplitright<CR>:set splitright<CR>:vnew<CR><c-w>l
 map <leader>sv :set nosplitright<CR>:set splitright<CR>:vsplit $MYVIMRC<CR>
+map <leader>st :set nosplitright<CR>:set splitright<CR>:vsplit ~/vimwiki/TODO.wiki<CR>
 map <leader>sj :set nosplitbelow<CR>:set splitbelow<CR>:new<CR><c-w>j
 " jump down/up/left/right split window
 " quit vim
@@ -438,7 +439,8 @@ Plug 'karunsiri/vim-delete-hidden-buffers'
 Plug 'kwkarlwang/bufjump.nvim' "<M-o> jump back file
 " Plug 'itchyny/vim-cursorword' " highlight current word
 Plug 'RRethy/vim-illuminate'
-Plug 'mg979/vim-visual-multi' " multi cursor
+Plug 'nvimtools/hydra.nvim'
+Plug 'smoka7/multicursors.nvim'
 Plug 'tomtom/tcomment_vim' " <space><space> to comment a line
 Plug 'gbprod/substitute.nvim' " s to substitute
 Plug 'machakann/vim-sandwich' " di" to delete inside of ""
@@ -626,9 +628,31 @@ require("blink.cmp").setup(
          },
     },
     keymap = {
-        preset = "enter",
-        ['<C-space>'] = { function(cmp) cmp.show({providers = { 'lsp', 'path', 'snippets', 'buffer' }}) end, 'show_documentation', 'hide_documentation'},
+        preset = "none",
+        ['<Tab>'] = {function(cmp)
+            local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+            if (cmp.snippet_active()) then
+                return cmp.hide()
+            else
+                if (col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil) then
+                    cmp.show({providers = { 'lsp', 'path', 'snippets', 'buffer' }})
+                    cmp.show_documentation()
+                else
+                    return '\t'
+                end
+            end
+
+        end, 'snippet_forward'},
+        ['<S-Tab>'] = { 'snippet_backward', 'fallback' },
         ['<C-k>'] = { 'show_signature'},
+        ['<C-space>'] = { function(cmp)
+            cmp.show({providers = { 'lsp', 'path', 'snippets', 'buffer' }})
+        end, 'show_documentation', 'hide_documentation'},
+        ['<Enter>'] = { 'select_and_accept', 'fallback_to_mappings' },
+        ['<C-k>'] = { 'show_signature', 'hide_signature', 'fallback' },
+        ['<C-e>'] = { 'hide', 'fallback' },
+        ['<C-p>'] = { 'select_prev', 'fallback_to_mappings' },
+        ['<C-n>'] = { 'select_next', 'fallback_to_mappings' },
         },
 
     appearance = {
@@ -1393,11 +1417,11 @@ EOF
 
 
 " ===
-" === vim-visual-multi
+" === multicursors
 " ===
-let g:VM_theme             = 'iceblue'
-" let g:VM_default_mappings = 0
-
+lua <<EOF
+require('multicursors').setup{}
+EOF
 " ===
 " === vim-sandwich
 " ===
@@ -2205,3 +2229,4 @@ nnoremap g* g*<Cmd>lua require('hlslens').start()<CR>
 nnoremap g# g#<Cmd>lua require('hlslens').start()<CR>
 vnoremap * y/<c-r>0<cr>
 nnoremap <LEADER>ww :e ~/vimwiki/index.wiki<CR>
+nnoremap <LEADER><c-n> :MCstart<CR>
