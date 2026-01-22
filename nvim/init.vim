@@ -598,6 +598,26 @@ EOF
 
 
 lua<<EOF
+local function get_char_before_cursor()
+  -- Get the current cursor position (row, col). Col is 0-based.
+  local cursor_col = vim.api.nvim_win_get_cursor(0)[2]
+
+  -- If the cursor is at the first column (index 0), there is no character before it.
+  if cursor_col < 2 then
+    return ""
+  end
+
+  -- Get the entire content of the current line.
+  local current_line = vim.api.nvim_get_current_line()
+
+  -- Extract the character at the index before the cursor.
+  -- In Lua strings, indexing starts at 1, so we use cursor_col.
+  -- The character immediately before the cursor's 0-based column index is at
+  -- the 1-based index `cursor_col`.
+  local char_before = current_line:sub(cursor_col-1, cursor_col-1)
+
+  return char_before
+end
 require("blink.cmp").setup(
 {
     -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
@@ -632,18 +652,31 @@ require("blink.cmp").setup(
         ['<Tab>'] = {function(cmp)
             local line, col = unpack(vim.api.nvim_win_get_cursor(0))
             if (cmp.snippet_active()) then
-                return cmp.hide()
-            else
-                if (col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil) then
-                    cmp.show({providers = { 'lsp', 'path', 'snippets', 'buffer' }})
-                    cmp.show_documentation()
+                if (cmp.is_menu_visible()) then
+                    return cmp.select_next()
                 else
-                    return '\t'
+                    return cmp.hide()
+                end
+            else
+                if (cmp.is_menu_visible()) then
+                    return cmp.select_next()
+                else
+                    if (col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil) then
+                        cmp.show({providers = { 'lsp', 'path', 'snippets', 'buffer' }})
+                        cmp.show_documentation()
+                        return
+                    else
+                        return '\t'
+                    end
                 end
             end
 
         end, 'snippet_forward'},
-        ['<S-Tab>'] = { 'snippet_backward', 'fallback' },
+        ['<S-Tab>'] = { function(cmp)
+            if (cmp.is_menu_visible()) then
+                return cmp.select_prev()
+            end
+        end, 'snippet_backward', },
         ['<C-k>'] = { 'show_signature'},
         ['<C-space>'] = { function(cmp)
             cmp.show({providers = { 'lsp', 'path', 'snippets', 'buffer' }})
@@ -653,6 +686,12 @@ require("blink.cmp").setup(
         ['<C-e>'] = { 'hide', 'fallback' },
         ['<C-p>'] = { 'select_prev', 'fallback_to_mappings' },
         ['<C-n>'] = { 'select_next', 'fallback_to_mappings' },
+        ['<BS>'] = { function(cmp)
+            if (get_char_before_cursor() == '.') then
+                cmp.hide()
+                return
+            end
+        end, 'fallback_to_mappings' },
         },
 
     appearance = {
