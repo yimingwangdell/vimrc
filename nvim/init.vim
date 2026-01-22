@@ -132,6 +132,7 @@ nnoremap <silent> N <Cmd>execute('keepjumps normal! ' . v:count1 . 'N')<CR>
 nnoremap S :w<CR>
 " nmap Q :call QuitWithQuickfixCheck()<CR>
 nnoremap Q :Sayonara<CR>
+" nnoremap Q :q!<CR>
 function! QuitWithQuickfixCheck()
     if get(getqflist({'winid':0}), 'winid', 0)
         :cclose
@@ -440,6 +441,7 @@ Plug 'kwkarlwang/bufjump.nvim' "<M-o> jump back file
 " Plug 'itchyny/vim-cursorword' " highlight current word
 Plug 'RRethy/vim-illuminate'
 Plug 'nvimtools/hydra.nvim'
+Plug 'mg979/vim-visual-multi' " multi cursor
 Plug 'smoka7/multicursors.nvim'
 Plug 'tomtom/tcomment_vim' " <space><space> to comment a line
 Plug 'gbprod/substitute.nvim' " s to substitute
@@ -583,7 +585,7 @@ require('lualine').setup(
     lualine_z = {'progress', 'encoding', 'fileformat'}
   },
   tabline = { 
-      lualine_a = {{'filename', path=3, shorting_target=15}},
+      lualine_a = {{'tabs', tabs_color = {active = 'StatusLineNC', inactive ={'StatusLine'}}}, {'filename', path=3, shorting_target=15}},
   lualine_b = {},
   lualine_c = {},
   lualine_x = {},
@@ -1461,6 +1463,9 @@ EOF
 lua <<EOF
 require('multicursors').setup{}
 EOF
+let g:VM_theme             = 'iceblue'
+" let g:VM_default_mappings = 0
+
 " ===
 " === vim-sandwich
 " ===
