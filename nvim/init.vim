@@ -449,7 +449,6 @@ Plug 'kwkarlwang/bufjump.nvim' "<M-o> jump back file
 Plug 'RRethy/vim-illuminate'
 Plug 'nvimtools/hydra.nvim'
 Plug 'mg979/vim-visual-multi' " multi cursor
-Plug 'smoka7/multicursors.nvim'
 Plug 'tomtom/tcomment_vim' " <space><space> to comment a line
 Plug 'gbprod/substitute.nvim' " s to substitute
 Plug 'machakann/vim-sandwich' " di" to delete inside of ""
@@ -1467,11 +1466,19 @@ EOF
 " ===
 " === multicursors
 " ===
-lua <<EOF
-require('multicursors').setup{}
-EOF
 let g:VM_theme             = 'iceblue'
 " let g:VM_default_mappings = 0
+" vim.g.VM_theme = "purplegray"
+let g:VM_mouse_mappings = 1
+let g:VM_maps = {}
+let g:VM_maps["I BS"] = ""
+let g:VM_maps["Goto Next"] = "]v"
+let g:VM_maps["Goto Prev"] = "[v"
+let g:VM_maps["I CtrlB"] = "<M-b>"
+let g:VM_maps["I CtrlF"] = "<M-f>"
+let g:VM_maps["I Return"] = "<S-CR>"
+let g:VM_maps["I Down Arrow"] = ""
+let g:VM_maps["I Up Arrow"] = ""
 
 " ===
 " === vim-sandwich
