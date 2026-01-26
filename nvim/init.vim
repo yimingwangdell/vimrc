@@ -108,6 +108,10 @@ nnoremap L $
 vnoremap L $
 nnoremap j gj
 nnoremap k gk
+inoremap <M-h> <Left>
+inoremap <M-j> <Down>
+inoremap <M-k> <Up>
+inoremap <M-l> <Right>
 inoremap jk <ESC>
 inoremap jh <ESC>^i
 inoremap jl <ESC>A
@@ -121,6 +125,8 @@ nnoremap yb yvb
 nnoremap <leader><down> 0i<cr><ESC>
 nnoremap <leader><up> kdd
 nnoremap = :noh<CR>
+nmap ( vaf`<<ESC>
+nmap ) vaf<ESC>
 " scroll up and down
 " nnoremap <c-d> 4j
 " nnoremap <c-u> 4k
@@ -369,6 +375,7 @@ Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCM
 " File navigation
 Plug 'nvim-telescope/telescope.nvim',
 Plug 'LukasPietzschmann/telescope-tabs'
+Plug 'nvim-telescope/telescope-ui-select.nvim'
 Plug 'StefanBartl/telescope-selected-index'
 Plug 'nvim-lua/plenary.nvim' " don't forget to add this one if you don't have it yet!
 Plug 'nvim-tree/nvim-tree.lua'
@@ -1987,12 +1994,46 @@ lua <<EOF
             yaml = true,
           },
     },
+            ["ui-select"] = {
+      require("telescope.themes").get_dropdown {
+           sorting_strategy = "ascending",
+
+ layout_strategy = "bottom_pane",
+ layout_config = {
+   height = 8,
+   prompt_position = "bottom",
+    vertical = {
+      width = 0.8,
+      height = 100,
+    },
+ },
+
+ border = true,
+ 	previewer = false,
+ 	shorten_path = false,
+      }
+
+      -- pseudo code / specification for writing custom displays, like the one
+      -- for "codeactions"
+      -- specific_opts = {
+      --   [kind] = {
+      --     make_indexed = function(items) -> indexed_items, width,
+      --     make_displayer = function(widths) -> displayer
+      --     make_display = function(displayer) -> function(e)
+      --     make_ordinal = function(e) -> string
+      --   },
+      --   -- for example to disable the custom builtin "codeactions" display
+      --      do the following
+      --   codeactions = false,
+      -- }
+    }
   },
   }
 
 
 	require('telescope').load_extension 'telescope-tabs'
   require('telescope').load_extension('fzf')
+  require("telescope").load_extension("ui-select")
   require('telescope-tabs').setup {
 			-- Your custom config :^)
   }
