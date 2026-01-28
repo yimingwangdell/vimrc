@@ -1471,7 +1471,6 @@ let g:VM_theme             = 'iceblue'
 " vim.g.VM_theme = "purplegray"
 let g:VM_mouse_mappings = 1
 let g:VM_maps = {}
-let g:VM_maps["I BS"] = ""
 let g:VM_maps["Goto Next"] = "]v"
 let g:VM_maps["Goto Prev"] = "[v"
 let g:VM_maps["I CtrlB"] = "<M-b>"
