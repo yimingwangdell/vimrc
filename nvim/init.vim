@@ -1574,7 +1574,7 @@ let g:vmt_fence_closing_text = '/TOC'
 
 
 " === ranger ===
-nnoremap <leader>ra :RangerCurrentFileNewTab<CR>
+nnoremap <leader>ra :RangerCurrentFile<CR>
 let g:ranger_map_keys = 0
 
 " === nvim-tree ===
@@ -2150,7 +2150,7 @@ local livegrep = function()
     require("telescope.builtin").live_grep({previewer = my_previewer()})
 end
 local livegrepvimwiki = function()
-    require("telescope.builtin").live_grep({previewer = my_previewer(), default_text = " ", search_dirs = { "/root/vimwiki" }})
+    require("telescope.builtin").live_grep({previewer = my_previewer(), default_text = "", search_dirs = { "/root/vimwiki" }})
 end
 vim.keymap.set('n', '<leader>fw', livegrep, { desc = 'Telescope live grep' })
 vim.keymap.set('n', '<leader>fv', livegrepvimwiki, { desc = 'Telescope grep vimwiki'})
