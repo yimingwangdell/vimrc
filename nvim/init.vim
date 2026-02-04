@@ -440,6 +440,7 @@ Plug 'nvim-orgmode/orgmode', {'tag': '0.6.0'}
 "
 " Editor Enhancement
 Plug 'mhinz/vim-sayonara' " enhanced quit
+Plug 'airblade/vim-rooter'
 Plug 'kevinhwang91/nvim-bqf' " quickfix zf search, zn new list <c-q> quit search
 Plug 'romainl/vim-qf'
 Plug 'junegunn/fzf'
@@ -2168,6 +2169,7 @@ nnoremap <leader>tm :execute "ToggleTerm direction=float dir=" .. expand("%:p:h"
 vnoremap <leader>tm :ToggleTermSendVisualLines<CR>
 " <c-\> <c-n> to switch to normal mode
 
+let g:rooter_patterns = ['.git']
 "
 " =================bqf=============================
 
