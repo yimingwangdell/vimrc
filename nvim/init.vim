@@ -337,6 +337,7 @@ function! ToggleFs()
         :exe "norm \<c-w>="
         let s:enabled = 0
     else
+        :exe "norm \<c-w>_"
         :exe "norm \<c-w>|"
         let s:enabled = 1
     endif
@@ -1390,7 +1391,14 @@ vnoremap <leader>log <ESC>:-tabnew<CR>gv:Gclog! -5000<CR>:copen<CR>
 
 " === gitsign ===
 lua <<EOF
-require('gitsigns').setup({ current_line_blame = true })
+require('gitsigns').setup({ current_line_blame = true, current_line_blame_opts = {
+          delay = 1000,
+      use_focus = true,
+      virt_text = true,
+      virt_text_pos = "eol",
+      virt_text_priority = 100
+
+    },current_line_blame_formatter = '<author_time:%R><author><summary>', })
 EOF
 nnoremap [[ :Gitsign prev_hunk<CR>
 nnoremap ]] :Gitsign next_hunk<CR>
