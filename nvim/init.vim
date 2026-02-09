@@ -387,7 +387,7 @@ Plug 'rbgrouleff/bclose.vim'
 
 
 " Outline
-Plug 'stevearc/aerial.nvim', {'tag': 'nvim-0.9'}
+Plug 'yimingwangdell/aerial.nvim', {'tag': 'nvim-0.9'}
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate', 'tag': 'v0.10.0'}
 Plug 'nvim-treesitter/nvim-treesitter-context'
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
@@ -2330,4 +2330,3 @@ nnoremap g* g*<Cmd>lua require('hlslens').start()<CR>
 nnoremap g# g#<Cmd>lua require('hlslens').start()<CR>
 vnoremap * y/<c-r>0<cr>
 nnoremap <LEADER>ww :e ~/vimwiki/index.wiki<CR>
-nnoremap <LEADER><c-n> :MCstart<CR>
