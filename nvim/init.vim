@@ -133,8 +133,10 @@ nmap ) vaf<ESC>
 " vnoremap <c-d> 4j
 " vnoremap <c-u> 4k
 " search selected
-nnoremap <silent> n <Cmd>execute('keepjumps normal! ' . v:count1 . 'n')<CR>
-nnoremap <silent> N <Cmd>execute('keepjumps normal! ' . v:count1 . 'N')<CR>
+nnoremap <silent> n <Cmd>execute('normal! ' . v:count1 . 'n')<CR>
+            \<Cmd>lua require('hlslens').start()<CR>
+nnoremap <silent> N <Cmd>execute('normal! ' . v:count1 . 'N')<CR>
+            \<Cmd>lua require('hlslens').start()<CR>
 nnoremap S :w<CR>
 " nmap Q :call QuitWithQuickfixCheck()<CR>
 nnoremap Q :Sayonara<CR>
@@ -2320,13 +2322,9 @@ nnoremap <leader>did :lua vim.diagnostic.disable()<CR>
 nnoremap <leader>die :lua vim.diagnostic.enable()<CR>
 " nnoremap <leader>df :lua vim.diagnostic.open_float(0, {scope="line"})<CR>
 
-nnoremap <silent> n <Cmd>execute('normal! ' . v:count1 . 'n')<CR>
-            \<Cmd>lua require('hlslens').start()<CR>
-nnoremap <silent> N <Cmd>execute('normal! ' . v:count1 . 'N')<CR>
-            \<Cmd>lua require('hlslens').start()<CR>
-nnoremap * *N<Cmd>lua require('hlslens').start()<CR>
-nnoremap # #<Cmd>lua require('hlslens').start()<CR>
-nnoremap g* g*<Cmd>lua require('hlslens').start()<CR>
-nnoremap g# g#<Cmd>lua require('hlslens').start()<CR>
+nnoremap <silent><expr> * v:count ? '*'
+      \ : ':silent execute "keepjumps normal! *" <Bar> call winrestview(' . string(winsaveview()) . ')<CR>'
+nnoremap <silent><expr> # v:count ? '#'
+      \ : ':silent execute "keepjumps normal! #" <Bar> call winrestview(' . string(winsaveview()) . ')<CR>'
 vnoremap * y/<c-r>0<cr>
 nnoremap <LEADER>ww :e ~/vimwiki/index.wiki<CR>
