@@ -13,13 +13,6 @@ autocmd!
     autocmd CursorMoved * call ShowFugitiveFileName()
 
 augroup END
-augroup PreserveNoEOL
-  autocmd!
-  " Before write: if buffer is currently marked as no end-of-line, preserve it
-  autocmd BufWritePre * if !&l:endofline | let b:__save_bin=&l:binary | let b:__save_eol=&l:endofline | setlocal binary noeol | endif
-  " After write: restore options if we changed them
-  autocmd BufWritePost * if exists('b:__save_bin') | let &l:binary=b:__save_bin | let &l:endofline=b:__save_eol | unlet b:__save_bin b:__save_eol | endif
-augroup END
 
 
 let s:prevtabnum=tabpagenr('$')
@@ -371,7 +364,7 @@ Plug 'folke/tokyonight.nvim'
 Plug 'nvim-lualine/lualine.nvim'
 " If you want to have icons in your statusline choose one of these
 Plug 'nvim-tree/nvim-web-devicons'
-Plug 'yimingwangdell/nvim-gps'
+" Plug 'yimingwangdell/nvim-gps'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' }
 " General Highlighter
 
@@ -390,9 +383,8 @@ Plug 'rbgrouleff/bclose.vim'
 
 " Outline
 Plug 'yimingwangdell/aerial.nvim', {'tag': 'nvim-0.9'}
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate', 'tag': 'v0.10.0'}
-Plug 'nvim-treesitter/nvim-treesitter-context'
-Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate', 'tag': 'v0.10.0'}
+ Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 
 
 " LSP
@@ -466,6 +458,7 @@ Plug 'windwp/nvim-autopairs'
 Plug 'theniceboy/pair-maker.vim'
 Plug 'kevinhwang91/nvim-hlslens'
 " Plug 'karb94/neoscroll.nvim'
+Plug 'vim-scripts/PreserveNoEOL'
 
 
 " Bookmarks
@@ -555,7 +548,6 @@ nnoremap <leader>gpt :ChatGPT<CR>
 
 " ============== lualine =============
 lua << EOF
-local gps = require("nvim-gps")
 require('lualine').setup(
  {
   options = {
@@ -580,7 +572,25 @@ require('lualine').setup(
     lualine_a = {},
     lualine_b = {{'branch', fmt = function(str) return str:sub(1,20) end}, 'diff',},
     lualine_c = {  {'filename', path = 0,   }},
-    lualine_x = {{gps.get_location, cond = gps.is_available, color="WildMenu"}},
+    lualine_x = {{ "aerial",
+        -- The separator to be used to separate symbols in status line.
+        sep = " ) ",
+
+        -- The number of symbols to render top-down. In order to render only 'N' last
+        -- symbols, negative numbers may be supplied. For instance, 'depth = -1' can
+        -- be used in order to render only current symbol.
+        depth = nil,
+
+        -- When 'dense' mode is on, icons are not rendered near their symbols. Only
+        -- a single icon that represents the kind of current symbol is rendered at
+        -- the beginning of status line.
+        dense = false,
+
+        -- The separator to be used to separate symbols in dense mode.
+        dense_sep = ".",
+
+        -- Color the symbol icons.
+        colored = true,}},
     lualine_y = {},
     lualine_z = {'filesize', 'progress', 'encoding', 'fileformat'}
   },
@@ -589,7 +599,25 @@ require('lualine').setup(
     lualine_b = {{'branch', }, 'diff',},
     lualine_c = {  {'filename', path = 0,}},
     lualine_x = {},
-    lualine_x = {{gps.get_location, cond = gps.is_available, color="Folded"}},
+    lualine_x = {{ "aerial",
+        -- The separator to be used to separate symbols in status line.
+        sep = " ) ",
+
+        -- The number of symbols to render top-down. In order to render only 'N' last
+        -- symbols, negative numbers may be supplied. For instance, 'depth = -1' can
+        -- be used in order to render only current symbol.
+        depth = nil,
+
+        -- When 'dense' mode is on, icons are not rendered near their symbols. Only
+        -- a single icon that represents the kind of current symbol is rendered at
+        -- the beginning of status line.
+        dense = false,
+
+        -- The separator to be used to separate symbols in dense mode.
+        dense_sep = ".",
+
+        -- Color the symbol icons.
+        colored = true,}},
 
     lualine_y = { },
     lualine_z = {'progress', 'encoding', 'fileformat'}
@@ -648,62 +676,22 @@ require("blink.cmp").setup(
          trigger = {
               enabled = false,
              -- Show the signature help window after typing any of alphanumerics, `-` or `_`
-             show_on_keyword = true,
+             show_on_keyword = false,
              blocked_trigger_characters = {},
              blocked_retrigger_characters = {},
              -- Show the signature help window after typing a trigger character
              show_on_trigger_character = true,
              -- Show the signature help window when entering insert mode
-             show_on_insert = true,
+             show_on_insert = false,
              -- Show the signature help window when the cursor comes after a trigger character when entering insert mode
-             show_on_insert_on_trigger_character = true,
+             show_on_insert_on_trigger_character = false,
          },
     },
     keymap = {
-        preset = "none",
-        ['<Tab>'] = {function(cmp)
-            local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-            if (cmp.snippet_active()) then
-                if (cmp.is_menu_visible()) then
-                    return cmp.select_next()
-                else
-                    return cmp.hide()
-                end
-            else
-                if (cmp.is_menu_visible()) then
-                    return cmp.select_next()
-                else
-                    if (col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil) then
-                        cmp.show({providers = { 'lsp', 'path', 'snippets', 'buffer' }})
-                        cmp.show_documentation()
-                        return
-                    else
-                        return '\t'
-                    end
-                end
-            end
-
-        end, 'snippet_forward'},
-        ['<S-Tab>'] = { function(cmp)
-            if (cmp.is_menu_visible()) then
-                return cmp.select_prev()
-            end
-        end, 'snippet_backward', },
-        ['<C-k>'] = { 'show_signature'},
-        ['<C-space>'] = { function(cmp)
-            cmp.show({providers = { 'lsp', 'path', 'snippets', 'buffer' }})
-        end, 'show_documentation', 'hide_documentation'},
-        ['<Enter>'] = { 'select_and_accept', 'fallback_to_mappings' },
-        ['<C-k>'] = { 'show_signature', 'hide_signature', 'fallback' },
-        ['<C-e>'] = { 'hide', 'fallback' },
-        ['<C-p>'] = { 'select_prev', 'fallback_to_mappings' },
-        ['<C-n>'] = { 'select_next', 'fallback_to_mappings' },
-        ['<BS>'] = { function(cmp)
-            if (get_char_before_cursor() == '.') then
-                cmp.hide()
-                return
-            end
-        end, 'fallback_to_mappings' },
+        preset = "enter",
+              ['<C-space>'] = { function(cmp)
+             cmp.show({providers = { 'lsp', 'path', 'snippets', 'buffer' }})
+         end, 'show_documentation', 'hide_documentation'},
         },
 
     appearance = {
@@ -847,13 +835,14 @@ nnoremap <leader>gr :Trouble lsp toggle focus=false<CR>
 lua <<EOF
 require("aerial").setup({
   -- optionally use on_attach to set keymaps when aerial has attached to a buffer
-      backends = { "treesitter" },
+      backends = {"lsp", "treesitter" },
   on_attach = function(bufnr)
     -- Jump forwards/backwards with '{' and '}'
     vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
     vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
   end,
-  disable_max_lines = 30000,
+    lazy_load = false,
+  disable_max_lines = 300000,
   layout={
     min_width = 60
   }
@@ -869,7 +858,7 @@ lua <<EOF
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all" (the listed parsers MUST always be installed)
   incremental_selection = {
-    enable = true,
+    enable = false,
     keymaps = {
       init_selection = "<leader><enter>", -- set to `false` to disable one of the mappings
       node_incremental = "<leader><enter>",
@@ -893,7 +882,7 @@ require'nvim-treesitter.configs'.setup {
   -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
 
   highlight = {
-    enable = true,
+    enable = false,
 
     -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
     -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
@@ -917,91 +906,59 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 EOF
-lua <<EOF
-require'treesitter-context'.setup{
-    enable = false, -- Enable this plugin (Can be enabled/disabled later via commands)
-    throttle = true, -- Throttles plugin updates (may improve performance)
-    max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
-    patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
-        -- For all filetypes
-        -- Note that setting an entry here replaces all other patterns for this entry.
-        -- By setting the 'default' entry below, you can control which nodes you want to
-        -- appear in the context window.
-        default = {
-            'class',
-            'function',
-            'method',
-            'for', -- These won't appear in the context
-            'while',
-            'if',
-            'switch',
-            'case',
-        },
-        -- Example for a specific filetype.
-        -- If a pattern is missing, *open a PR* so everyone can benefit.
-        --   rust = {
-        --       'impl_item',
-        --   },
-    },
-    exact_patterns = {
-        -- Example for a specific filetype with Lua patterns
-        -- Treat patterns.rust as a Lua pattern (i.e "^impl_item$" will
-        -- exactly match "impl_item" only)
-        -- rust = true, 
-    }
-}
-EOF
-
 
 lua <<EOF
-require'nvim-treesitter.configs'.setup {
-  textobjects = {
-    select = {
-      enable = true,
-
-      -- Automatically jump forward to textobj, similar to targets.vim
-      lookahead = true,
-
-      keymaps = {
-        -- You can use the capture groups defined in textobjects.scm
-        ["af"] = "@function.outer",
-        ["if"] = "@function.inner",
-        ["ac"] = "@class.outer",
-        -- You can optionally set descriptions to the mappings (used in the desc parameter of
-        -- nvim_buf_set_keymap) which plugins like which-key display
-        ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
-        -- You can also use captures from other query groups like `locals.scm`
-        ["as"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },
-      },
-      -- You can choose the select mode (default is charwise 'v')
-      --
-      -- Can also be a function which gets passed a table with the keys
-      -- * query_string: eg '@function.inner'
-      -- * method: eg 'v' or 'o'
-      -- and should return the mode ('v', 'V', or '<c-v>') or a table
-      -- mapping query_strings to modes.
-      selection_modes = {
-        ['@parameter.outer'] = 'v', -- charwise
-        ['@function.outer'] = 'v', -- linewise
-        ['@class.outer'] = 'v', -- blockwise
-      },
-      -- If you set this to `true` (default is `false`) then any textobject is
-      -- extended to include preceding or succeeding whitespace. Succeeding
-      -- whitespace has priority in order to act similarly to eg the built-in
-      -- `ap`.
-      --
-      -- Can also be a function which gets passed a table with the keys
-      -- * query_string: eg '@function.inner'
-      -- * selection_mode: eg 'v'
-      -- and should return true of false
-      include_surrounding_whitespace = false,
+require("nvim-treesitter-textobjects").setup {
+  select = {
+    -- Automatically jump forward to textobj, similar to targets.vim
+    lookahead = true,
+    -- You can choose the select mode (default is charwise 'v')
+    --
+    -- Can also be a function which gets passed a table with the keys
+    -- * query_string: eg '@function.inner'
+    -- * method: eg 'v' or 'o'
+    -- and should return the mode ('v', 'V', or '<c-v>') or a table
+    -- mapping query_strings to modes.
+    selection_modes = {
+      ['@parameter.outer'] = 'v', -- charwise
+      ['@function.outer'] = 'V', -- linewise
+      -- ['@class.outer'] = '<c-v>', -- blockwise
     },
+    -- If you set this to `true` (default is `false`) then any textobject is
+    -- extended to include preceding or succeeding whitespace. Succeeding
+    -- whitespace has priority in order to act similarly to eg the built-in
+    -- `ap`.
+    --
+    -- Can also be a function which gets passed a table with the keys
+    -- * query_string: eg '@function.inner'
+    -- * selection_mode: eg 'v'
+    -- and should return true of false
+    include_surrounding_whitespace = false,
   },
 }
+-- keymaps
+-- You can use the capture groups defined in `textobjects.scm`
+vim.keymap.set({ "x", "o" }, "af", function()
+  require "nvim-treesitter-textobjects.select".select_textobject("@function.outer", "textobjects")
+end)
+vim.keymap.set({ "x", "o" }, "if", function()
+  require "nvim-treesitter-textobjects.select".select_textobject("@function.inner", "textobjects")
+end)
+vim.keymap.set({ "x", "o" }, "ac", function()
+  require "nvim-treesitter-textobjects.select".select_textobject("@class.outer", "textobjects")
+end)
+vim.keymap.set({ "x", "o" }, "ic", function()
+  require "nvim-treesitter-textobjects.select".select_textobject("@class.inner", "textobjects")
+end)
+-- You can also use captures from other query groups like `locals.scm`
+vim.keymap.set({ "x", "o" }, "as", function()
+  require "nvim-treesitter-textobjects.select".select_textobject("@local.scope", "locals")
+end)
 EOF
-lua <<EOF
-require("nvim-gps").setup()
-EOF
+
+" lua <<EOF
+"require("nvim-gps").setup()
+" EOF
 
 
 " === nvim-jdtls ===
