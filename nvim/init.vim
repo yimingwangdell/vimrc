@@ -21,7 +21,7 @@ augroup END
 " let g:syntax_maxlines=999999
 " syntax sync minlines=999999
 " autocmd BufEnter * :syntax sync fromstart
-:lua vim.lsp.inlay_hint.enable(false)
+:lua vim.lsp.inlay_hint.enable(true)
 set laststatus=3
 set scrolloff=10
 set synmaxcol=0
@@ -398,8 +398,8 @@ Plug 'sindrets/diffview.nvim'
 Plug 'fatih/vim-go' , { 'for': ['go', 'vim-plug'], 'tag': '*' }
 
 " Java
-Plug 'uiiaoo/java-syntax.vim'
-hi String guifg=#11111 "string color
+" Plug 'uiiaoo/java-syntax.vim'
+" hi String guifg=#11111 "string color
 
 " Markdown
 Plug 'dkarter/bullets.vim'
@@ -791,7 +791,7 @@ lua <<EOF
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all" (the listed parsers MUST always be installed)
   incremental_selection = {
-    enable = false,
+    enable = true,
     keymaps = {
       init_selection = "<leader><enter>", -- set to `false` to disable one of the mappings
       node_incremental = "<leader><enter>",
@@ -815,7 +815,7 @@ require'nvim-treesitter.configs'.setup {
   -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
 
   highlight = {
-    enable = false,
+    enable = true,
 
     -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
     -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
