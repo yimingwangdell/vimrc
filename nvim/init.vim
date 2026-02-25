@@ -9,11 +9,6 @@ if empty(glob('~/.config/nvim/autoload/plug.vim'))
 				\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
-autocmd!
-    autocmd CursorMoved * call ShowFugitiveFileName()
-
-augroup END
-
 
 let s:prevtabnum=tabpagenr('$')
 augroup TabClosed
@@ -166,25 +161,24 @@ map <leader>sj :set nosplitbelow<CR>:set splitbelow<CR>:new<CR><c-w>j
 nnoremap <leader>, `[V`]<
 nnoremap <leader>. `[V`]>
 " new tab before current
-nnoremap ti :-tabnew<CR>
+nnoremap <leader>ti :-tabnew<CR>
 " new tab after current
-nnoremap ta :tabnew<CR>
+nnoremap <leader>ta :tabnew<CR>
 " new tab after first tab
-nnoremap tI :0tabnew<CR>
+nnoremap <leader>tI :0tabnew<CR>
 " new tab after last tab
-nnoremap tA :$tabnew<CR>
+nnoremap <leader>tA :$tabnew<CR>
 "jump to left side tab
 nnoremap <leader><left> :tabp<CR>
-nnoremap th :tabp<CR>
-nnoremap tH :tabfirst<CR>
+nnoremap <leader>th :tabp<CR>
+nnoremap <leader>tH :tabfirst<CR>
 "jump to right side tab
 nnoremap <leader><right> :tabn<CR>
-nnoremap tl :tabn<CR>
-nnoremap tL :tablast<CR>
+nnoremap <leader>tl :tabn<CR>
+nnoremap <leader>tL :tablast<CR>
 " duplicate current tab
-nnoremap ts :tab split<CR>
+nnoremap <leader>ts :tab split<CR>
 " move current win to new tab
-nnoremap tfs <C-W>T
 "jump to N tab
 nnoremap t1 :tabn1<CR>
 nnoremap t2 :tabn2<CR>
@@ -202,6 +196,12 @@ function! EnsureTabExists(num)
     execute 'tabnext ' . l:current_tab
   endif
 endfunction
+
+" Optional: bind to a key
+nnoremap <leader>t2 :call EnsureTabExists(2)<CR>
+nnoremap <leader>t3 :call EnsureTabExists(3)<CR>
+nnoremap <leader>t4 :call EnsureTabExists(4)<CR>
+nnoremap <leader>t5 :call EnsureTabExists(5)<CR>
 
 function! s:printGitFileName()
     " Get the current line
@@ -234,16 +234,7 @@ function! ShowFugitiveFileName()
     endif
 endfunction
 
-
-
-
-" Optional: bind to a key
-nnoremap <leader>t2 :call EnsureTabExists(2)<CR>
-nnoremap <leader>t3 :call EnsureTabExists(3)<CR>
-nnoremap <leader>t4 :call EnsureTabExists(4)<CR>
-nnoremap <leader>t5 :call EnsureTabExists(5)<CR>
-
-
+autocmd CursorHold * call ShowFugitiveFileName()
 
 let s:last_list_win_type = 0
 function! s:toggle_list()
@@ -338,18 +329,18 @@ function! ToggleFs()
     endif
 endfunction
 
+
+
+
+
 call plug#begin('~/.vim/plugged')
 " let g:plug_url_format = 'git@github.com:%s.git'
 let g:plug_url_format = 'https://git::@github.com/%s.git'
 
 " copilot
-" Plug 'github/copilot.vim'
 Plug 'Exafunction/windsurf.vim'
-" chatgpt chat
 Plug 'MunifTanjim/nui.nvim'
 Plug 'jackMort/ChatGPT.nvim'
-"Plug 'olimorris/codecompanion.nvim'
-
 
 " Pretty Dress
 Plug 'NLKNguyen/papercolor-theme'
@@ -364,10 +355,9 @@ Plug 'folke/tokyonight.nvim'
 Plug 'nvim-lualine/lualine.nvim'
 " If you want to have icons in your statusline choose one of these
 Plug 'nvim-tree/nvim-web-devicons'
-" Plug 'yimingwangdell/nvim-gps'
-" General Highlighter
 
 " File navigation
+Plug 'junegunn/fzf'
 Plug 'nvim-telescope/telescope.nvim',
 Plug 'LukasPietzschmann/telescope-tabs'
 Plug 'nvim-telescope/telescope-ui-select.nvim'
@@ -379,31 +369,23 @@ Plug 'pechorin/any-jump.vim'
 Plug 'francoiscabrol/ranger.vim'
 Plug 'rbgrouleff/bclose.vim'
 
-
 " Outline
 Plug 'yimingwangdell/aerial.nvim', {'tag': 'nvim-0.9'}
  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate', 'tag': 'v0.10.0'}
  Plug 'nvim-treesitter/nvim-treesitter-textobjects'
-
 
 " LSP
 Plug 'mfussenegger/nvim-jdtls'
 Plug 'williamboman/mason.nvim'
 Plug 'neovim/nvim-lspconfig', {'tag': 'v2.5.0'}
 Plug 'Saghen/blink.cmp'
-" Plug 'ray-x/lsp_signature.nvim', {'branch': 'nvim-0.9'}
-
-
 Plug 'folke/trouble.nvim'
-
 
 " Snippets
 Plug 'rafamadriz/friendly-snippets'
 
-
 " Undo Tree
 Plug 'mbbill/undotree'
-
 
 " Git
 Plug 'tpope/vim-fugitive'
@@ -411,17 +393,12 @@ Plug 'lewis6991/gitsigns.nvim'
 Plug 'kdheepak/lazygit.nvim'
 Plug 'sindrets/diffview.nvim'
 
-
-" HTML, CSS, JavaScript, Typescript, PHP, JSON, etc.
-
 " Go
 Plug 'fatih/vim-go' , { 'for': ['go', 'vim-plug'], 'tag': '*' }
 
 " Java
 Plug 'uiiaoo/java-syntax.vim'
-"string color
-hi String guifg=#11111
-
+hi String guifg=#11111 "string color
 
 " Markdown
 Plug 'dkarter/bullets.vim'
@@ -431,41 +408,31 @@ Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeToggle', 'for': ['text', 'm
 Plug 'vimwiki/vimwiki' " best note taking tool
 Plug 'nvim-orgmode/orgmode', {'tag': '0.6.0'}
 
-"
 " Editor Enhancement
 Plug 'mhinz/vim-sayonara' " enhanced quit
 Plug 'airblade/vim-rooter'
 Plug 'kevinhwang91/nvim-bqf' " quickfix zf search, zn new list <c-q> quit search
 Plug 'romainl/vim-qf'
-Plug 'junegunn/fzf'
 Plug 'karunsiri/vim-delete-hidden-buffers'
 Plug 'kwkarlwang/bufjump.nvim' "<M-o> jump back file
-" Plug 'itchyny/vim-cursorword' " highlight current word
-Plug 'RRethy/vim-illuminate'
 Plug 'nvimtools/hydra.nvim'
 Plug 'mg979/vim-visual-multi' " multi cursor
 Plug 'tomtom/tcomment_vim' " <space><space> to comment a line
 Plug 'gbprod/substitute.nvim' " s to substitute
 Plug 'machakann/vim-sandwich' " di" to delete inside of ""
-
 Plug 'junegunn/vim-after-object' " da= to delete what's after =
 Plug 'folke/flash.nvim' " best jump plugin
-" Plug 'nvimdev/indentmini.nvim'
-Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'matze/vim-move'
 Plug 'windwp/nvim-autopairs'
 Plug 'theniceboy/pair-maker.vim'
 Plug 'kevinhwang91/nvim-hlslens'
-" Plug 'karb94/neoscroll.nvim'
 Plug 'vim-scripts/PreserveNoEOL'
-
 
 " Bookmarks
 Plug 'MattesGroeger/vim-bookmarks'
 
 " Windows management
 Plug 'sindrets/winshift.nvim'
-
 
 " Code Context
 Plug 'wellle/context.vim'
@@ -474,21 +441,18 @@ Plug 'wellle/context.vim'
 Plug 'hiphish/rainbow-delimiters.nvim'
 Plug 'ryanoasis/vim-devicons'
 Plug 'azabiong/vim-highlighter'
-"
+Plug 'RRethy/vim-illuminate'
+Plug 'lukas-reineke/indent-blankline.nvim'
 "
 " Other useful utilities
 Plug 'lambdalisue/suda.vim' " :SudaWrite to write as root
 Plug 'yimingwangdell/vim-translator' " ty to translate
 Plug 'akinsho/toggleterm.nvim', {'tag' : '*'} " open terminal in vim
 
-
-
-
-
 call plug#end()
 
-let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 " colorscheme  tokyonight-moon
 colorscheme gruvbox
 " colorscheme kanagawa-dragon
@@ -537,12 +501,6 @@ EOF
 
 nnoremap <leader>gpt :ChatGPT<CR>
 " nnoremap <leader>gpt :Codeium Chat<CR>
-
-
-" === codecompanion ===
-" lua << EOF
-"   require("codecompanion").setup()
-" EOF
 
 
 " ============== lualine =============
@@ -637,26 +595,6 @@ EOF
 
 
 lua<<EOF
-local function get_char_before_cursor()
-  -- Get the current cursor position (row, col). Col is 0-based.
-  local cursor_col = vim.api.nvim_win_get_cursor(0)[2]
-
-  -- If the cursor is at the first column (index 0), there is no character before it.
-  if cursor_col < 2 then
-    return ""
-  end
-
-  -- Get the entire content of the current line.
-  local current_line = vim.api.nvim_get_current_line()
-
-  -- Extract the character at the index before the cursor.
-  -- In Lua strings, indexing starts at 1, so we use cursor_col.
-  -- The character immediately before the cursor's 0-based column index is at
-  -- the 1-based index `cursor_col`.
-  local char_before = current_line:sub(cursor_col-1, cursor_col-1)
-
-  return char_before
-end
 require("blink.cmp").setup(
 {
     -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
@@ -786,35 +724,29 @@ lua<<EOF
   local capabilities = require('blink.cmp').get_lsp_capabilities()
 
   -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
-  require('lspconfig')['pylsp'].setup {
+  vim.lsp.config['pylsp'] = {
         capabilities = capabilities,
   }
-  require('lspconfig')['bashls'].setup {
+  vim.lsp.config['bashls'] = {
         capabilities = capabilities,
   }
-  require('lspconfig')['clangd'].setup {
+  vim.lsp.config['clangd'] = {
         capabilities = capabilities,
   }
-  require('lspconfig')['jsonls'].setup {
+  vim.lsp.config['jsonls'] = {
         capabilities = capabilities,
   }
-  require('lspconfig')['lemminx'].setup {
+  vim.lsp.config['lemminx'] = {
         capabilities = capabilities,
   }
-  require('lspconfig')['yamlls'].setup {
+  vim.lsp.config['yamlls'] = {
         capabilities = capabilities,
   }
-  require('lspconfig')['lua_ls'].setup {
+  vim.lsp.config['lua_ls'] = {
         capabilities = capabilities,
   }
 EOF
 "
-"=== lsp_signature ===
-"
-"lua<<EOF
-"     require "lsp_signature".setup()
-"EOF
-
 
 " === mason ===
 lua<<EOF
@@ -955,14 +887,6 @@ vim.keymap.set({ "x", "o" }, "as", function()
 end)
 EOF
 
-" lua <<EOF
-"require("nvim-gps").setup()
-" EOF
-
-
-" === nvim-jdtls ===
-
-
 
 " ===
 " === vim-instant-markdown
@@ -1003,12 +927,8 @@ EOF
 
 
 " === markdown snippets
-" au BufNewFile,BufRead *.wiki setl ft=markdown
 autocmd Filetype markdown map <leader>w yiWi[<esc>Ea](<esc>pa)
 autocmd Filetype markdown inoremap <buffer> ,f <Esc>/<++><CR>:nohlsearch<CR>"_c4l
-" autocmd Filetype markdown inoremap <buffer> <c-e> <Esc>/<++><CR>:nohlsearch<CR>"_c4l
-" autocmd Filetype markdown inoremap <buffer> ,w <Esc>/ <++><CR>:nohlsearch<CR>"_c5l<CR>
-" autocmd Filetype markdown inoremap <buffer> ,n ---<Enter><Enter>
 autocmd Filetype markdown inoremap <buffer> ,b **** <++><Esc>F*hi
 autocmd Filetype vimwiki inoremap <buffer> ,b ** <++><Esc>F*i
 autocmd Filetype markdown inoremap <buffer> ,s ~~~~ <++><Esc>F~hi
@@ -1077,15 +997,12 @@ EOF
 
 "=====telescope======
 "
-"
 " search recent files
 nnoremap <leader>fr :Telescope oldfiles <CR>
 nnoremap <leader>fh :Telescope resume <CR>
 " nnoremap <leader>fb :Telescope telescope-tabs list_tabs<CR>
 nnoremap <leader>fb :Telescope buffers<CR>
  "search word
-" nnoremap <leader>fw :Telescope live_grep<CR>
-" nnoremap <leader>fw :Telescope egrepify<CR>
 
 " nnoremap <leader>fv :lua require('telescope.builtin').live_grep({default_text = " ", search_dirs = { "/root/vimwiki" }})<CR>
 " search files
@@ -1133,9 +1050,6 @@ nnoremap <leader>lg :LazyGitCurrentFile<CR>
 
 
 " === diffview
-
-
-
 lua <<EOF
 -- Lua
 local actions = require("diffview.actions")
@@ -2263,11 +2177,6 @@ nnoremap <leader>ac :lua vim.lsp.buf.code_action()<CR>
 nnoremap [g :lua vim.diagnostic.goto_prev()<CR>
 nnoremap ]g :lua vim.diagnostic.goto_next()<CR>
 nnoremap <leader>ae <Cmd>lua require('jdtls').extract_variable()<CR>
-" nnoremap [g :Lspsaga diagnostic_jump_prev<CR>
-" nnoremap ]g :Lspsaga diagnostic_jump_next<CR>
-" lua <<EOF
-" require('lspsaga').setup{}
-" EOF
 
 " ===================== others ===========================
 let g:python3_host_prog = 'python3'
