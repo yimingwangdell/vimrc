@@ -350,6 +350,7 @@ Plug 'doums/darcula'
 Plug 'rebelot/kanagawa.nvim'
 Plug 'catppuccin/vim'
 Plug 'folke/tokyonight.nvim'
+Plug 'neanias/everforest-nvim', { 'branch': 'main' }
 
 " Status line
 Plug 'nvim-lualine/lualine.nvim'
@@ -454,7 +455,8 @@ call plug#end()
 
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 " colorscheme  tokyonight-moon
-colorscheme gruvbox
+" colorscheme gruvbox
+colorscheme everforest
 " colorscheme kanagawa-dragon
 set background=dark
 " set background=light
@@ -1467,7 +1469,7 @@ nnoremap <leader>e :NvimTreeFindFileToggle<CR>
 " === vim-illuminate
 " ===
 let g:Illuminate_delay = 750
-hi illuminatedWord cterm=undercurl gui=undercurl
+
 
 
 
@@ -1571,8 +1573,8 @@ EOF
 nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
 
 " ====================== flash =====================
-hi Blue guibg=blue guifg=blue
-hi Red guifg=red
+" hi Blue guibg=blue guifg=blue
+" hi Red guifg=red
 lua <<EOF
 require("flash").setup ({
       -- labels = "abcdefghijklmnopqrstuvwxyz",
