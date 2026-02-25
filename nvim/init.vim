@@ -365,7 +365,6 @@ Plug 'nvim-lualine/lualine.nvim'
 " If you want to have icons in your statusline choose one of these
 Plug 'nvim-tree/nvim-web-devicons'
 " Plug 'yimingwangdell/nvim-gps'
-Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' }
 " General Highlighter
 
 " File navigation
@@ -2006,7 +2005,6 @@ lua <<EOF
 
 
 	require('telescope').load_extension 'telescope-tabs'
-  require('telescope').load_extension('fzf')
   require("telescope").load_extension("ui-select")
   require('telescope-tabs').setup {
 			-- Your custom config :^)
