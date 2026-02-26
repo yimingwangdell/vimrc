@@ -14,6 +14,7 @@ usage() {
     echo "  zsh        Configure zsh with aliases"
     echo "  ranger     Install ranger"
     echo "  nerdfont   Install nerdfont"
+    echo "  foot       Install foot"
     echo "  i3         Install i3"
     echo "  sway       Install sway"
     echo "  jdtls      Install jdtls"
@@ -111,6 +112,12 @@ install_nerdfont() {
     sh ./nerdfont
 }
 
+# Function to foot
+install_foot() {
+    mkdir -p ~/.config/foot
+    cp ./foot.ini ~/.config/foot/foot.ini
+}
+
 # Install all components
 install_all() {
     install_tmux
@@ -122,6 +129,8 @@ install_all() {
     install_ranger
     install_sway
     install_jdtls
+    install_nerdfont
+    install_foot
 }
 
 # Execute command based on user input
@@ -164,6 +173,9 @@ case $COMMAND in
         ;;
     nerdfont)
         install_nerdfont
+        ;;
+    foot)
+        install_foot
         ;;
     *)
         usage
