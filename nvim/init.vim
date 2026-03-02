@@ -115,7 +115,7 @@ nnoremap <leader><up> kdd
 nnoremap = :noh<CR>
 nmap ( vaf`<<ESC>
 nmap ) vaf<ESC>
-nnoremap <c-a> vaw<ESC>a
+nnoremap <c-a> ea
 " scroll up and down
 " nnoremap <c-d> 4j
 " nnoremap <c-u> 4k
