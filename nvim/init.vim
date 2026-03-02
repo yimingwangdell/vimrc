@@ -94,8 +94,8 @@ nnoremap H 0
 vnoremap H 0
 nnoremap L $
 vnoremap L $
-nnoremap j gj
-nnoremap k gk
+nnoremap <expr> j (v:count ? 'j' : 'gj')
+nnoremap <expr> k (v:count ? 'k' : 'gk')
 inoremap <M-h> <Left>
 inoremap <M-j> <Down>
 inoremap <M-k> <Up>
@@ -115,6 +115,7 @@ nnoremap <leader><up> kdd
 nnoremap = :noh<CR>
 nmap ( vaf`<<ESC>
 nmap ) vaf<ESC>
+nnoremap <c-a> vaw<ESC>a
 " scroll up and down
 " nnoremap <c-d> 4j
 " nnoremap <c-u> 4k
@@ -458,7 +459,7 @@ let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 " colorscheme gruvbox
 colorscheme everforest
 " colorscheme kanagawa-dragon
-set background=dark
+" set background=dark
 " set background=light
 
 " ==================codeium===================
@@ -612,19 +613,6 @@ require("blink.cmp").setup(
     --
     -- See :h blink-cmp-config-keymap for defining your own keymap
     signature = { enabled = true,
-         trigger = {
-              enabled = false,
-             -- Show the signature help window after typing any of alphanumerics, `-` or `_`
-             show_on_keyword = false,
-             blocked_trigger_characters = {},
-             blocked_retrigger_characters = {},
-             -- Show the signature help window after typing a trigger character
-             show_on_trigger_character = true,
-             -- Show the signature help window when entering insert mode
-             show_on_insert = false,
-             -- Show the signature help window when the cursor comes after a trigger character when entering insert mode
-             show_on_insert_on_trigger_character = false,
-         },
     },
     keymap = {
         preset = "enter",
@@ -642,15 +630,56 @@ require("blink.cmp").setup(
     -- (Default) Only show the documentation popup when manually triggered
     completion = {
         trigger = {
-            prefetch_on_insert = false,
-            show_on_backspace_after_accept = false,
-            show_on_backspace_after_insert_enter = false,
-            show_on_backspace_after_accept = false,
-            show_on_keyword = true,
-            show_on_trigger_character = false,
-            show_on_blocked_trigger_characters = {' ', '\n', '\t'},
-            show_on_accept_on_trigger_character = false,
-            show_on_insert_on_trigger_character = false,
+          -- When true, will prefetch the completion items when entering insert mode
+          prefetch_on_insert = true,
+        
+          -- When false, will not show the completion window automatically when in a snippet
+          show_in_snippet = true,
+        
+          -- When true, will show completion window after backspacing
+          show_on_backspace = false,
+        
+          -- When true, will show completion window after backspacing into a keyword
+          show_on_backspace_in_keyword = false,
+        
+          -- When true, will show the completion window after accepting a completion and then backspacing into a keyword
+          show_on_backspace_after_accept = true,
+        
+          -- When true, will show the completion window after entering insert mode and backspacing into keyword
+          show_on_backspace_after_insert_enter = true,
+        
+          -- When true, will show the completion window after typing any of alphanumerics, `-` or `_`
+          show_on_keyword = true,
+        
+          -- When true, will show the completion window after typing a trigger character
+          show_on_trigger_character = true,
+        
+          -- When true, will show the completion window after entering insert mode
+          show_on_insert = false,
+        
+          -- LSPs can indicate when to show the completion window via trigger characters
+          -- however, some LSPs (e.g. tsserver) return characters that would essentially
+          -- always show the window. We block these by default.
+          show_on_blocked_trigger_characters = { ' ', '\n', '\t' },
+          -- You can also block per filetype with a function:
+          -- show_on_blocked_trigger_characters = function(ctx)
+          --   if vim.bo.filetype == 'markdown' then return { ' ', '\n', '\t', '.', '/', '(', '[' } end
+          --   return { ' ', '\n', '\t' }
+          -- end,
+        
+          -- When both this and show_on_trigger_character are true, will show the completion window
+          -- when the cursor comes after a trigger character after accepting an item
+          show_on_accept_on_trigger_character = true,
+        
+          -- When both this and show_on_trigger_character are true, will show the completion window
+          -- when the cursor comes after a trigger character when entering insert mode
+          show_on_insert_on_trigger_character = true,
+        
+          -- List of trigger characters (on top of `show_on_blocked_trigger_characters`) that won't trigger
+          -- the completion window when the cursor comes after a trigger character when
+          -- entering insert mode/accepting an item
+          show_on_x_blocked_trigger_characters = { "'", '"', '(' },
+          -- or a function, similar to show_on_blocked_trigger_character
         },
         accept = {
           -- experimental auto-brackets support
@@ -747,6 +776,12 @@ lua<<EOF
   vim.lsp.config['lua_ls'] = {
         capabilities = capabilities,
   }
+  vim.lsp.enable('pylsp')
+  vim.lsp.enable('jsonls')
+  vim.lsp.enable('bashls')
+  vim.lsp.enable('lemminx')
+  vim.lsp.enable('yamlls')
+  vim.lsp.enable('lua_ls')
 EOF
 "
 
