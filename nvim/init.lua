@@ -886,7 +886,6 @@ require('blink.cmp').setup({
             prefetch_on_insert = false,
             show_on_backspace_after_accept = false,
             show_on_backspace_after_insert_enter = false,
-            show_on_backspace_after_accept = false,
             show_on_keyword = true,
             show_on_trigger_character = false,
             show_on_blocked_trigger_characters = { ' ', '\n', '\t' },
