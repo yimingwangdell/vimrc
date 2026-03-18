@@ -65,28 +65,6 @@ vim.opt.listchars = 'eol:↓,tab:\\ ┊,trail:●,extends:…,precedes:…,space
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
-vim.api.nvim_create_augroup('PreserveNoEOL', { clear = true })
-vim.api.nvim_create_autocmd('BufWritePre', {
-    group = 'PreserveNoEOL',
-    callback = function(args)
-        if not vim.b[args.buf].endofline then
-            vim.b[args.buf].save_bin = vim.b[args.buf].binary
-            vim.b[args.buf].save_eol = vim.b[args.buf].endofline
-            vim.cmd('setlocal binary noeol')
-        end
-    end,
-})
-vim.api.nvim_create_autocmd('BufWritePost', {
-    group = 'PreserveNoEOL',
-    callback = function(args)
-        if vim.b[args.buf].save_bin then
-            vim.b[args.buf].binary = vim.b[args.buf].save_bin
-            vim.b[args.buf].endofline = vim.b[args.buf].save_eol
-            vim.b[args.buf].save_bin = nil
-            vim.b[args.buf].save_eol = nil
-        end
-    end,
-})
 
 vim.api.nvim_create_augroup('TabClosed', { clear = true })
 local prevtabnum = vim.fn.tabpagenr('$')
@@ -124,20 +102,34 @@ vim.api.nvim_create_autocmd('CursorMoved', {
         end
     end,
 })
+local function printGitFileName()
+    -- Search backward for either:
+    -- 1) status-like line: "M file", "? file"
+    -- 2) diff header: "diff --git ..."
+    local p = vim.fn.searchpos('^[A-Z?] .\\|^diff --', "bnW")
+    local gitkeyline = vim.fn.getline(p[1])
 
-local function ShowFugitiveFileName()
-    local bufname = vim.fn.expand('%')
-    if bufname:match('^fugitive://') then
-        local p = vim.fn.searchpos('^[A-Z?] .\\|^diff --', 'bnW')
-        local gitkeyline = vim.fn.getline(p[0])
-        local match = vim.fn.matchlist(gitkeyline, 'diff --git a/.*/\\([^/]*\\) b/')
-        if #match > 1 then
-            print('viewing file:' .. match[2])
-        else
-            print('')
-        end
+    -- Extract filename from:
+    -- diff --git a/.../filename b/.../filename
+    local m = vim.fn.matchlist(gitkeyline, "diff --git a/.*/\\([^/]*\\) b/")
+
+    if #m > 1 then
+        vim.api.nvim_echo({ { "viewing file:" .. m[2] } }, false, {})
+    else
+        vim.api.nvim_echo({ { "" } }, false, {})
     end
 end
+local function ShowFugitiveFileName()
+    local bufname = vim.fn.expand("%")
+    if bufname:match("^fugitive://") then
+        printGitFileName()
+    end
+end
+
+vim.api.nvim_create_autocmd("CursorHold", {
+    pattern = "*",
+    callback = ShowFugitiveFileName,
+})
 
 local function EnsureTabExists(num)
     local current_tab = vim.fn.tabpagenr()
@@ -1012,6 +1004,21 @@ require('lspconfig').yamlls.setup({
 })
 require('lspconfig').lua_ls.setup({
     capabilities = capabilities,
+    settings = {
+        Lua = {
+            diagnostics = {
+                globals = { "vim" },
+            },
+            workspace = {
+                library = {
+                    vim.env.VIMRUNTIME,
+                    vim.fn.stdpath("config"),
+                },
+                checkThirdParty = false,
+            },
+            telemetry = { enable = false },
+        },
+    },
 })
 
 require('mason').setup()
@@ -1032,6 +1039,36 @@ vim.keymap.set('n', '<leader>tg', '<cmd>AerialToggle!<CR><c-w>l')
 vim.keymap.set('n', '<leader>nv', '<cmd>AerialNavToggle<CR>')
 
 require('nvim-treesitter.configs').setup({
+    textobjects = {
+        select = {
+            -- Automatically jump forward to textobj, similar to targets.vim
+            lookahead = true,
+            -- You can choose the select mode (default is charwise 'v')
+            --
+            -- Can also be a function which gets passed a table with the keys
+            -- * query_string: eg '@function.inner'
+            -- * method: eg 'v' or 'o'
+            -- and should return the mode ('v', 'V', or '<c-v>') or a table
+            -- mapping query_strings to modes.
+            selection_modes = {
+                ['@parameter.outer'] = 'v', -- charwise
+                ['@function.outer'] = 'V', -- linewise
+                -- ['@class.outer'] = '<c-v>', -- blockwise
+            },
+            -- If you set this to `true` (default is `false`) then any textobject is
+            -- extended to include preceding or succeeding whitespace. Succeeding
+            -- whitespace has priority in order to act similarly to eg the built-in
+            -- `ap`.
+            --
+            -- Can also be a function which gets passed a table with the keys
+            -- * query_string: eg '@function.inner'
+            -- * selection_mode: eg 'v'
+            -- and should return true of false
+            include_surrounding_whitespace = false,
+        },
+
+    },
+
     incremental_selection = {
         enable = true,
         keymaps = {
@@ -1566,51 +1603,25 @@ vim.api.nvim_create_autocmd({ 'CursorHold' }, {
 
 
 
--- configuration
-require("nvim-treesitter-textobjects").setup {
-    select = {
-        -- Automatically jump forward to textobj, similar to targets.vim
-        lookahead = true,
-        -- You can choose the select mode (default is charwise 'v')
-        --
-        -- Can also be a function which gets passed a table with the keys
-        -- * query_string: eg '@function.inner'
-        -- * method: eg 'v' or 'o'
-        -- and should return the mode ('v', 'V', or '<c-v>') or a table
-        -- mapping query_strings to modes.
-        selection_modes = {
-            ['@parameter.outer'] = 'v', -- charwise
-            ['@function.outer'] = 'V',  -- linewise
-            -- ['@class.outer'] = '<c-v>', -- blockwise
-        },
-        -- If you set this to `true` (default is `false`) then any textobject is
-        -- extended to include preceding or succeeding whitespace. Succeeding
-        -- whitespace has priority in order to act similarly to eg the built-in
-        -- `ap`.
-        --
-        -- Can also be a function which gets passed a table with the keys
-        -- * query_string: eg '@function.inner'
-        -- * selection_mode: eg 'v'
-        -- and should return true of false
-        include_surrounding_whitespace = false,
-    },
-}
 
 -- keymaps
 -- You can use the capture groups defined in `textobjects.scm`
 vim.keymap.set({ "x", "o" }, "af", function()
-    require "nvim-treesitter-textobjects.select".select_textobject("@function.outer", "textobjects")
+  require("nvim-treesitter.textobjects.select").select_textobject("@function.outer", "textobjects")
 end)
+
 vim.keymap.set({ "x", "o" }, "if", function()
-    require "nvim-treesitter-textobjects.select".select_textobject("@function.inner", "textobjects")
+  require("nvim-treesitter.textobjects.select").select_textobject("@function.inner", "textobjects")
 end)
+
 vim.keymap.set({ "x", "o" }, "ac", function()
-    require "nvim-treesitter-textobjects.select".select_textobject("@class.outer", "textobjects")
+  require("nvim-treesitter.textobjects.select").select_textobject("@class.outer", "textobjects")
 end)
+
 vim.keymap.set({ "x", "o" }, "ic", function()
-    require "nvim-treesitter-textobjects.select".select_textobject("@class.inner", "textobjects")
+  require("nvim-treesitter.textobjects.select").select_textobject("@class.inner", "textobjects")
 end)
--- You can also use captures from other query groups like `locals.scm`
+
 vim.keymap.set({ "x", "o" }, "as", function()
-    require "nvim-treesitter-textobjects.select".select_textobject("@local.scope", "locals")
+  require("nvim-treesitter.textobjects.select").select_textobject("@local.scope", "locals")
 end)
