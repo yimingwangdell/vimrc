@@ -103,7 +103,7 @@ vim.api.nvim_create_autocmd('TabEnter', {
 vim.api.nvim_create_augroup('NVIMRC', { clear = true })
 vim.api.nvim_create_autocmd('BufWritePost', {
     group = 'NVIMRC',
-    pattern = 'init.vim',
+    pattern = 'init.lua',
     command = 'source %',
 })
 
@@ -763,6 +763,44 @@ vim.keymap.set("n", "<S-C-d>", function() require("opencode").command("session.h
 
 vim.keymap.set("n", "+", "<C-a>", { desc = "Increment under cursor", noremap = true })
 vim.keymap.set("n", "-", "<C-x>", { desc = "Decrement under cursor", noremap = true })
+local function trunc_statusline_hl(s, max_chars)
+    if not s or s == "" then
+        return s
+    end
+
+    local out, visible = "", 0
+
+    while s ~= "" and visible < max_chars do
+        -- highlight start token, e.g. %#SomeGroup#
+        local hl = s:match("^%%#.-#")
+        if hl then
+            out = out .. hl
+            s = s:sub(#hl + 1)
+            -- highlight reset token: %*
+        elseif s:match("^%%%*") then
+            out = out .. "%*"
+            s = s:sub(3)
+        else
+            -- consume one display char
+            local ch = vim.fn.strcharpart(s, 0, 1)
+            out = out .. ch
+            s = vim.fn.strcharpart(s, 1)
+            visible = visible + 1
+        end
+    end
+
+    if s ~= "" then
+        out = out .. "…"
+    end
+
+    -- ensure highlight is reset
+    if not out:match("%%%*$") then
+        out = out .. "%*"
+    end
+
+    return out
+end
+
 
 require('lualine').setup(
     {
@@ -808,7 +846,13 @@ require('lualine').setup(
 
                 -- Color the symbol icons.
                 colored = true,
-            } },
+                fmt = function(str)
+                    str = (str or ""):gsub("%b()", "")
+                    return trunc_statusline_hl(str, 70)
+                end,
+
+
+            }, },
             lualine_y = {},
             lualine_z = { 'filesize', 'progress', 'encoding', 'fileformat' }
         },
@@ -837,6 +881,10 @@ require('lualine').setup(
 
                 -- Color the symbol icons.
                 colored = true,
+                fmt = function(str)
+                    str = (str or ""):gsub("%b()", "")
+                    return trunc_statusline_hl(str, 70)
+                end,
             } },
 
             lualine_y = {},
@@ -970,7 +1018,7 @@ require('mason').setup()
 require('trouble').setup()
 
 require('aerial').setup({
-    backends = { 'treesitter' },
+    backends = { 'lsp', 'treesitter' },
     on_attach = function(bufnr)
         vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>', { buffer = bufnr })
         vim.keymap.set('n', '}', '<cmd>AerialNext<CR>', { buffer = bufnr })
@@ -1413,7 +1461,7 @@ require('fzf-lua').setup({
         -- stat_file = FzfLua.utils.file_is_readable,
         -- stat_file = function() return true end,
         include_current_session = true, -- include bufs from current session
-        ignore_current_buffer   = true,  -- exclude current buf from session
+        ignore_current_buffer   = true, -- exclude current buf from session
     },
 
 })
