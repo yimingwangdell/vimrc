@@ -1405,6 +1405,17 @@ require('fzf-lua').setup({
         actions = { ["ctrl-q"] = { fn = require "fzf-lua".actions.file_sel_to_qf, prefix = "select-all" } },
         formatter = { "path.filename_first" }
     },
+    oldfiles = {
+        prompt                  = 'History❯ ',
+        cwd_only                = false,
+        stat_file               = true, -- verify files exist on disk
+        -- can also be a lua function, for example:
+        -- stat_file = FzfLua.utils.file_is_readable,
+        -- stat_file = function() return true end,
+        include_current_session = true, -- include bufs from current session
+        ignore_current_buffer   = true,  -- exclude current buf from session
+    },
+
 })
 
 require('toggleterm').setup()
@@ -1555,4 +1566,3 @@ end)
 vim.keymap.set({ "x", "o" }, "as", function()
     require "nvim-treesitter-textobjects.select".select_textobject("@local.scope", "locals")
 end)
-
