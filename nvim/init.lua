@@ -291,8 +291,8 @@ vim.keymap.set('n', '<leader>sv', ':set nosplitright<CR>:set splitright<CR>:vspl
 vim.keymap.set('n', '<leader>st', ':set nosplitright<CR>:set splitright<CR>:vsplit ~/vimwiki/TODO.wiki<CR>')
 vim.keymap.set('n', '<leader>sj', ':set nosplitbelow<CR>:set splitbelow<CR>:new<CR><c-w>j')
 
-vim.keymap.set('n', '<leader>,', '`[V`]"<')
-vim.keymap.set('n', '<leader>.', '`[V`]">')
+vim.keymap.set('n', '<leader>,', '`[V`]<')
+vim.keymap.set('n', '<leader>.', '`[V`]>')
 vim.keymap.set('n', '<leader>ti', ':-tabnew<CR>')
 vim.keymap.set('n', '<leader>ta', ':tabnew<CR>')
 vim.keymap.set('n', '<leader>tI', ':0tabnew<CR>')
@@ -498,7 +498,9 @@ vim.keymap.set('n', 'gY', ':tab sp<CR>:lua vim.lsp.buf.type_definition()<CR>')
 vim.keymap.set('n', 'gr', ':lua vim.lsp.buf.references()<CR>')
 vim.keymap.set('n', '<leader>rn', ':lua vim.lsp.buf.rename()<CR>')
 vim.keymap.set('n', '<leader>fm', ':lua vim.lsp.buf.format({async=true})<CR>')
-vim.keymap.set('v', '<leader>fm', ':lua vim.lsp.buf.format()<CR>')
+vim.keymap.set("v", "<leader>fm", function()
+    vim.lsp.buf.format()
+end, { desc = "Format selection" })
 
 vim.keymap.set('n', '<leader>ac', ':FzfLua lsp_code_actions<CR>')
 vim.keymap.set('v', '<leader>ac', ':FzfLua lsp_code_actions<CR>')
@@ -546,7 +548,7 @@ vim.keymap.set('v', '<leader>tm', ':ToggleTermSendVisualLines<CR>')
 vim.keymap.set('n', 'K', ':lua vim.lsp.buf.hover()<CR>')
 vim.keymap.set('n', 'gd', ':lua vim.lsp.buf.definition()<CR>')
 vim.keymap.set('n', 'gi', ':lua vim.lsp.buf.implementation()<CR>')
-vim.keymap.set('n', 'gr', ':lua vim.lsp.buf.references()<CR>')
+vim.keymap.set('n', 'gr', ':lua vim.lsp.buf.references({ includeDeclaration = false })<CR>')
 
 vim.g.python3_host_prog = 'python3'
 vim.g.rooter_patterns = { '.git' }
@@ -1177,7 +1179,7 @@ require('gitsigns').setup({
         virt_text_pos = "eol",
         virt_text_priority = 100
     },
-    current_line_blame_formatter = '<author_time:%R> | <author> | <summary>',
+    current_line_blame_formatter = '<author_time:%R>  <author>  <summary>',
 })
 
 require('illuminate').configure({
@@ -1553,3 +1555,4 @@ end)
 vim.keymap.set({ "x", "o" }, "as", function()
     require "nvim-treesitter-textobjects.select".select_textobject("@local.scope", "locals")
 end)
+
