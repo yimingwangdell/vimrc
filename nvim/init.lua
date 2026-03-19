@@ -121,7 +121,7 @@ local function printGitFileName()
 end
 local function ShowFugitiveFileName()
     local bufname = vim.fn.expand("%")
-    if bufname:match("^fugitive://") then
+    if bufname:match("^fugitive://") or bufname:match("^/tmp/nvim%.root/[^/]+/%d+/?$") then
         printGitFileName()
     end
 end
