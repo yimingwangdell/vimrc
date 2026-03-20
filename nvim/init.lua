@@ -687,6 +687,7 @@ require('lazy').setup({
     { 'mfussenegger/nvim-jdtls' },
     { 'williamboman/mason.nvim' },
     { 'neovim/nvim-lspconfig',                      tag = 'v2.5.0' },
+    { 'mason-org/mason-lspconfig.nvim' },
     { 'Saghen/blink.cmp' },
     { 'folke/trouble.nvim' },
     { 'rafamadriz/friendly-snippets' },
@@ -840,7 +841,8 @@ require('lualine').setup(
                 colored = true,
                 fmt = function(str)
                     str = (str or ""):gsub("%b()", "")
-                    return trunc_statusline_hl(str, 70)
+                    -- return trunc_statusline_hl(str, 70)
+                    return str
                 end,
 
 
@@ -875,7 +877,8 @@ require('lualine').setup(
                 colored = true,
                 fmt = function(str)
                     str = (str or ""):gsub("%b()", "")
-                    return trunc_statusline_hl(str, 70)
+                    -- return trunc_statusline_hl(str, 70)
+                    return str
                 end,
             } },
 
@@ -983,25 +986,21 @@ require('blink.cmp').setup({
     fuzzy = { implementation = 'lua' },
 })
 
+require('mason').setup()
 local capabilities = require('blink.cmp').get_lsp_capabilities()
-require('lspconfig').pylsp.setup({
-    capabilities = capabilities,
-})
-require('lspconfig').bashls.setup({
-    capabilities = capabilities,
-})
-require('lspconfig').clangd.setup({
-    capabilities = capabilities,
-})
-require('lspconfig').jsonls.setup({
-    capabilities = capabilities,
-})
-require('lspconfig').lemminx.setup({
-    capabilities = capabilities,
-})
-require('lspconfig').yamlls.setup({
-    capabilities = capabilities,
-})
+require("mason-lspconfig").setup {
+    ensure_installed = { "lua_ls" },
+    handlers = {
+
+        -- this first function is the "default handler"
+
+        -- it applies to every language server without a "custom handler"
+
+        function(server_name)
+            require("lspconfig")[server_name].setup({ capabilities = capabilities })
+        end,
+    },
+}
 require('lspconfig').lua_ls.setup({
     capabilities = capabilities,
     settings = {
@@ -1021,7 +1020,6 @@ require('lspconfig').lua_ls.setup({
     },
 })
 
-require('mason').setup()
 require('trouble').setup()
 
 require('aerial').setup({
@@ -1052,7 +1050,7 @@ require('nvim-treesitter.configs').setup({
             -- mapping query_strings to modes.
             selection_modes = {
                 ['@parameter.outer'] = 'v', -- charwise
-                ['@function.outer'] = 'V', -- linewise
+                ['@function.outer'] = 'V',  -- linewise
                 -- ['@class.outer'] = '<c-v>', -- blockwise
             },
             -- If you set this to `true` (default is `false`) then any textobject is
@@ -1607,21 +1605,21 @@ vim.api.nvim_create_autocmd({ 'CursorHold' }, {
 -- keymaps
 -- You can use the capture groups defined in `textobjects.scm`
 vim.keymap.set({ "x", "o" }, "af", function()
-  require("nvim-treesitter.textobjects.select").select_textobject("@function.outer", "textobjects")
+    require("nvim-treesitter.textobjects.select").select_textobject("@function.outer", "textobjects")
 end)
 
 vim.keymap.set({ "x", "o" }, "if", function()
-  require("nvim-treesitter.textobjects.select").select_textobject("@function.inner", "textobjects")
+    require("nvim-treesitter.textobjects.select").select_textobject("@function.inner", "textobjects")
 end)
 
 vim.keymap.set({ "x", "o" }, "ac", function()
-  require("nvim-treesitter.textobjects.select").select_textobject("@class.outer", "textobjects")
+    require("nvim-treesitter.textobjects.select").select_textobject("@class.outer", "textobjects")
 end)
 
 vim.keymap.set({ "x", "o" }, "ic", function()
-  require("nvim-treesitter.textobjects.select").select_textobject("@class.inner", "textobjects")
+    require("nvim-treesitter.textobjects.select").select_textobject("@class.inner", "textobjects")
 end)
 
 vim.keymap.set({ "x", "o" }, "as", function()
-  require("nvim-treesitter.textobjects.select").select_textobject("@local.scope", "locals")
+    require("nvim-treesitter.textobjects.select").select_textobject("@local.scope", "locals")
 end)
