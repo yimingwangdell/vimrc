@@ -444,6 +444,21 @@ vim.keymap.set('n', '<leader>e', '<cmd>lua require("nvim-tree.api").tree.toggle(
 vim.g.Illuminate_delay = 750
 vim.cmd('highlight illuminatedWord cterm=undercurl gui=undercurl')
 
+-- === multicursors ===
+vim.g.VM_theme = "iceblue"
+vim.g.VM_default_mappings = 0
+vim.g.VM_mouse_mappings = 1
+vim.g.VM_maps = {
+    ["I BS"] = "",
+    ["Goto Next"] = "]v",
+    ["Goto Prev"] = "[v",
+    ["I CtrlB"] = "<M-b>",
+    ["I CtrlF"] = "<M-f>",
+    ["I Return"] = "<S-CR>",
+    ["I Down Arrow"] = "",
+    ["I Up Arrow"] = "",
+}
+
 vim.g.tcomment_textobject_inlinecomment = ''
 vim.keymap.set('n', '<Leader><Leader>', 'gcc', { remap = true })
 vim.keymap.set('v', '<Leader><Leader>', 'gcc', { remap = true })
