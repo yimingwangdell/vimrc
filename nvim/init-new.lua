@@ -1,5 +1,6 @@
 -- Bootstrap lazy.nvim
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim" if not (vim.uv or vim.loop).fs_stat(lazypath) then
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
     local lazyrepo = "https://github.com/folke/lazy.nvim.git"
     local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
     if vim.v.shell_error ~= 0 then
@@ -482,41 +483,41 @@ vim.g.cursorword = 1
 
 vim.keymap.set('n', 'K', ':lua vim.lsp.buf.hover()<CR>')
 local function parse_file_link()
-  local line_text = vim.api.nvim_get_current_line()
-  local word = vim.fn.expand("<cWORD>")
+    local line_text = vim.api.nvim_get_current_line()
+    local word = vim.fn.expand("<cWORD>")
 
-  for _, text in ipairs({ line_text, word }) do
-    local file, lnum, col = text:match("file://(.-)#(%d+),(%d+)")
-    if file then return file, lnum, col end
-    file, lnum = text:match("file://(.-)#(%d+)")
-    if file then return file, lnum, nil end
-    file = text:match("file://([%w/%.%-%_]+)")
-    if file then return file, nil, nil end
-  end
-  return nil
+    for _, text in ipairs({ line_text, word }) do
+        local file, lnum, col = text:match("file://(.-)#(%d+),(%d+)")
+        if file then return file, lnum, col end
+        file, lnum = text:match("file://(.-)#(%d+)")
+        if file then return file, lnum, nil end
+        file = text:match("file://([%w/%.%-%_]+)")
+        if file then return file, nil, nil end
+    end
+    return nil
 end
 
 -- 关闭浮动窗口并跳转到文件
 local function goto_file_link(file, lnum, col)
-  for _, win in ipairs(vim.api.nvim_list_wins()) do
-    local config = vim.api.nvim_win_get_config(win)
-    if config.relative and config.relative ~= "" then
-      pcall(vim.api.nvim_win_close, win, true)
+    for _, win in ipairs(vim.api.nvim_list_wins()) do
+        local config = vim.api.nvim_win_get_config(win)
+        if config.relative and config.relative ~= "" then
+            pcall(vim.api.nvim_win_close, win, true)
+        end
     end
-  end
-  vim.cmd("edit " .. vim.fn.fnameescape(file))
-  if lnum then
-    vim.api.nvim_win_set_cursor(0, { tonumber(lnum), tonumber(col or 1) - 1 })
-  end
+    vim.cmd("edit " .. vim.fn.fnameescape(file))
+    if lnum then
+        vim.api.nvim_win_set_cursor(0, { tonumber(lnum), tonumber(col or 1) - 1 })
+    end
 end
 
 vim.keymap.set("n", "gd", function()
-  local file, lnum, col = parse_file_link()
-  if file then
-    goto_file_link(file, lnum, col)
-  else
-    vim.lsp.buf.definition()
-  end
+    local file, lnum, col = parse_file_link()
+    if file then
+        goto_file_link(file, lnum, col)
+    else
+        vim.lsp.buf.definition()
+    end
 end, { desc = "Go to definition or file:// link" })
 vim.keymap.set('n', 'gD', ':tab sp<CR>:lua vim.lsp.buf.definition()<CR>')
 vim.keymap.set('n', 'gi', ':lua vim.lsp.buf.implementation()<CR>')
@@ -706,17 +707,82 @@ require('lazy').setup({
     { 'nvim-tree/nvim-web-devicons' },
     { 'nvim-lua/plenary.nvim' },
     { 'nvim-tree/nvim-tree.lua' },
-    { 'ThePrimeagen/harpoon',       branch = 'harpoon2' },
+    { 'ThePrimeagen/harpoon',                   branch = 'harpoon2' },
     { 'pechorin/any-jump.vim' },
     { 'francoiscabrol/ranger.vim' },
     { 'rbgrouleff/bclose.vim' },
     { 'stevearc/aerial.nvim', },
-    {'nvim-treesitter/nvim-treesitter' },
+    { 'nvim-treesitter/nvim-treesitter' },
     { 'nvim-treesitter/nvim-treesitter-context' },
-    { 'nvim-treesitter/nvim-treesitter-textobjects' },
+    {
+        "nvim-treesitter/nvim-treesitter-textobjects",
+        branch = "main",
+        init = function()
+            -- Disable entire built-in ftplugin mappings to avoid conflicts.
+            -- See https://github.com/neovim/neovim/tree/master/runtime/ftplugin for built-in ftplugins.
+            vim.g.no_plugin_maps = true
+
+            -- Or, disable per filetype (add as you like)
+            -- vim.g.no_python_maps = true
+            -- vim.g.no_ruby_maps = true
+            -- vim.g.no_rust_maps = true
+            -- vim.g.no_go_maps = true
+        end,
+        config = function()
+            -- put your config here
+            -- configuration
+            require("nvim-treesitter-textobjects").setup {
+                select = {
+                    -- Automatically jump forward to textobj, similar to targets.vim
+                    lookahead = true,
+                    -- You can choose the select mode (default is charwise 'v')
+                    --
+                    -- Can also be a function which gets passed a table with the keys
+                    -- * query_string: eg '@function.inner'
+                    -- * method: eg 'v' or 'o'
+                    -- and should return the mode ('v', 'V', or '<c-v>') or a table
+                    -- mapping query_strings to modes.
+                    selection_modes = {
+                        ['@parameter.outer'] = 'v', -- charwise
+                        ['@function.outer'] = 'V',  -- linewise
+                        -- ['@class.outer'] = '<c-v>', -- blockwise
+                    },
+                    -- If you set this to `true` (default is `false`) then any textobject is
+                    -- extended to include preceding or succeeding whitespace. Succeeding
+                    -- whitespace has priority in order to act similarly to eg the built-in
+                    -- `ap`.
+                    --
+                    -- Can also be a function which gets passed a table with the keys
+                    -- * query_string: eg '@function.inner'
+                    -- * selection_mode: eg 'v'
+                    -- and should return true of false
+                    include_surrounding_whitespace = false,
+                },
+            }
+
+            -- keymaps
+            -- You can use the capture groups defined in `textobjects.scm`
+            vim.keymap.set({ "x", "o" }, "af", function()
+                require "nvim-treesitter-textobjects.select".select_textobject("@function.outer", "textobjects")
+            end)
+            vim.keymap.set({ "x", "o" }, "if", function()
+                require "nvim-treesitter-textobjects.select".select_textobject("@function.inner", "textobjects")
+            end)
+            vim.keymap.set({ "x", "o" }, "ac", function()
+                require "nvim-treesitter-textobjects.select".select_textobject("@class.outer", "textobjects")
+            end)
+            vim.keymap.set({ "x", "o" }, "ic", function()
+                require "nvim-treesitter-textobjects.select".select_textobject("@class.inner", "textobjects")
+            end)
+            -- You can also use captures from other query groups like `locals.scm`
+            vim.keymap.set({ "x", "o" }, "as", function()
+                require "nvim-treesitter-textobjects.select".select_textobject("@local.scope", "locals")
+            end)
+        end,
+    },
     { 'mfussenegger/nvim-jdtls' },
     { 'williamboman/mason.nvim' },
-    { 'neovim/nvim-lspconfig',                      tag = 'v2.5.0' },
+    { 'neovim/nvim-lspconfig',              tag = 'v2.5.0' },
     { 'mason-org/mason-lspconfig.nvim' },
     { 'Saghen/blink.cmp' },
     { 'folke/trouble.nvim' },
@@ -730,9 +796,9 @@ require('lazy').setup({
     { 'uiiaoo/java-syntax.vim' },
     { 'dkarter/bullets.vim' },
     { 'mzlogin/vim-markdown-toc' },
-    { 'dhruvasagar/vim-table-mode',                 ['on'] = 'TableModeToggle',    ['for'] = { 'text', 'markdown', 'vim-plug' } },
+    { 'dhruvasagar/vim-table-mode',         ['on'] = 'TableModeToggle', ['for'] = { 'text', 'markdown', 'vim-plug' } },
     { 'vimwiki/vimwiki' },
-    { 'nvim-orgmode/orgmode',                       tag = '0.6.0' },
+    { 'nvim-orgmode/orgmode',               tag = '0.6.0' },
     { 'mhinz/vim-sayonara' },
     { 'kevinhwang91/nvim-bqf' },
     { 'romainl/vim-qf' },
@@ -1064,33 +1130,13 @@ require('aerial').setup({
 })
 vim.keymap.set('n', '<leader>tg', '<cmd>AerialToggle!<CR><c-w>l')
 vim.keymap.set('n', '<leader>nv', '<cmd>AerialNavToggle<CR>')
-require('nvim-treesitter').install { 'c', 'lua', 'vim', 'vimdoc', 'query', 'markdown', 'markdown_inline' }
 require('nvim-treesitter').setup({
-    incremental_selection = {
-        enable = true,
-        keymaps = {
-            init_selection = '<leader><enter>',
-            node_incremental = '<leader><enter>',
-            scope_incremental = false,
-            node_decremental = false,
-        },
-    },
-    sync_install = false,
-    auto_install = true,
-    ignore_install = { 'javascript' },
-    highlight = {
-        enable = true,
-        disable = { 'c', 'rust' },
-        disable = function(lang, buf)
-            local max_filesize = 1000 * 1024
-            local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-            if ok and stats and stats.size > max_filesize then
-                return true
-            end
-        end,
-        additional_vim_regex_highlighting = false,
-    },
 })
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = { '<filetype>' },
+    callback = function() vim.treesitter.start() end,
+})
+vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 
 require('treesitter-context').setup({
     enable = false,
@@ -1596,53 +1642,3 @@ vim.api.nvim_create_autocmd({ 'CursorHold' }, {
         })
     end,
 })
-
-
--- configuration
-require("nvim-treesitter-textobjects").setup {
-  select = {
-    -- Automatically jump forward to textobj, similar to targets.vim
-    lookahead = true,
-    -- You can choose the select mode (default is charwise 'v')
-    --
-    -- Can also be a function which gets passed a table with the keys
-    -- * query_string: eg '@function.inner'
-    -- * method: eg 'v' or 'o'
-    -- and should return the mode ('v', 'V', or '<c-v>') or a table
-    -- mapping query_strings to modes.
-    selection_modes = {
-      ['@parameter.outer'] = 'v', -- charwise
-      ['@function.outer'] = 'V', -- linewise
-      -- ['@class.outer'] = '<c-v>', -- blockwise
-    },
-    -- If you set this to `true` (default is `false`) then any textobject is
-    -- extended to include preceding or succeeding whitespace. Succeeding
-    -- whitespace has priority in order to act similarly to eg the built-in
-    -- `ap`.
-    --
-    -- Can also be a function which gets passed a table with the keys
-    -- * query_string: eg '@function.inner'
-    -- * selection_mode: eg 'v'
-    -- and should return true of false
-    include_surrounding_whitespace = false,
-  },
-}
-
--- keymaps
--- You can use the capture groups defined in `textobjects.scm`
-vim.keymap.set({ "x", "o" }, "af", function()
-  require "nvim-treesitter-textobjects.select".select_textobject("@function.outer", "textobjects")
-end)
-vim.keymap.set({ "x", "o" }, "if", function()
-  require "nvim-treesitter-textobjects.select".select_textobject("@function.inner", "textobjects")
-end)
-vim.keymap.set({ "x", "o" }, "ac", function()
-  require "nvim-treesitter-textobjects.select".select_textobject("@class.outer", "textobjects")
-end)
-vim.keymap.set({ "x", "o" }, "ic", function()
-  require "nvim-treesitter-textobjects.select".select_textobject("@class.inner", "textobjects")
-end)
--- You can also use captures from other query groups like `locals.scm`
-vim.keymap.set({ "x", "o" }, "as", function()
-  require "nvim-treesitter-textobjects.select".select_textobject("@local.scope", "locals")
-end)
