@@ -423,7 +423,7 @@ vim.g.bookmark_center = 1
 vim.g.bookmark_auto_close = 1
 vim.g.bookmark_location_list = 1
 
-vim.keymap.set('n', '<leader>ra', ':RangerCurrentFileNewTab<CR>')
+vim.keymap.set('n', '<leader>ra', ':RangerCurrentFile<CR>')
 vim.g.ranger_map_keys = 0
 vim.keymap.set('n', '<leader>e', '<cmd>lua require("nvim-tree.api").tree.toggle({ find_file = true })<CR>')
 
