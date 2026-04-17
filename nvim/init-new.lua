@@ -296,21 +296,16 @@ vim.keymap.set('n', '<leader><right>', ':tabn<CR>')
 vim.keymap.set('n', '<leader>tl', ':tabn<CR>')
 vim.keymap.set('n', '<leader>tL', ':tablast<CR>')
 vim.keymap.set('n', '<leader>ts', ':tab split<CR>')
-vim.keymap.set('n', 'tfs', '<C-W>T')
-vim.keymap.set('n', 't1', ':tabn1<CR>')
-vim.keymap.set('n', 't2', ':tabn2<CR>')
-vim.keymap.set('n', 't3', ':tabn3<CR>')
-vim.keymap.set('n', 't4', ':tabn4<CR>')
-vim.keymap.set('n', 't5', ':tabn5<CR>')
-vim.keymap.set('n', 't6', ':tabn6<CR>')
-vim.keymap.set('n', 't7', ':tabn7<CR>')
-vim.keymap.set('n', 't8', ':tabn8<CR>')
-vim.keymap.set('n', 't9', ':tabn9<CR>')
-
-vim.keymap.set('n', '<leader>t2', ':call EnsureTabExists(2)<CR>')
-vim.keymap.set('n', '<leader>t3', ':call EnsureTabExists(3)<CR>')
-vim.keymap.set('n', '<leader>t4', ':call EnsureTabExists(4)<CR>')
-vim.keymap.set('n', '<leader>t5', ':call EnsureTabExists(5)<CR>')
+vim.keymap.set('n', '<leader>tfs', '<C-W>T')
+vim.keymap.set('n', '<leader>t1', ':tabn1<CR>')
+vim.keymap.set('n', '<leader>t2', ':tabn2<CR>')
+vim.keymap.set('n', '<leader>t3', ':tabn3<CR>')
+vim.keymap.set('n', '<leader>t4', ':tabn4<CR>')
+vim.keymap.set('n', '<leader>t5', ':tabn5<CR>')
+vim.keymap.set('n', '<leader>t6', ':tabn6<CR>')
+vim.keymap.set('n', '<leader>t7', ':tabn7<CR>')
+vim.keymap.set('n', '<leader>t8', ':tabn8<CR>')
+vim.keymap.set('n', '<leader>t9', ':tabn9<CR>')
 
 vim.keymap.set('n', '<leader>qq', toggle_list)
 vim.keymap.set('n', '<leader>nn', next_list)
@@ -435,7 +430,6 @@ vim.g.VM_theme = "iceblue"
 vim.g.VM_default_mappings = 0
 vim.g.VM_mouse_mappings = 1
 vim.g.VM_maps = {
-    ["I BS"] = "",
     ["Goto Next"] = "]v",
     ["Goto Prev"] = "[v",
     ["I CtrlB"] = "<M-b>",
@@ -1026,9 +1020,9 @@ require('blink.cmp').setup({
             prefetch_on_insert = false,
             show_on_backspace_after_accept = false,
             show_on_backspace_after_insert_enter = false,
-            show_on_keyword = true,
+            show_on_keyword = false,
             show_on_trigger_character = false,
-            show_on_blocked_trigger_characters = { ' ', '\n', '\t' },
+            show_on_blocked_trigger_characters = {},
             show_on_accept_on_trigger_character = false,
             show_on_insert_on_trigger_character = false,
         },

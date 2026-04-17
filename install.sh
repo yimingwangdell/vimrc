@@ -39,7 +39,7 @@ install_tmux() {
 # Function to setup nvim
 install_nvim() {
     mkdir -p ~/.config/nvim
-    cp ./nvim/init.vim ~/.config/nvim/init.vim
+    cp ./nvim/init-new.lua ~/.config/nvim/init.lua
     cp -r ./nvim/ftplugin ~/.config/nvim/
 }
 

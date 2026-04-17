@@ -76,7 +76,7 @@ window:
     x: 0
     y: 0
   dynamic_padding: false
-  decorations: transparent     #buttonless,transparent,full,none
+  # decorations: transparent     #buttonless,transparent,full,none
   opacity: 0.8
   startup_mode: Windowed    #SimpleFullscreen,Fullscreen,Maximized,Windowed
   #title: Alacritty
