@@ -808,6 +808,7 @@ require('lazy').setup({
     { 'folke/flash.nvim' },
     { 'lukas-reineke/indent-blankline.nvim' },
     { 'matze/vim-move' },
+    { 'gcmt/wildfire.vim' },
     { 'windwp/nvim-autopairs' },
     { 'theniceboy/pair-maker.vim' },
     { 'kevinhwang91/nvim-hlslens' },
@@ -1341,6 +1342,14 @@ vim.g.bullets_enabled_file_types = {
 }
 
 require('nvim-autopairs').setup({})
+-- let g:wildfire_objects = { "*" : ["i'", 'i"', "i)", "i]", "i}"] }
+vim.g.wildfire_objects = {
+    ["*"] = { "i'", 'i"', "i)", "i]", "i}", "i>" },
+}
+-- map <SPACE> <Plug>(wildfire-fuel)
+vim.keymap.set("", "<Space><enter>", "<Plug>(wildfire-fuel)", { remap = true })
+
+
 require('hlslens').setup()
 
 
