@@ -808,7 +808,7 @@ require('lazy').setup({
     { 'folke/flash.nvim' },
     { 'lukas-reineke/indent-blankline.nvim' },
     { 'matze/vim-move' },
-    { 'gcmt/wildfire.vim' },
+    { 'yimingwangdell/wildfire.vim' },
     { 'windwp/nvim-autopairs' },
     { 'theniceboy/pair-maker.vim' },
     { 'kevinhwang91/nvim-hlslens' },
